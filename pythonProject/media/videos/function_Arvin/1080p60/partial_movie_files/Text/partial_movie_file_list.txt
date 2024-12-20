@@ -1,0 +1,5 @@
+# This file is used internally by FFMPEG.
+file 'file:D:/python_manim/pythonProject/media/videos/function_Arvin/1080p60/partial_movie_files/Text/3529212410_3448913629_223132457.mp4'
+file 'file:D:/python_manim/pythonProject/media/videos/function_Arvin/1080p60/partial_movie_files/Text/3040924799_1704852926_4147292108.mp4'
+file 'file:D:/python_manim/pythonProject/media/videos/function_Arvin/1080p60/partial_movie_files/Text/3040924799_2752042324_443084732.mp4'
+file 'file:D:/python_manim/pythonProject/media/videos/function_Arvin/1080p60/partial_movie_files/Text/3040924799_2475379470_3237281026.mp4'
