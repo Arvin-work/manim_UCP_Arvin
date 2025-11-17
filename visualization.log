@@ -1,0 +1,25 @@
+2025-11-18 00:19:08,263 - __main__ - INFO - ∆Ù∂ØManimºÚªØø… ”ªØπ§æﬂ...
+2025-11-18 00:19:08,294 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-11-18 00:19:08,294 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-11-18 00:19:08,312 - werkzeug - INFO -  * Restarting with watchdog (windowsapi)
+2025-11-18 00:19:08,531 - __main__ - INFO - ∆Ù∂ØManimºÚªØø… ”ªØπ§æﬂ...
+2025-11-18 00:19:08,547 - werkzeug - WARNING -  * Debugger is active!
+2025-11-18 00:19:08,560 - werkzeug - INFO -  * Debugger PIN: 883-638-311
+2025-11-18 00:19:15,063 - werkzeug - INFO - 127.0.0.1 - - [18/Nov/2025 00:19:15] "GET / HTTP/1.1" 200 -
+2025-11-18 00:19:15,297 - werkzeug - INFO - 127.0.0.1 - - [18/Nov/2025 00:19:15] "GET /static/css/style.css HTTP/1.1" 200 -
+2025-11-18 00:19:15,299 - werkzeug - INFO - 127.0.0.1 - - [18/Nov/2025 00:19:15] "GET /static/js/script.js HTTP/1.1" 200 -
+2025-11-18 00:19:21,449 - __main__ - INFO - «–ªª≥°æ∞µΩ: 3D
+2025-11-18 00:19:21,451 - werkzeug - INFO - 127.0.0.1 - - [18/Nov/2025 00:19:21] "POST /api/switch_scene HTTP/1.1" 200 -
+2025-11-18 00:19:22,561 - __main__ - INFO - «–ªª≥°æ∞µΩ: 2D
+2025-11-18 00:19:22,562 - werkzeug - INFO - 127.0.0.1 - - [18/Nov/2025 00:19:22] "POST /api/switch_scene HTTP/1.1" 200 -
+2025-11-18 00:19:23,450 - __main__ - INFO - «–ªª≥°æ∞µΩ: 3D
+2025-11-18 00:19:23,450 - werkzeug - INFO - 127.0.0.1 - - [18/Nov/2025 00:19:23] "POST /api/switch_scene HTTP/1.1" 200 -
+2025-11-18 00:19:24,485 - __main__ - INFO - «–ªª≥°æ∞µΩ: 2D
+2025-11-18 00:19:24,486 - werkzeug - INFO - 127.0.0.1 - - [18/Nov/2025 00:19:24] "POST /api/switch_scene HTTP/1.1" 200 -
+2025-11-18 00:19:25,406 - __main__ - INFO - «–ªª ‰»Î¿‡–ÕµΩ: implicit
+2025-11-18 00:19:25,407 - werkzeug - INFO - 127.0.0.1 - - [18/Nov/2025 00:19:25] "POST /api/switch_input_type HTTP/1.1" 200 -
+2025-11-18 00:19:26,725 - __main__ - INFO - «–ªª ‰»Î¿‡–ÕµΩ: explicit
+2025-11-18 00:19:26,725 - werkzeug - INFO - 127.0.0.1 - - [18/Nov/2025 00:19:26] "POST /api/switch_input_type HTTP/1.1" 200 -
+2025-11-18 00:19:27,707 - __main__ - INFO - «–ªª ‰»Î¿‡–ÕµΩ: implicit
+2025-11-18 00:19:27,707 - werkzeug - INFO - 127.0.0.1 - - [18/Nov/2025 00:19:27] "POST /api/switch_input_type HTTP/1.1" 200 -

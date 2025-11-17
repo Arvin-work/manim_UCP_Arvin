@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manim简化可视化工具</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- 标题栏 -->
+        <header class="header">
+            <div class="header-content">
+                <i class="fas fa-chart-line header-icon"></i>
+                <h1 class="header-title">Manim简化可视化工具</h1>
+                <div class="status-indicator">
+                    <span class="status-dot"></span>
+                    <span class="status-text">运行中</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- 主内容区 -->
+        <main class="main-content">
+            <!-- 场景选择栏 -->
+            <div class="scene-selector">
+                <div class="selector-tabs">
+                    <button class="tab-button active" data-scene="2D">
+                        <i class="fas fa-square"></i>
+                        2维场景
+                    </button>
+                    <button class="tab-button" data-scene="3D">
+                        <i class="fas fa-cube"></i>
+                        3维场景
+                    </button>
+                </div>
+            </div>
+
+            <!-- 配置面板 -->
+            <div class="config-panel">
+                <!-- 左侧输入类型选择 -->
+                <div class="input-sidebar">
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-title">
+                            <i class="fas fa-keyboard"></i>
+                            输入类型
+                        </h3>
+                        <div class="input-tabs">
+                            <button class="input-tab active" data-input-type="explicit">
+                                <i class="fas fa-function"></i>
+                                显函数输入
+                            </button>
+                            <button class="input-tab" data-input-type="implicit">
+                                <i class="fas fa-project-diagram"></i>
+                                隐函数输入
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 功能选项 -->
+                    <div class="functions-section">
+                        <h3 class="sidebar-title">
+                            <i class="fas fa-tools"></i>
+                            功能选项
+                        </h3>
+                        <div class="function-options">
+                            <label class="function-checkbox">
+                                <input type="checkbox" name="functions" value="plot">
+                                <span class="checkmark"></span>
+                                <i class="fas fa-draw-polygon"></i>
+                                单纯画图
+                            </label>
+                            <label class="function-checkbox">
+                                <input type="checkbox" name="functions" value="differentiation">
+                                <span class="checkmark"></span>
+                                <i class="fas fa-wave-square"></i>
+                                微分展示
+                            </label>
+                            <label class="function-checkbox">
+                                <input type="checkbox" name="functions" value="integration">
+                                <span class="checkmark"></span>
+                                <i class="fas fa-integral"></i>
+                                积分展示
+                            </label>
+                            <label class="function-checkbox">
+                                <input type="checkbox" name="functions" value="animation">
+                                <span class="checkmark"></span>
+                                <i class="fas fa-film"></i>
+                                动画效果
+                            </label>
+                            <label class="function-checkbox">
+                                <input type="checkbox" name="functions" value="transformation">
+                                <span class="checkmark"></span>
+                                <i class="fas fa-exchange-alt"></i>
+                                变换展示
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右侧内容区域 -->
+                <div class="content-area">
+                    <div class="content-header">
+                        <h2 id="current-scene-title">2维场景 - 显函数输入</h2>
+                        <div class="content-info">
+                            <span class="info-item">
+                                <i class="fas fa-clock"></i>
+                                最后更新: <span id="last-update">--:--:--</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="input-section">
+                        <div class="input-group">
+                            <label for="function-input">
+                                <i class="fas fa-pen-fancy"></i>
+                                函数表达式
+                            </label>
+                            <input type="text" id="function-input" placeholder="例如: x**2 + y**2" class="function-input">
+                        </div>
+                        
+                        <div class="parameter-grid">
+                            <div class="param-group">
+                                <label for="x-range">X轴范围</label>
+                                <input type="text" id="x-range" placeholder="-10,10" class="param-input">
+                            </div>
+                            <div class="param-group">
+                                <label for="y-range">Y轴范围</label>
+                                <input type="text" id="y-range" placeholder="-10,10" class="param-input">
+                            </div>
+                            <div class="param-group">
+                                <label for="resolution">分辨率</label>
+                                <input type="text" id="resolution" placeholder="100" class="param-input">
+                            </div>
+                            <div class="param-group">
+                                <label for="color-scheme">颜色方案</label>
+                                <select id="color-scheme" class="param-select">
+                                    <option value="default">默认</option>
+                                    <option value="blue-red">蓝红渐变</option>
+                                    <option value="rainbow">彩虹</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 操作按钮 -->
+                    <div class="action-buttons">
+                        <button id="start-creation" class="btn btn-primary">
+                            <i class="fas fa-play"></i>
+                            开始创作
+                        </button>
+                        <button id="reset-config" class="btn btn-secondary">
+                            <i class="fas fa-redo"></i>
+                            重置配置
+                        </button>
+                    </div>
+
+                    <!-- 状态显示 -->
+                    <div class="status-panel">
+                        <div class="status-header">
+                            <i class="fas fa-terminal"></i>
+                            系统日志
+                        </div>
+                        <div id="log-output" class="log-output">
+                            <div class="log-entry info">
+                                <span class="log-time">[12:00:00]</span>
+                                <span class="log-message">系统初始化完成，等待用户输入...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
