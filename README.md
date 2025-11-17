@@ -1,2 +1,1 @@
-# manim_UCP_Arvin
-It is a user control panel about manim, like a mod made by myself. It is freeful and I want to make manim easier for the users that did't know much about python
+现在新代码已经转向new_project分支，具体情况可见新分支的相关情况以及相关的README文件和txt文件
