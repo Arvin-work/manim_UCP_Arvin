@@ -3,6 +3,8 @@ class VisualizationApp {
         this.currentScene = '2D';
         this.currentInputType = 'explicit';
         this.selectedFunctions = [];
+        this.currentTaskId = null;
+        this.taskCheckInterval = null;
         this.init();
     }
 
@@ -11,7 +13,6 @@ class VisualizationApp {
         this.updateDisplay();
         this.updateTimestamp();
         
-        // 每秒更新一次时间戳
         setInterval(() => this.updateTimestamp(), 1000);
     }
 
@@ -34,6 +35,10 @@ class VisualizationApp {
         document.querySelectorAll('.function-checkbox input').forEach(checkbox => {
             checkbox.addEventListener('change', (e) => {
                 this.toggleFunction(e.target.value, e.target.checked);
+                // 特别处理泰勒展开的显示
+                if (e.target.value === 'taylor') {
+                    this.toggleTaylorParameters(e.target.checked);
+                }
             });
         });
 
@@ -48,15 +53,27 @@ class VisualizationApp {
         });
     }
 
+    toggleTaylorParameters(show) {
+        const taylorPointGroup = document.getElementById('taylor-point-group');
+        const maxOrderGroup = document.getElementById('max-order-group');
+        
+        if (show) {
+            taylorPointGroup.style.display = 'block';
+            maxOrderGroup.style.display = 'block';
+            this.addLog('泰勒展开功能已启用，请输入展开点和最高阶数', 'info');
+        } else {
+            taylorPointGroup.style.display = 'none';
+            maxOrderGroup.style.display = 'none';
+        }
+    }
+
     async switchScene(sceneType) {
         try {
-            // 更新UI
             document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
             document.querySelector(`[data-scene="${sceneType}"]`).classList.add('active');
             
             this.currentScene = sceneType;
             
-            // 发送API请求
             const response = await fetch('/api/switch_scene', {
                 method: 'POST',
                 headers: {
@@ -81,13 +98,11 @@ class VisualizationApp {
 
     async switchInputType(inputType) {
         try {
-            // 更新UI
             document.querySelectorAll('.input-tab').forEach(tab => tab.classList.remove('active'));
             document.querySelector(`[data-input-type="${inputType}"]`).classList.add('active');
             
             this.currentInputType = inputType;
             
-            // 发送API请求
             const response = await fetch('/api/switch_input_type', {
                 method: 'POST',
                 headers: {
@@ -126,14 +141,98 @@ class VisualizationApp {
             'differentiation': '微分展示',
             'integration': '积分展示',
             'animation': '动画效果',
-            'transformation': '变换展示'
+            'transformation': '变换展示',
+            'taylor': '泰勒展开'
         };
         return names[func] || func;
+    }
+
+    validateTaylorParameters() {
+        if (!this.selectedFunctions.includes('taylor')) {
+            return { valid: true };
+        }
+
+        const taylorPoint = document.getElementById('taylor-point').value;
+        const maxOrder = document.getElementById('max-order').value;
+        const functionExpression = document.getElementById('function-input').value;
+
+        if (!functionExpression.trim()) {
+            return { 
+                valid: false, 
+                message: '请填写函数表达式' 
+            };
+        }
+
+        if (!taylorPoint.trim()) {
+            return { 
+                valid: false, 
+                message: '请填写泰勒展开点' 
+            };
+        }
+
+        // 验证展开点是否为有效数字
+        if (isNaN(parseFloat(taylorPoint))) {
+            return { 
+                valid: false, 
+                message: '展开点必须是有效数字' 
+            };
+        }
+
+        return { 
+            valid: true, 
+            taylorPoint: parseFloat(taylorPoint),
+            maxOrder: parseInt(maxOrder),
+            functionExpression: functionExpression
+        };
+    }
+
+    async checkTaskStatus(taskId) {
+        try {
+            const response = await fetch(`/api/task_status/${taskId}`);
+            const status = await response.json();
+            
+            if (status.status === 'completed') {
+                this.addLog('泰勒展开动画生成完成！正在打开播放器...', 'success');
+                this.stopTaskChecking();
+                
+                // 提供下载链接
+                this.addLog(`<a href="/api/download_animation/${taskId}" target="_blank">下载动画文件</a>`, 'info');
+                
+            } else if (status.status === 'error') {
+                this.addLog(`动画生成失败: ${status.error}`, 'error');
+                this.stopTaskChecking();
+            }
+            // 如果状态是processing，继续等待
+            
+        } catch (error) {
+            this.addLog(`检查任务状态失败: ${error.message}`, 'error');
+        }
+    }
+
+    startTaskChecking(taskId) {
+        this.currentTaskId = taskId;
+        this.taskCheckInterval = setInterval(() => {
+            this.checkTaskStatus(taskId);
+        }, 2000); // 每2秒检查一次
+    }
+
+    stopTaskChecking() {
+        if (this.taskCheckInterval) {
+            clearInterval(this.taskCheckInterval);
+            this.taskCheckInterval = null;
+        }
     }
 
     async startCreation() {
         try {
             this.addLog('开始处理可视化请求...', 'info');
+
+            // 验证泰勒展开参数
+            const taylorValidation = this.validateTaylorParameters();
+            if (!taylorValidation.valid) {
+                this.addLog(`参数错误: ${taylorValidation.message}`, 'error');
+                return;
+            }
 
             // 收集配置数据
             const config = {
@@ -149,6 +248,16 @@ class VisualizationApp {
                 }
             };
 
+            // 如果选择了泰勒展开，添加相关参数
+            if (this.selectedFunctions.includes('taylor')) {
+                config.parameters.taylor_expansion = {
+                    expansion_point: taylorValidation.taylorPoint,
+                    max_order: taylorValidation.maxOrder,
+                    animation_steps: true
+                };
+                this.addLog(`泰勒展开配置: 函数 ${taylorValidation.functionExpression} 在 x=${taylorValidation.taylorPoint} 处展开，最高 ${taylorValidation.maxOrder} 阶`, 'info');
+            }
+
             // 发送创作请求
             const response = await fetch('/api/start_creation', {
                 method: 'POST',
@@ -163,6 +272,11 @@ class VisualizationApp {
             if (result.status === 'success') {
                 this.addLog(`创作完成: ${result.message}`, 'success');
                 this.addLog(`数据已发送到后端处理`, 'info');
+                
+            } else if (result.status === 'processing') {
+                this.addLog('泰勒展开动画正在生成中，请稍候...', 'info');
+                this.startTaskChecking(result.task_id);
+                
             } else {
                 throw new Error(result.message);
             }
@@ -185,6 +299,14 @@ class VisualizationApp {
         document.getElementById('y-range').value = '-10,10';
         document.getElementById('resolution').value = '100';
         document.getElementById('color-scheme').value = 'default';
+        document.getElementById('taylor-point').value = '';
+        document.getElementById('max-order').value = '10';
+        
+        // 停止任务检查
+        this.stopTaskChecking();
+        
+        // 隐藏泰勒展开参数
+        this.toggleTaylorParameters(false);
         
         this.addLog('配置已重置', 'info');
     }

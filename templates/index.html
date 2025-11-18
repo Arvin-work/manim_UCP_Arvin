@@ -95,6 +95,14 @@
                                 <i class="fas fa-exchange-alt"></i>
                                 变换展示
                             </label>
+
+                            <!-- 泰勒展开部分添加 -->
+                            <label class="function-checkbox">
+                                <input type="checkbox" name="functions" value="taylor">
+                                <span class="checkmark"></span>
+                                <i class="fas fa-expand-alt"></i>
+                                泰勒展开
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -139,6 +147,31 @@
                                     <option value="default">默认</option>
                                     <option value="blue-red">蓝红渐变</option>
                                     <option value="rainbow">彩虹</option>
+                                </select>
+                            </div>
+                            <div class="param-group" id="taylor-point-group" style="display: none;">
+                            <label for="taylor-point">
+                                <i class="fas fa-bullseye"></i>
+                                展开点
+                            </label>
+                            <input type="text" id="taylor-point" placeholder="0" class="param-input">
+                            </div>
+                            <div class="param-group" id="max-order-group" style="display: none;">
+                                <label for="max-order">
+                                    <i class="fas fa-sort-numeric-up"></i>
+                                    最高阶数
+                                </label>
+                                <select id="max-order" class="param-select">
+                                    <option value="1">1阶</option>
+                                    <option value="2">2阶</option>
+                                    <option value="3">3阶</option>
+                                    <option value="4">4阶</option>
+                                    <option value="5">5阶</option>
+                                    <option value="6">6阶</option>
+                                    <option value="7">7阶</option>
+                                    <option value="8">8阶</option>
+                                    <option value="9">9阶</option>
+                                    <option value="10" selected>10阶</option>
                                 </select>
                             </div>
                         </div>

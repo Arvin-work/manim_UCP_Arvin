@@ -429,3 +429,27 @@ body {
         flex-direction: column;
     }
 }
+
+/* 泰勒展开参数组样式 */
+#taylor-point-group, #max-order-group {
+    transition: all 0.3s ease;
+}
+
+/* 确保参数网格能够正确显示新增的参数组 */
+.parameter-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .parameter-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* 图标颜色统一 */
+.fa-bullseye, .fa-sort-numeric-up {
+    color: #2196F3;
+}
