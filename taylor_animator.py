@@ -66,27 +66,6 @@ class TaylorExpansionAnimator:
         
         return taylor_terms
     
-    def simplify_polynomial_display(self, poly):
-        """简化多项式显示"""
-        poly_str = str(poly)
-        # 替换符号表示
-        poly_str = poly_str.replace("**", "^")
-        poly_str = poly_str.replace("*", "")
-        # 简化分数表示
-        poly_str = poly_str.replace("1.0*", "")
-        poly_str = poly_str.replace("0.0", "0")
-        poly_str = poly_str.replace("1.0", "1")
-        # 简化常见函数
-        poly_str = poly_str.replace("sin", "s")
-        poly_str = poly_str.replace("cos", "c")
-        poly_str = poly_str.replace("exp", "e")
-        
-        # 如果太长，截断
-        if len(poly_str) > 50:
-            poly_str = poly_str[:47] + "..."
-            
-        return poly_str
-    
     def create_taylor_animation(self, func_str, expansion_point, max_order=10, 
                                x_range=(-3, 3), y_range=(-2, 2), output_file=None):
         """创建泰勒展开动画"""
@@ -103,27 +82,6 @@ class TaylorExpansionAnimator:
         
         # 创建动画场景
         class TaylorExpansionScene(Scene):
-            def simplify_polynomial_display(self, poly):
-                """简化多项式显示 - 在内部类中定义"""
-                poly_str = str(poly)
-                # 替换符号表示
-                poly_str = poly_str.replace("**", "^")
-                poly_str = poly_str.replace("*", "")
-                # 简化分数表示
-                poly_str = poly_str.replace("1.0*", "")
-                poly_str = poly_str.replace("0.0", "0")
-                poly_str = poly_str.replace("1.0", "1")
-                # 简化常见函数
-                poly_str = poly_str.replace("sin", "s")
-                poly_str = poly_str.replace("cos", "c")
-                poly_str = poly_str.replace("exp", "e")
-                
-                # 如果太长，截断
-                if len(poly_str) > 50:
-                    poly_str = poly_str[:47] + "..."
-                    
-                return poly_str
-            
             def setup(self):
                 # 创建简化的坐标轴 - 去除网格线和数字
                 self.axes = Axes(
@@ -142,7 +100,6 @@ class TaylorExpansionAnimator:
                         "numbers_to_include": [],
                     },
                 )
-                # 不添加坐标
                 
                 # 原始函数
                 original_lambda = lambdify(x, original_func, 'numpy')
@@ -151,6 +108,15 @@ class TaylorExpansionAnimator:
                     x_range=[x_range[0], x_range[1]],
                     color=anim_config['graph_color'],
                     stroke_width=4
+                )
+                
+                # 创建零线 (y=0)
+                self.zero_line = self.axes.plot(
+                    lambda x: 0,
+                    x_range=[x_range[0], x_range[1]],
+                    color=WHITE,
+                    stroke_width=2,
+                    stroke_opacity=0.5
                 )
                 
                 # 泰勒多项式列表
@@ -172,76 +138,44 @@ class TaylorExpansionAnimator:
                     color=RED,
                     radius=0.08
                 )
-                
-                # 文本标签 - 完全使用Text，不使用Tex
-                self.title = Text("泰勒展开演示", font_size=36, color=WHITE).to_edge(UP)
-                
-                # 函数表达式显示
-                func_display = f"函数: f(x) = {func_str}"
-                self.function_label = Text(func_display, font_size=20, color=WHITE).next_to(self.title, DOWN)
-                
-                # 展开点显示
-                expansion_display = f"展开点: x = {expansion_point}"
-                self.expansion_label = Text(expansion_display, font_size=20, color=WHITE).next_to(self.function_label, DOWN)
-                
-                # 当前阶数显示
-                self.order_text = Text("", font_size=24, color=WHITE).to_edge(DOWN)
-                
-                # 多项式显示区域
-                self.poly_text = Text("", font_size=16, color=WHITE).next_to(self.expansion_label, DOWN)
             
             def construct(self):
-                # 添加标题和标签
-                self.play(Write(self.title))
-                self.play(Write(self.function_label))
-                self.play(Write(self.expansion_label))
-                self.wait(1)
-                
                 # 创建坐标轴
                 self.play(Create(self.axes), run_time=2)
-                self.wait(1)
+                self.wait(0.5)
+                
+                # 显示零线 (y=0)
+                self.play(Create(self.zero_line), run_time=1)
+                self.wait(0.5)
                 
                 # 显示原始函数
                 self.play(Create(self.original_graph), run_time=2)
                 self.add(self.expansion_point)
                 self.wait(1)
                 
-                # 逐步显示泰勒多项式
+                # 从零线开始逐步变换为泰勒多项式
+                current_graph = self.zero_line
+                
+                # 存储所有显示的曲线
+                displayed_graphs = [self.zero_line.copy()]
+                
                 for i, (taylor_graph, term_info) in enumerate(zip(self.taylor_graphs, taylor_terms)):
-                    # 更新阶数文本
-                    order_label = Text(f"当前阶数: {term_info['order']}", font_size=24, color=WHITE).to_edge(DOWN)
+                    # 创建变换动画，从当前曲线变换为新的泰勒多项式曲线
+                    self.play(
+                        Transform(current_graph, taylor_graph),
+                        run_time=2
+                    )
                     
-                    if i == 0:
-                        self.play(Write(self.order_text))
-                        self.order_text = order_label
-                    else:
-                        self.play(Transform(self.order_text, order_label))
-                    
-                    # 显示当前泰勒多项式 - 使用简化显示
-                    if term_info['order'] == 0:
-                        poly_display = f"P0(x) = {self.simplify_polynomial_display(term_info['polynomial'])}"
-                    else:
-                        poly_display = f"P{term_info['order']}(x) = P{term_info['order']-1}(x) + {self.simplify_polynomial_display(term_info['term'])}"
-                    
-                    poly_label = Text(poly_display, font_size=14, color=WHITE)
-                    poly_label.next_to(self.expansion_label, DOWN)
-                    
-                    if i == 0:
-                        self.play(Write(self.poly_text))
-                        self.poly_text = poly_label
-                    else:
-                        self.play(Transform(self.poly_text, poly_label))
-                    
-                    # 创建并显示泰勒多项式曲线
-                    self.play(Create(taylor_graph), run_time=1.5)
+                    # 保存当前显示的曲线
+                    displayed_graphs.append(current_graph.copy())
                     
                     # 短暂暂停以观察
                     if i < len(self.taylor_graphs) - 1:
-                        self.wait(0.5)
+                        self.wait(0.3)
                     
                     # 对于低阶多项式，可以更长时间观察
                     if term_info['order'] <= 3:
-                        self.wait(0.3)
+                        self.wait(0.2)
                 
                 # 最终展示所有曲线
                 self.wait(1)
@@ -250,24 +184,32 @@ class TaylorExpansionAnimator:
                 self.play(self.original_graph.animate.set_stroke(width=6), run_time=1)
                 self.wait(1)
                 
-                # 渐出其他曲线，只保留原始函数和最高阶泰勒多项式
-                graphs_to_fade = [graph for graph in self.taylor_graphs[:-1]]
+                # 重新显示所有泰勒曲线（包括零线）
+                all_taylor_curves = VGroup(*[graph.copy() for graph in displayed_graphs[1:]])  # 不包括零线
+                
+                # 先隐藏当前显示的曲线
+                self.play(FadeOut(current_graph), run_time=0.5)
+                
+                # 同时显示所有泰勒曲线
                 self.play(
-                    *[FadeOut(graph) for graph in graphs_to_fade],
-                    self.poly_text.animate.set_opacity(0.3),
-                    self.order_text.animate.set_opacity(0.3),
-                    run_time=1
+                    *[Create(graph) for graph in all_taylor_curves],
+                    run_time=2
                 )
                 
-                # 显示最终对比
-                final_comparison = Text(
-                    f"最高{max_order}阶泰勒多项式与原函数的对比",
-                    font_size=20,
-                    color=WHITE
-                ).to_edge(DOWN)
-                
-                self.play(Transform(self.order_text, final_comparison))
+                # 持续显示所有曲线一段时间
                 self.wait(2)
+                
+                # 渐出其他曲线，只保留原始函数和最高阶泰勒多项式
+                curves_to_fade = [graph for graph in all_taylor_curves[:-1]]  # 保留最高阶曲线
+                
+                self.play(
+                    *[FadeOut(graph) for graph in curves_to_fade],
+                    FadeOut(self.zero_line),
+                    run_time=2
+                )
+                
+                # 最终停留，展示原始函数和最高阶泰勒多项式
+                self.wait(3)
         
         # 渲染动画
         if output_file is None:
