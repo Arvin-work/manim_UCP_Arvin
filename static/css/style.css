@@ -453,3 +453,150 @@ body {
 .fa-bullseye, .fa-sort-numeric-up {
     color: #2196F3;
 }
+
+
+
+/* 输入类型单选样式 */
+.input-tabs {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.input-tab {
+    padding: 12px 15px;
+    border: none;
+    background: #f8f9fa;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #666;
+    position: relative;
+}
+
+.input-tab.active {
+    background: #2196F3;
+    color: white;
+}
+
+.input-tab::after {
+    content: '';
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    border: 2px solid #ddd;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.input-tab.active::after {
+    border-color: white;
+    background: white;
+    box-shadow: 0 0 0 3px #2196F3;
+}
+
+/* 功能选项单选样式 */
+.function-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.function-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 6px;
+    transition: background 0.3s ease;
+    position: relative;
+}
+
+.function-checkbox:hover {
+    background: #f8f9fa;
+}
+
+.function-checkbox input {
+    display: none;
+}
+
+.checkmark {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ddd;
+    border-radius: 50%;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.function-checkbox input:checked + .checkmark {
+    background: #2196F3;
+    border-color: #2196F3;
+}
+
+.function-checkbox input:checked + .checkmark::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+}
+
+/* 禁用状态样式 */
+.function-checkbox.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.function-checkbox.disabled:hover {
+    background: transparent;
+}
+
+.input-tab.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* 输入提示样式 */
+.input-hint {
+    font-size: 0.8em;
+    color: #7f8c8d;
+    margin-top: 5px;
+    font-style: italic;
+}
+
+/* 参数网格调整为3列 */
+.parameter-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+/* 响应式调整 */
+@media (max-width: 1024px) {
+    .parameter-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .parameter-grid {
+        grid-template-columns: 1fr;
+    }
+}
+/* 在现有的图标颜色统一部分后添加 */
+.fa-crosshairs, .fa-arrows-alt-h {
+    color: #2196F3;
+}

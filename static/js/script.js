@@ -24,21 +24,60 @@ class VisualizationApp {
             });
         });
 
-        // 输入类型切换
+        // 输入类型切换 - 修改为单选
         document.querySelectorAll('.input-tab').forEach(tab => {
             tab.addEventListener('click', (e) => {
-                this.switchInputType(e.target.closest('.input-tab').dataset.inputType);
+                const inputType = e.target.closest('.input-tab').dataset.inputType;
+                this.switchInputType(inputType);
+                
+                // 移除其他输入类型的选中状态
+                document.querySelectorAll('.input-tab').forEach(otherTab => {
+                    if (otherTab !== e.target.closest('.input-tab')) {
+                        otherTab.classList.remove('active');
+                    }
+                });
+                
+                // 添加当前输入类型的选中状态
+                e.target.closest('.input-tab').classList.add('active');
             });
         });
 
-        // 功能选择
+        // 功能选择 - 修改为单选
         document.querySelectorAll('.function-checkbox input').forEach(checkbox => {
             checkbox.addEventListener('change', (e) => {
-                this.toggleFunction(e.target.value, e.target.checked);
-                // 特别处理泰勒展开的显示
-                if (e.target.value === 'taylor') {
-                    this.toggleTaylorParameters(e.target.checked);
+                const func = e.target.value;
+                const isSelected = e.target.checked;
+                
+                // 如果是选中状态，先取消其他所有功能的选择
+                if (isSelected) {
+                    document.querySelectorAll('.function-checkbox input').forEach(otherCheckbox => {
+                        if (otherCheckbox !== e.target) {
+                            otherCheckbox.checked = false;
+                            // 从选中函数列表中移除其他函数
+                            this.selectedFunctions = this.selectedFunctions.filter(f => f !== otherCheckbox.value);
+                        }
+                    });
+                    
+                    // 添加当前函数到选中列表
+                    this.selectedFunctions.push(func);
+                    
+                    // 特别处理泰勒展开的显示
+                    if (func === 'taylor') {
+                        this.toggleTaylorParameters(true);
+                    } else {
+                        this.toggleTaylorParameters(false);
+                    }
+                } else {
+                    // 如果是取消选中，从选中函数列表中移除
+                    this.selectedFunctions = this.selectedFunctions.filter(f => f !== func);
+                    
+                    // 如果取消的是泰勒展开，隐藏相关参数
+                    if (func === 'taylor') {
+                        this.toggleTaylorParameters(false);
+                    }
                 }
+                
+                this.addLog(`${this.getFunctionName(func)} ${isSelected ? '已选择' : '已取消'}`, 'info');
             });
         });
 
@@ -98,9 +137,6 @@ class VisualizationApp {
 
     async switchInputType(inputType) {
         try {
-            document.querySelectorAll('.input-tab').forEach(tab => tab.classList.remove('active'));
-            document.querySelector(`[data-input-type="${inputType}"]`).classList.add('active');
-            
             this.currentInputType = inputType;
             
             const response = await fetch('/api/switch_input_type', {
@@ -123,16 +159,6 @@ class VisualizationApp {
         } catch (error) {
             this.addLog(`输入类型切换失败: ${error.message}`, 'error');
         }
-    }
-
-    toggleFunction(func, isSelected) {
-        if (isSelected) {
-            this.selectedFunctions.push(func);
-        } else {
-            this.selectedFunctions = this.selectedFunctions.filter(f => f !== func);
-        }
-        
-        this.addLog(`${this.getFunctionName(func)} ${isSelected ? '已选择' : '已取消'}`, 'info');
     }
 
     getFunctionName(func) {
@@ -227,6 +253,25 @@ class VisualizationApp {
         try {
             this.addLog('开始处理可视化请求...', 'info');
 
+            // 验证输入类型是否已选择
+            if (!this.currentInputType) {
+                this.addLog('请选择输入类型（显函数或隐函数）', 'error');
+                return;
+            }
+
+            // 验证功能选项是否已选择
+            if (this.selectedFunctions.length === 0) {
+                this.addLog('请至少选择一个功能选项', 'error');
+                return;
+            }
+
+            // 验证函数表达式是否已填写
+            const functionExpression = document.getElementById('function-input').value;
+            if (!functionExpression.trim()) {
+                this.addLog('请填写函数表达式', 'error');
+                return;
+            }
+
             // 验证泰勒展开参数
             const taylorValidation = this.validateTaylorParameters();
             if (!taylorValidation.valid) {
@@ -240,11 +285,13 @@ class VisualizationApp {
                 input_type: this.currentInputType,
                 functions: this.selectedFunctions,
                 parameters: {
-                    function_expression: document.getElementById('function-input').value,
+                    function_expression: functionExpression,
                     x_range: document.getElementById('x-range').value,
                     y_range: document.getElementById('y-range').value,
                     resolution: document.getElementById('resolution').value,
-                    color_scheme: document.getElementById('color-scheme').value
+                    color_scheme: document.getElementById('color-scheme').value,
+                    stroke_width: document.getElementById('stroke-width').value,
+                    animation_style: document.getElementById('animation-style').value
                 }
             };
 
@@ -274,7 +321,11 @@ class VisualizationApp {
                 this.addLog(`数据已发送到后端处理`, 'info');
                 
             } else if (result.status === 'processing') {
-                this.addLog('泰勒展开动画正在生成中，请稍候...', 'info');
+                if (this.selectedFunctions.includes('taylor')) {
+                    this.addLog('泰勒展开动画正在生成中，请稍候...', 'info');
+                } else if (this.selectedFunctions.includes('plot')) {
+                    this.addLog('函数图像正在生成中，请稍候...', 'info');
+                }
                 this.startTaskChecking(result.task_id);
                 
             } else {

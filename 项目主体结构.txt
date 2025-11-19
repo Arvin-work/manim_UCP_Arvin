@@ -1,0 +1,13 @@
+manim-visualization-tool/
+├── app.py                 # 主控制程序
+├── taylor_animator.py     # 泰勒展开动画生成器
+├── plot_animator.py     # 显函数绘制部分
+├── differentiation_animator.py # 显函数微分部分
+├── static/
+│   ├── css/
+│   │   └── style.css      # 样式文件
+│   └── js/
+│       └── script.js      # JavaScript文件
+├── templates/
+│   └── index.html         # 主页面模板
+└── requirements.txt       # 依赖包列表

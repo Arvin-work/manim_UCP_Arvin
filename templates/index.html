@@ -80,7 +80,7 @@
                             <label class="function-checkbox">
                                 <input type="checkbox" name="functions" value="integration">
                                 <span class="checkmark"></span>
-                                <i class="fas fa-integral"></i>
+                                <i class="fas fa-chart-area"></i>
                                 积分展示
                             </label>
                             <label class="function-checkbox">
@@ -125,36 +125,57 @@
                                 <i class="fas fa-pen-fancy"></i>
                                 函数表达式
                             </label>
-                            <input type="text" id="function-input" placeholder="例如: x**2 + y**2" class="function-input">
+                            <input type="text" id="function-input" placeholder="例如: x**2, sin(x), exp(x)" class="function-input">
+                            <div class="input-hint">
+                                支持函数: sin, cos, tan, exp, log, sqrt 等 | 使用 x 作为变量
+                            </div>
                         </div>
                         
                         <div class="parameter-grid">
                             <div class="param-group">
                                 <label for="x-range">X轴范围</label>
-                                <input type="text" id="x-range" placeholder="-10,10" class="param-input">
+                                <input type="text" id="x-range" placeholder="-10,10" value="-10,10" class="param-input">
                             </div>
                             <div class="param-group">
                                 <label for="y-range">Y轴范围</label>
-                                <input type="text" id="y-range" placeholder="-10,10" class="param-input">
+                                <input type="text" id="y-range" placeholder="-10,10" value="-10,10" class="param-input">
                             </div>
                             <div class="param-group">
-                                <label for="resolution">分辨率</label>
-                                <input type="text" id="resolution" placeholder="100" class="param-input">
+                                <label for="resolution">采样点数</label>
+                                <input type="text" id="resolution" placeholder="100" value="100" class="param-input">
                             </div>
                             <div class="param-group">
-                                <label for="color-scheme">颜色方案</label>
+                                <label for="color-scheme">曲线颜色</label>
                                 <select id="color-scheme" class="param-select">
-                                    <option value="default">默认</option>
-                                    <option value="blue-red">蓝红渐变</option>
-                                    <option value="rainbow">彩虹</option>
+                                    <option value="blue">蓝色</option>
+                                    <option value="red">红色</option>
+                                    <option value="green">绿色</option>
+                                    <option value="yellow" selected>黄色</option>
+                                    <option value="purple">紫色</option>
+                                </select>
+                            </div>
+                            <div class="param-group">
+                                <label for="stroke-width">曲线粗细</label>
+                                <select id="stroke-width" class="param-select">
+                                    <option value="2">细</option>
+                                    <option value="4" selected>中等</option>
+                                    <option value="6">粗</option>
+                                </select>
+                            </div>
+                            <div class="param-group">
+                                <label for="animation-style">动画风格</label>
+                                <select id="animation-style" class="param-select">
+                                    <option value="draw">绘制动画</option>
+                                    <option value="fade_in">渐入显示</option>
+                                    <option value="none" selected>无动画</option>
                                 </select>
                             </div>
                             <div class="param-group" id="taylor-point-group" style="display: none;">
-                            <label for="taylor-point">
-                                <i class="fas fa-bullseye"></i>
-                                展开点
-                            </label>
-                            <input type="text" id="taylor-point" placeholder="0" class="param-input">
+                                <label for="taylor-point">
+                                    <i class="fas fa-bullseye"></i>
+                                    展开点
+                                </label>
+                                <input type="text" id="taylor-point" placeholder="0" class="param-input">
                             </div>
                             <div class="param-group" id="max-order-group" style="display: none;">
                                 <label for="max-order">
