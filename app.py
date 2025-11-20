@@ -25,6 +25,7 @@ logger.info("开始导入模块...")
 try:
     from taylor_animator import TaylorExpansionAnimator
     from plot_animator import FunctionPlotAnimator
+    from differentiation_animator import DifferentiationAnimator
     logger.info("✅ 模块导入成功")
 except ImportError as e:
     logger.error(f"❌ 模块导入失败: {e}")
@@ -44,6 +45,7 @@ app = Flask(__name__)
 try:
     animator = TaylorExpansionAnimator()
     plot_animator = FunctionPlotAnimator()
+    differentiation_animator = DifferentiationAnimator()
     logger.info("✅ 动画生成器初始化成功")
 except Exception as e:
     logger.error(f"❌ 动画生成器初始化失败: {e}")
@@ -94,6 +96,16 @@ class VisualizationController:
                 return {
                     "status": "processing",
                     "message": "函数图像生成中...",
+                    "task_id": task_id,
+                    "timestamp": datetime.now().isoformat()
+                }
+            
+            # 处理微分展示
+            if 'differentiation' in functions:
+                task_id = self._start_differentiation_animation(parameters)
+                return {
+                    "status": "processing",
+                    "message": "微分展示动画生成中...",
                     "task_id": task_id,
                     "timestamp": datetime.now().isoformat()
                 }
@@ -286,6 +298,108 @@ class VisualizationController:
         except Exception as e:
             logger.error(f"启动泰勒动画任务失败: {str(e)}")
             logger.error(traceback.format_exc())
+            raise
+    
+    def _start_differentiation_animation(self, parameters):
+        """启动微分展示动画生成任务"""
+        try:
+            # 提取参数 - 添加调试日志
+            func_expression = parameters.get('function_expression', '')
+            
+            # 修正：从 differentiation 配置中获取参数
+            differentiation_config = parameters.get('differentiation', {})
+            fit_point = differentiation_config.get('fit_point', 0)
+            radius = differentiation_config.get('radius', 1)
+            
+            # 确保参数类型正确
+            fit_point = float(fit_point)
+            radius = float(radius)
+                
+            # 添加调试信息
+            logger.info(f"微分展示参数 - 函数: {func_expression}, 拟合点: {fit_point}, 半径: {radius}")
+
+            # 添加详细的日志记录
+            logger.info(f"微分展示参数 - 函数: {func_expression}")
+            logger.info(f"微分展示参数 - 拟合点: {fit_point}, 半径: {radius}")
+            logger.info(f"微分展示参数 - differentiation_config: {differentiation_config}")
+            
+            # 确保参数类型正确
+            try:
+                fit_point = float(fit_point)
+                radius = float(radius)
+            except (ValueError, TypeError) as e:
+                logger.error(f"参数类型转换错误: {e}")
+                raise ValueError("拟合点和半径必须是数字")
+            
+            # 解析范围参数
+            x_range_str = parameters.get('x_range', '-10,10')
+            y_range_str = parameters.get('y_range', '-10,10')
+            
+            try:
+                x_range = [float(x.strip()) for x in x_range_str.split(',')]
+                y_range = [float(y.strip()) for y in y_range_str.split(',')]
+            except:
+                x_range = [-10, 10]
+                y_range = [-10, 10]
+            
+            # 生成任务ID
+            task_id = f"diff_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+            
+            # 在后台线程中生成动画
+            def generate_animation():
+                try:
+                    logger.info(f"开始生成微分展示动画: {func_expression} 在 x={fit_point}")
+                    
+                    # 创建输出目录
+                    output_dir = os.path.join(tempfile.gettempdir(), "manim_differentiation")
+                    os.makedirs(output_dir, exist_ok=True)
+                    output_file = os.path.join(output_dir, f"{task_id}.mp4")
+                    
+                    # 生成动画 - 传递正确的参数
+                    video_path = differentiation_animator.create_differentiation_animation(
+                        func_expression,
+                        fit_point,  # 确保传递正确的拟合点
+                        radius,
+                        tuple(x_range),
+                        tuple(y_range),
+                        output_file
+                    )
+                    
+                    self.animation_tasks[task_id] = {
+                        'status': 'completed',
+                        'video_path': video_path,
+                        'created_at': datetime.now().isoformat()
+                    }
+                    
+                    logger.info(f"微分展示动画生成完成: {video_path}")
+                    
+                    # 自动播放动画
+                    differentiation_animator.play_animation(video_path)
+                    
+                except Exception as e:
+                    logger.error(f"生成微分展示动画失败: {str(e)}")
+                    logger.error(traceback.format_exc())
+                    self.animation_tasks[task_id] = {
+                        'status': 'error',
+                        'error': str(e),
+                        'created_at': datetime.now().isoformat()
+                    }
+            
+            # 启动后台任务
+            thread = threading.Thread(target=generate_animation)
+            thread.daemon = True
+            thread.start()
+            
+            # 记录任务信息
+            self.animation_tasks[task_id] = {
+                'status': 'processing',
+                'created_at': datetime.now().isoformat()
+            }
+            
+            return task_id
+            
+        except Exception as e:
+            logger.error(f"启动微分展示动画任务失败: {str(e)}")
             raise
     
     def get_task_status(self, task_id):

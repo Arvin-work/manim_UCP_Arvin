@@ -81,6 +81,58 @@ class VisualizationApp {
             });
         });
 
+        document.querySelectorAll('.function-checkbox input').forEach(checkbox => {
+            checkbox.addEventListener('change', (e) => {
+                const func = e.target.value;
+                const isSelected = e.target.checked;
+                
+                // 如果是选中状态，先取消其他所有功能的选择
+                if (isSelected) {
+                    document.querySelectorAll('.function-checkbox input').forEach(otherCheckbox => {
+                        if (otherCheckbox !== e.target) {
+                            otherCheckbox.checked = false;
+                            // 从选中函数列表中移除其他函数
+                            this.selectedFunctions = this.selectedFunctions.filter(f => f !== otherCheckbox.value);
+                            
+                            // 隐藏其他功能的参数
+                            if (otherCheckbox.value === 'taylor') {
+                                this.toggleTaylorParameters(false);
+                            } else if (otherCheckbox.value === 'differentiation') {
+                                this.toggleDifferentiationParameters(false);
+                            }
+                        }
+                    });
+                    
+                    // 添加当前函数到选中列表
+                    this.selectedFunctions.push(func);
+                    
+                    // 特别处理泰勒展开的显示
+                    if (func === 'taylor') {
+                        this.toggleTaylorParameters(true);
+                        this.toggleDifferentiationParameters(false);
+                    } else if (func === 'differentiation') {
+                        this.toggleDifferentiationParameters(true);
+                        this.toggleTaylorParameters(false);
+                    } else {
+                        this.toggleTaylorParameters(false);
+                        this.toggleDifferentiationParameters(false);
+                    }
+                } else {
+                    // 如果是取消选中，从选中函数列表中移除
+                    this.selectedFunctions = this.selectedFunctions.filter(f => f !== func);
+                    
+                    // 如果取消的是泰勒展开，隐藏相关参数
+                    if (func === 'taylor') {
+                        this.toggleTaylorParameters(false);
+                    } else if (func === 'differentiation') {
+                        this.toggleDifferentiationParameters(false);
+                    }
+                }
+                
+                this.addLog(`${this.getFunctionName(func)} ${isSelected ? '已选择' : '已取消'}`, 'info');
+            });
+        });
+
         // 开始创作按钮
         document.getElementById('start-creation').addEventListener('click', () => {
             this.startCreation();
@@ -103,6 +155,20 @@ class VisualizationApp {
         } else {
             taylorPointGroup.style.display = 'none';
             maxOrderGroup.style.display = 'none';
+        }
+    }
+
+    toggleDifferentiationParameters(show) {
+        const fitPointGroup = document.getElementById('fit-point-group');
+        const radiusGroup = document.getElementById('radius-group');
+        
+        if (show) {
+            fitPointGroup.style.display = 'block';
+            radiusGroup.style.display = 'block';
+            this.addLog('微分展示功能已启用，请输入拟合点和拟合半径', 'info');
+        } else {
+            fitPointGroup.style.display = 'none';
+            radiusGroup.style.display = 'none';
         }
     }
 
@@ -212,6 +278,59 @@ class VisualizationApp {
         };
     }
 
+    validateDifferentiationParameters() {
+        if (!this.selectedFunctions.includes('differentiation')) {
+            return { valid: true };
+        }
+
+        const fitPoint = document.getElementById('fit-point').value;
+        const radius = document.getElementById('radius').value;
+        const functionExpression = document.getElementById('function-input').value;
+
+        if (!functionExpression.trim()) {
+            return { 
+                valid: false, 
+                message: '请填写函数表达式' 
+            };
+        }
+
+        if (!fitPoint.trim()) {
+            return { 
+                valid: false, 
+                message: '请填写拟合点' 
+            };
+        }
+
+        if (!radius.trim()) {
+            return { 
+                valid: false, 
+                message: '请填写拟合半径' 
+            };
+        }
+
+        // 验证拟合点和半径是否为有效数字
+        if (isNaN(parseFloat(fitPoint))) {
+            return { 
+                valid: false, 
+                message: '拟合点必须是有效数字' 
+            };
+        }
+
+        if (isNaN(parseFloat(radius)) || parseFloat(radius) <= 0) {
+            return { 
+                valid: false, 
+                message: '拟合半径必须是正数' 
+            };
+        }
+
+        return { 
+            valid: true, 
+            fitPoint: parseFloat(fitPoint),
+            radius: parseFloat(radius),
+            functionExpression: functionExpression
+        };
+    }
+
     async checkTaskStatus(taskId) {
         try {
             const response = await fetch(`/api/task_status/${taskId}`);
@@ -279,6 +398,14 @@ class VisualizationApp {
                 return;
             }
 
+            // 验证微分展示参数
+            const differentiationValidation = this.validateDifferentiationParameters();
+            if (!differentiationValidation.valid) {
+                this.addLog(`参数错误: ${differentiationValidation.message}`, 'error');
+                return;
+            }
+
+
             // 收集配置数据
             const config = {
                 scene_type: this.currentScene,
@@ -303,6 +430,15 @@ class VisualizationApp {
                     animation_steps: true
                 };
                 this.addLog(`泰勒展开配置: 函数 ${taylorValidation.functionExpression} 在 x=${taylorValidation.taylorPoint} 处展开，最高 ${taylorValidation.maxOrder} 阶`, 'info');
+            }
+
+            // 如果选择了微分展示，添加相关参数
+            if (this.selectedFunctions.includes('differentiation')) {
+                config.parameters.differentiation = {
+                    fit_point: differentiationValidation.fitPoint,
+                    radius: differentiationValidation.radius
+                };
+                this.addLog(`微分展示配置: 函数 ${differentiationValidation.functionExpression} 在 x=${differentiationValidation.fitPoint} 处求导，拟合半径 ${differentiationValidation.radius}`, 'info');
             }
 
             // 发送创作请求
@@ -344,20 +480,24 @@ class VisualizationApp {
         });
         this.selectedFunctions = [];
         
-        // 重置输入字段
+        // 重置输入字段        
         document.getElementById('function-input').value = '';
         document.getElementById('x-range').value = '-10,10';
         document.getElementById('y-range').value = '-10,10';
         document.getElementById('resolution').value = '100';
-        document.getElementById('color-scheme').value = 'default';
+        document.getElementById('color-scheme').value = 'yellow';
+        document.getElementById('stroke-width').value = '4';
+        document.getElementById('animation-style').value = 'none';
         document.getElementById('taylor-point').value = '';
         document.getElementById('max-order').value = '10';
-        
+        document.getElementById('fit-point').value = '';
+        document.getElementById('radius').value = '';
         // 停止任务检查
         this.stopTaskChecking();
         
         // 隐藏泰勒展开参数
         this.toggleTaylorParameters(false);
+        this.toggleDifferentiationParameters(false);
         
         this.addLog('配置已重置', 'info');
     }

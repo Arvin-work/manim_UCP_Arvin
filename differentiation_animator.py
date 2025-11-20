@@ -3,6 +3,7 @@ import sys
 import tempfile
 import subprocess
 from manim import *
+from manim.utils.color import interpolate_color
 import sympy as sp
 import numpy as np
 from sympy import symbols, lambdify, diff
@@ -40,6 +41,19 @@ class DifferentiationAnimator:
                                        output_file=None):
         """创建微分展示动画"""
         
+        # 添加参数验证
+        if fit_point is None:
+            fit_point = 0  # 提供默认值
+        if radius is None:
+            radius = 1     # 提供默认值
+        
+        # 确保参数类型正确
+        fit_point = float(fit_point)
+        radius = float(radius)
+        
+        # 添加调试信息
+        print(f"微分展示动画参数 - 函数: {func_str}, 拟合点: {fit_point}, 半径: {radius}")
+
         # 解析函数
         x = symbols('x')
         func = self.parse_function(func_str)
@@ -50,6 +64,9 @@ class DifferentiationAnimator:
         
         # 计算函数在拟合点的值
         func_value_at_point = func.subs(x, fit_point)
+        
+        # 将配置传递给内部类
+        anim_config = self.config  # 重命名以避免与Manim的config冲突
         
         # 创建动画场景
         class DifferentiationScene(Scene):
@@ -65,14 +82,14 @@ class DifferentiationAnimator:
                 func_graph = plane.plot(
                     func_lambda,
                     x_range=[x_range[0], x_range[1]],
-                    color=self.config['graph_color'],
+                    color=anim_config['graph_color'],
                     stroke_width=4
                 )
                 
                 # 拟合点
                 fit_point_dot = Dot(
                     plane.coords_to_point(fit_point, float(func_value_at_point)),
-                    color=self.config['point_color'],
+                    color=anim_config['point_color'],
                     radius=0.08
                 )
                 
@@ -91,21 +108,28 @@ class DifferentiationAnimator:
                 
                 point1 = Dot(
                     plane.coords_to_point(float(x1), float(y1)),
-                    color=self.config['point_color'],
+                    color=anim_config['point_color'],
                     radius=0.06
                 )
                 
                 point2 = Dot(
                     plane.coords_to_point(float(x2), float(y2)),
-                    color=self.config['point_color'],
+                    color=anim_config['point_color'],
                     radius=0.06
                 )
                 
-                # 割线
-                secant_line = Line(
-                    plane.coords_to_point(float(x1), float(y1)),
-                    plane.coords_to_point(float(x2), float(y2)),
-                    color=self.config['secant_color'],
+                # 计算割线的斜率和截距
+                slope = (y2 - y1) / (x2 - x1)
+                intercept = float(y1) - slope * float(x1)
+                
+                # 创建无限长的割线
+                def secant_func(x_val):
+                    return slope * x_val + intercept
+                
+                secant_line = plane.plot(
+                    secant_func,
+                    x_range=[x_range[0], x_range[1]],  # 跨越整个x轴范围
+                    color=anim_config['secant_color'],
                     stroke_width=3
                 )
                 
@@ -116,7 +140,6 @@ class DifferentiationAnimator:
                 
                 # 步骤3: 两点逐渐靠近，割线变为切线
                 steps = 10
-                current_radius = radius
                 
                 for i in range(steps):
                     # 计算新的半径
@@ -128,23 +151,31 @@ class DifferentiationAnimator:
                     new_y1 = func.subs(x, new_x1)
                     new_y2 = func.subs(x, new_x2)
                     
-                    # 创建新的点和割线
+                    # 创建新的点
                     new_point1 = Dot(
                         plane.coords_to_point(float(new_x1), float(new_y1)),
-                        color=self.config['point_color'],
+                        color=anim_config['point_color'],
                         radius=0.06
                     )
                     
                     new_point2 = Dot(
                         plane.coords_to_point(float(new_x2), float(new_y2)),
-                        color=self.config['point_color'],
+                        color=anim_config['point_color'],
                         radius=0.06
                     )
                     
-                    new_secant = Line(
-                        plane.coords_to_point(float(new_x1), float(new_y1)),
-                        plane.coords_to_point(float(new_x2), float(new_y2)),
-                        color=self.config['secant_color'],
+                    # 计算新的割线斜率和截距
+                    new_slope = (new_y2 - new_y1) / (new_x2 - new_x1)
+                    new_intercept = float(new_y1) - new_slope * float(new_x1)
+                    
+                    # 创建新的无限长割线
+                    def new_secant_func(x_val):
+                        return new_slope * x_val + new_intercept
+                    
+                    new_secant = plane.plot(
+                        new_secant_func,
+                        x_range=[x_range[0], x_range[1]],  # 跨越整个x轴范围
+                        color=anim_config['secant_color'],
                         stroke_width=3
                     )
                     
@@ -156,7 +187,7 @@ class DifferentiationAnimator:
                         run_time=0.5
                     )
                 
-                # 最终显示切线
+                # 步骤4: 创建切线并确保它正确显示
                 tangent_slope = derivative_at_point
                 tangent_intercept = float(func_value_at_point) - tangent_slope * fit_point
                 
@@ -164,16 +195,41 @@ class DifferentiationAnimator:
                 def tangent_func(x_val):
                     return tangent_slope * x_val + tangent_intercept
                 
+                # 创建切线图形 - 确保使用正确的颜色和宽度
                 tangent_graph = plane.plot(
                     tangent_func,
-                    x_range=[fit_point - 2, fit_point + 2],
-                    color=self.config['tangent_color'],
+                    x_range=[x_range[0], x_range[1]],  # 切线也是无限长的
+                    color=YELLOW,
                     stroke_width=4
                 )
                 
-                # 移除割线，显示切线
-                self.play(FadeOut(secant_line), run_time=0.5)
-                self.play(Create(tangent_graph), run_time=1.5)
+                # 关键修复：先创建切线，然后移除割线
+                # 首先让两个点合并到拟合点
+                final_point = Dot(
+                    plane.coords_to_point(fit_point, float(func_value_at_point)),
+                    color=anim_config['point_color'],
+                    radius=0.06
+                )
+                
+                self.play(
+                    Transform(point1, final_point),
+                    Transform(point2, final_point),
+                    run_time=1
+                )
+                
+                # 然后同时显示切线和移除割线
+                self.play(
+                    Create(tangent_graph),
+                    FadeOut(secant_line),
+                    run_time=1.5
+                )
+                
+                # 移除多余的点
+                self.play(
+                    FadeOut(point1),
+                    FadeOut(point2),
+                    run_time=0.5
+                )
                 
                 # 高亮显示切线和拟合点
                 self.play(
