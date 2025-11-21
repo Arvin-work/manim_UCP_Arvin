@@ -55,50 +55,14 @@ class VisualizationApp {
                             otherCheckbox.checked = false;
                             // 从选中函数列表中移除其他函数
                             this.selectedFunctions = this.selectedFunctions.filter(f => f !== otherCheckbox.value);
-                        }
-                    });
-                    
-                    // 添加当前函数到选中列表
-                    this.selectedFunctions.push(func);
-                    
-                    // 特别处理泰勒展开的显示
-                    if (func === 'taylor') {
-                        this.toggleTaylorParameters(true);
-                    } else {
-                        this.toggleTaylorParameters(false);
-                    }
-                } else {
-                    // 如果是取消选中，从选中函数列表中移除
-                    this.selectedFunctions = this.selectedFunctions.filter(f => f !== func);
-                    
-                    // 如果取消的是泰勒展开，隐藏相关参数
-                    if (func === 'taylor') {
-                        this.toggleTaylorParameters(false);
-                    }
-                }
-                
-                this.addLog(`${this.getFunctionName(func)} ${isSelected ? '已选择' : '已取消'}`, 'info');
-            });
-        });
-
-        document.querySelectorAll('.function-checkbox input').forEach(checkbox => {
-            checkbox.addEventListener('change', (e) => {
-                const func = e.target.value;
-                const isSelected = e.target.checked;
-                
-                // 如果是选中状态，先取消其他所有功能的选择
-                if (isSelected) {
-                    document.querySelectorAll('.function-checkbox input').forEach(otherCheckbox => {
-                        if (otherCheckbox !== e.target) {
-                            otherCheckbox.checked = false;
-                            // 从选中函数列表中移除其他函数
-                            this.selectedFunctions = this.selectedFunctions.filter(f => f !== otherCheckbox.value);
                             
                             // 隐藏其他功能的参数
                             if (otherCheckbox.value === 'taylor') {
                                 this.toggleTaylorParameters(false);
                             } else if (otherCheckbox.value === 'differentiation') {
                                 this.toggleDifferentiationParameters(false);
+                            } else if (otherCheckbox.value === 'integration') {
+                                this.toggleIntegrationParameters(false);
                             }
                         }
                     });
@@ -106,26 +70,35 @@ class VisualizationApp {
                     // 添加当前函数到选中列表
                     this.selectedFunctions.push(func);
                     
-                    // 特别处理泰勒展开的显示
+                    // 特别处理各功能的参数显示
                     if (func === 'taylor') {
                         this.toggleTaylorParameters(true);
                         this.toggleDifferentiationParameters(false);
+                        this.toggleIntegrationParameters(false);
                     } else if (func === 'differentiation') {
                         this.toggleDifferentiationParameters(true);
                         this.toggleTaylorParameters(false);
+                        this.toggleIntegrationParameters(false);
+                    } else if (func === 'integration') {
+                        this.toggleIntegrationParameters(true);
+                        this.toggleTaylorParameters(false);
+                        this.toggleDifferentiationParameters(false);
                     } else {
                         this.toggleTaylorParameters(false);
                         this.toggleDifferentiationParameters(false);
+                        this.toggleIntegrationParameters(false);
                     }
                 } else {
                     // 如果是取消选中，从选中函数列表中移除
                     this.selectedFunctions = this.selectedFunctions.filter(f => f !== func);
                     
-                    // 如果取消的是泰勒展开，隐藏相关参数
+                    // 如果取消的是某个功能，隐藏相关参数
                     if (func === 'taylor') {
                         this.toggleTaylorParameters(false);
                     } else if (func === 'differentiation') {
                         this.toggleDifferentiationParameters(false);
+                    } else if (func === 'integration') {
+                        this.toggleIntegrationParameters(false);
                     }
                 }
                 
@@ -169,6 +142,20 @@ class VisualizationApp {
         } else {
             fitPointGroup.style.display = 'none';
             radiusGroup.style.display = 'none';
+        }
+    }
+
+    toggleIntegrationParameters(show) {
+        const lowerBoundGroup = document.getElementById('lower-bound-group');
+        const upperBoundGroup = document.getElementById('upper-bound-group');
+        
+        if (show) {
+            lowerBoundGroup.style.display = 'block';
+            upperBoundGroup.style.display = 'block';
+            this.addLog('积分展示功能已启用，请输入积分上下限', 'info');
+        } else {
+            lowerBoundGroup.style.display = 'none';
+            upperBoundGroup.style.display = 'none';
         }
     }
 
@@ -331,13 +318,73 @@ class VisualizationApp {
         };
     }
 
+    validateIntegrationParameters() {
+        if (!this.selectedFunctions.includes('integration')) {
+            return { valid: true };
+        }
+
+        const lowerBound = document.getElementById('lower-bound').value;
+        const upperBound = document.getElementById('upper-bound').value;
+        const functionExpression = document.getElementById('function-input').value;
+
+        if (!functionExpression.trim()) {
+            return { 
+                valid: false, 
+                message: '请填写函数表达式' 
+            };
+        }
+
+        if (!lowerBound.trim()) {
+            return { 
+                valid: false, 
+                message: '请填写积分下限' 
+            };
+        }
+
+        if (!upperBound.trim()) {
+            return { 
+                valid: false, 
+                message: '请填写积分上限' 
+            };
+        }
+
+        // 验证积分上下限是否为有效数字
+        if (isNaN(parseFloat(lowerBound))) {
+            return { 
+                valid: false, 
+                message: '积分下限必须是有效数字' 
+            };
+        }
+
+        if (isNaN(parseFloat(upperBound))) {
+            return { 
+                valid: false, 
+                message: '积分上限必须是有效数字' 
+            };
+        }
+
+        if (parseFloat(lowerBound) >= parseFloat(upperBound)) {
+            return { 
+                valid: false, 
+                message: '积分下限必须小于积分上限' 
+            };
+        }
+
+        return { 
+            valid: true, 
+            lowerBound: parseFloat(lowerBound),
+            upperBound: parseFloat(upperBound),
+            functionExpression: functionExpression
+        };
+    }
+
     async checkTaskStatus(taskId) {
         try {
             const response = await fetch(`/api/task_status/${taskId}`);
             const status = await response.json();
             
             if (status.status === 'completed') {
-                this.addLog('泰勒展开动画生成完成！正在打开播放器...', 'success');
+                this.addLog('动画生成完成！正在打开播放器...', 'success');
                 this.stopTaskChecking();
                 
                 // 提供下载链接
@@ -405,6 +452,12 @@ class VisualizationApp {
                 return;
             }
 
+            // 验证积分展示参数
+            const integrationValidation = this.validateIntegrationParameters();
+            if (!integrationValidation.valid) {
+                this.addLog(`参数错误: ${integrationValidation.message}`, 'error');
+                return;
+            }
 
             // 收集配置数据
             const config = {
@@ -441,6 +494,15 @@ class VisualizationApp {
                 this.addLog(`微分展示配置: 函数 ${differentiationValidation.functionExpression} 在 x=${differentiationValidation.fitPoint} 处求导，拟合半径 ${differentiationValidation.radius}`, 'info');
             }
 
+            // 如果选择了积分展示，添加相关参数
+            if (this.selectedFunctions.includes('integration')) {
+                config.parameters.integration = {
+                    lower_bound: integrationValidation.lowerBound,
+                    upper_bound: integrationValidation.upperBound
+                };
+                this.addLog(`积分展示配置: 函数 ${integrationValidation.functionExpression} 在 [${integrationValidation.lowerBound}, ${integrationValidation.upperBound}] 区间积分`, 'info');
+            }
+
             // 发送创作请求
             const response = await fetch('/api/start_creation', {
                 method: 'POST',
@@ -461,6 +523,10 @@ class VisualizationApp {
                     this.addLog('泰勒展开动画正在生成中，请稍候...', 'info');
                 } else if (this.selectedFunctions.includes('plot')) {
                     this.addLog('函数图像正在生成中，请稍候...', 'info');
+                } else if (this.selectedFunctions.includes('differentiation')) {
+                    this.addLog('微分展示动画正在生成中，请稍候...', 'info');
+                } else if (this.selectedFunctions.includes('integration')) {
+                    this.addLog('积分展示动画正在生成中，请稍候...', 'info');
                 }
                 this.startTaskChecking(result.task_id);
                 
@@ -492,12 +558,16 @@ class VisualizationApp {
         document.getElementById('max-order').value = '10';
         document.getElementById('fit-point').value = '';
         document.getElementById('radius').value = '';
+        document.getElementById('lower-bound').value = '';
+        document.getElementById('upper-bound').value = '';
+        
         // 停止任务检查
         this.stopTaskChecking();
         
-        // 隐藏泰勒展开参数
+        // 隐藏所有参数
         this.toggleTaylorParameters(false);
         this.toggleDifferentiationParameters(false);
+        this.toggleIntegrationParameters(false);
         
         this.addLog('配置已重置', 'info');
     }

@@ -26,6 +26,7 @@ try:
     from taylor_animator import TaylorExpansionAnimator
     from plot_animator import FunctionPlotAnimator
     from differentiation_animator import DifferentiationAnimator
+    from integration_animator import IntegrationAnimator
     logger.info("✅ 模块导入成功")
 except ImportError as e:
     logger.error(f"❌ 模块导入失败: {e}")
@@ -46,6 +47,7 @@ try:
     animator = TaylorExpansionAnimator()
     plot_animator = FunctionPlotAnimator()
     differentiation_animator = DifferentiationAnimator()
+    integration_animator = IntegrationAnimator()
     logger.info("✅ 动画生成器初始化成功")
 except Exception as e:
     logger.error(f"❌ 动画生成器初始化失败: {e}")
@@ -53,6 +55,7 @@ except Exception as e:
     # 创建空的动画生成器实例
     animator = TaylorExpansionAnimator()
     plot_animator = FunctionPlotAnimator()
+    integration_animator = IntegrationAnimator()
 
 class VisualizationController:
     """可视化项目核心控制器"""
@@ -106,6 +109,16 @@ class VisualizationController:
                 return {
                     "status": "processing",
                     "message": "微分展示动画生成中...",
+                    "task_id": task_id,
+                    "timestamp": datetime.now().isoformat()
+                }
+            
+            # 处理积分展示
+            if 'integration' in functions:
+                task_id = self._start_integration_animation(parameters)
+                return {
+                    "status": "processing",
+                    "message": "积分展示动画生成中...",
                     "task_id": task_id,
                     "timestamp": datetime.now().isoformat()
                 }
@@ -400,6 +413,178 @@ class VisualizationController:
             
         except Exception as e:
             logger.error(f"启动微分展示动画任务失败: {str(e)}")
+            raise
+
+    def _start_integration_animation(self, parameters):
+        """启动积分展示动画生成任务"""
+        try:
+            # 提取参数
+            func_expression = parameters.get('function_expression', '')
+            
+            # 从 integration 配置中获取参数
+            integration_config = parameters.get('integration', {})
+            lower_bound = integration_config.get('lower_bound', 0)
+            upper_bound = integration_config.get('upper_bound', 1)
+            
+            # 确保参数类型正确
+            lower_bound = float(lower_bound)
+            upper_bound = float(upper_bound)
+            
+            # 解析范围参数
+            x_range_str = parameters.get('x_range', '-10,10')
+            y_range_str = parameters.get('y_range', '-10,10')
+            
+            try:
+                x_range = [float(x.strip()) for x in x_range_str.split(',')]
+                y_range = [float(y.strip()) for y in y_range_str.split(',')]
+            except:
+                x_range = [-10, 10]
+                y_range = [-10, 10]
+            
+            # 生成任务ID
+            task_id = f"integ_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+            
+            # 在后台线程中生成动画
+            def generate_animation():
+                try:
+                    logger.info(f"开始生成积分展示动画: {func_expression} 区间 [{lower_bound}, {upper_bound}]")
+                    
+                    # 创建输出目录
+                    output_dir = os.path.join(tempfile.gettempdir(), "manim_integration")
+                    os.makedirs(output_dir, exist_ok=True)
+                    output_file = os.path.join(output_dir, f"{task_id}.mp4")
+                    
+                    # 生成动画
+                    video_path = integration_animator.create_integration_animation(
+                        func_expression,
+                        lower_bound,
+                        upper_bound,
+                        tuple(x_range),
+                        tuple(y_range),
+                        output_file
+                    )
+                    
+                    self.animation_tasks[task_id] = {
+                        'status': 'completed',
+                        'video_path': video_path,
+                        'created_at': datetime.now().isoformat()
+                    }
+                    
+                    logger.info(f"积分展示动画生成完成: {video_path}")
+                    
+                    # 自动播放动画
+                    integration_animator.play_animation(video_path)
+                    
+                except Exception as e:
+                    logger.error(f"生成积分展示动画失败: {str(e)}")
+                    logger.error(traceback.format_exc())
+                    self.animation_tasks[task_id] = {
+                        'status': 'error',
+                        'error': str(e),
+                        'created_at': datetime.now().isoformat()
+                    }
+            
+            # 启动后台任务
+            thread = threading.Thread(target=generate_animation)
+            thread.daemon = True
+            thread.start()
+            
+            # 记录任务信息
+            self.animation_tasks[task_id] = {
+                'status': 'processing',
+                'created_at': datetime.now().isoformat()
+            }
+            
+            return task_id
+            
+        except Exception as e:
+            logger.error(f"启动积分展示动画任务失败: {str(e)}")
+            raise
+
+    def _start_integration_animation(self, parameters):
+        """启动积分展示动画生成任务"""
+        try:
+            # 提取参数
+            func_expression = parameters.get('function_expression', '')
+            
+            # 从 integration 配置中获取参数
+            integration_config = parameters.get('integration', {})
+            lower_bound = integration_config.get('lower_bound', 0)
+            upper_bound = integration_config.get('upper_bound', 1)
+            
+            # 确保参数类型正确
+            lower_bound = float(lower_bound)
+            upper_bound = float(upper_bound)
+            
+            # 解析范围参数
+            x_range_str = parameters.get('x_range', '-10,10')
+            y_range_str = parameters.get('y_range', '-10,10')
+            
+            try:
+                x_range = [float(x.strip()) for x in x_range_str.split(',')]
+                y_range = [float(y.strip()) for y in y_range_str.split(',')]
+            except:
+                x_range = [-10, 10]
+                y_range = [-10, 10]
+            
+            # 生成任务ID
+            task_id = f"integ_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+            
+            # 在后台线程中生成动画
+            def generate_animation():
+                try:
+                    logger.info(f"开始生成积分展示动画: {func_expression} 区间 [{lower_bound}, {upper_bound}]")
+                    
+                    # 创建输出目录
+                    output_dir = os.path.join(tempfile.gettempdir(), "manim_integration")
+                    os.makedirs(output_dir, exist_ok=True)
+                    output_file = os.path.join(output_dir, f"{task_id}.mp4")
+                    
+                    # 生成动画
+                    video_path = integration_animator.create_integration_animation(
+                        func_expression,
+                        lower_bound,
+                        upper_bound,
+                        tuple(x_range),
+                        tuple(y_range),
+                        output_file
+                    )
+                    
+                    self.animation_tasks[task_id] = {
+                        'status': 'completed',
+                        'video_path': video_path,
+                        'created_at': datetime.now().isoformat()
+                    }
+                    
+                    logger.info(f"积分展示动画生成完成: {video_path}")
+                    
+                    # 自动播放动画
+                    integration_animator.play_animation(video_path)
+                    
+                except Exception as e:
+                    logger.error(f"生成积分展示动画失败: {str(e)}")
+                    logger.error(traceback.format_exc())
+                    self.animation_tasks[task_id] = {
+                        'status': 'error',
+                        'error': str(e),
+                        'created_at': datetime.now().isoformat()
+                    }
+            
+            # 启动后台任务
+            thread = threading.Thread(target=generate_animation)
+            thread.daemon = True
+            thread.start()
+            
+            # 记录任务信息
+            self.animation_tasks[task_id] = {
+                'status': 'processing',
+                'created_at': datetime.now().isoformat()
+            }
+            
+            return task_id
+            
+        except Exception as e:
+            logger.error(f"启动积分展示动画任务失败: {str(e)}")
             raise
     
     def get_task_status(self, task_id):
