@@ -175,6 +175,117 @@ class FunctionPlotAnimator:
             
             # 不立即清理输出目录，避免文件操作冲突
             # 可以在应用关闭时清理，或者定期清理
+
+    def create_2d_parametric_curve(self, x_expr, y_expr, t_range=(0, 2*np.pi),
+                                   color_scheme='blue', stroke_width=4,
+                                   output_file=None):
+        """创建二维参数曲线动画
+        
+        Args:
+            x_expr: x(t) 表达式字符串
+            y_expr: y(t) 表达式字符串
+            t_range: 参数t的范围
+            color_scheme: 曲线颜色
+            stroke_width: 曲线宽度
+            output_file: 输出文件路径
+        """
+        print(f"二维参数曲线绘制参数 - x(t)={x_expr}, y(t)={y_expr}")
+        print(f"参数范围 - t: {t_range}")
+        
+        color_map = {
+            'red': RED, 'blue': BLUE, 'green': GREEN,
+            'yellow': YELLOW, 'purple': PURPLE
+        }
+        curve_color = color_map.get(color_scheme, BLUE)
+        
+        def create_param_func(expr_str):
+            """创建参数函数"""
+            return lambda t: eval(
+                expr_str,
+                {
+                    "t": t, "sin": np.sin, "cos": np.cos, "tan": np.tan,
+                    "exp": np.exp, "sqrt": np.sqrt, "log": np.log,
+                    "pi": np.pi, "e": np.e
+                }
+            )
+        
+        x_func = create_param_func(x_expr)
+        y_func = create_param_func(y_expr)
+        
+        try:
+            x_func(0)
+            y_func(0)
+        except Exception as e:
+            raise ValueError(f"参数方程解析错误: {str(e)}")
+        
+        class ParametricCurve2DScene(Scene):
+            def construct(self):
+                plane = NumberPlane(
+                    x_range=[-5, 5, 1],
+                    y_range=[-5, 5, 1],
+                )
+                
+                self.play(Create(plane), run_time=1)
+                self.wait(0.2)
+                
+                curve = ParametricFunction(
+                    lambda t: np.array([
+                        x_func(t), y_func(t), 0
+                    ]),
+                    t_range=t_range,
+                    color=curve_color,
+                    stroke_width=stroke_width
+                )
+                
+                self.play(Create(curve), run_time=3)
+                self.wait(1.5)
+        
+        if output_file is None:
+            output_dir = tempfile.mkdtemp()
+            output_file = os.path.join(output_dir, "parametric_curve_2d.mp4")
+        
+        original_media_dir = config.media_dir
+        
+        try:
+            output_dir = os.path.join(os.getcwd(), "temp_render")
+            os.makedirs(output_dir, exist_ok=True)
+            config.media_dir = output_dir
+            
+            config.quality = "high_quality"
+            config.frame_rate = 60
+            config.pixel_height = 1080
+            config.pixel_width = 1920
+            config.disable_caching = True
+            
+            scene = ParametricCurve2DScene()
+            scene.render()
+            
+            video_files = []
+            for root, dirs, files in os.walk(output_dir):
+                for file in files:
+                    if file.endswith(".mp4") and "ParametricCurve2DScene" in file:
+                        video_files.append(os.path.join(root, file))
+            
+            if video_files:
+                generated_video = video_files[0]
+                
+                if output_file:
+                    os.makedirs(os.path.dirname(output_file), exist_ok=True)
+                    
+                    if os.path.exists(generated_video) and os.path.getsize(generated_video) > 1000:
+                        import shutil
+                        shutil.copy2(generated_video, output_file)
+                        return output_file
+                
+            raise FileNotFoundError("未找到生成的视频文件")
+                
+        except Exception as e:
+            import traceback
+            print(f"生成二维参数曲线动画时出错: {str(e)}")
+            print(traceback.format_exc())
+            raise
+        finally:
+            config.media_dir = original_media_dir
             
     def play_animation(self, video_file):
         """使用系统播放器播放动画"""

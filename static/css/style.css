@@ -400,6 +400,10 @@ body {
     color: #e74c3c;
 }
 
+.log-entry.warning .log-message {
+    color: #f39c12;
+}
+
 /* 响应式设计 */
 @media (max-width: 1024px) {
     .config-panel {
@@ -599,4 +603,439 @@ body {
 /* 在现有的图标颜色统一部分后添加 */
 .fa-crosshairs, .fa-arrows-alt-h {
     color: #2196F3;
+}
+
+/* 参数方程输入区域样式 */
+.parametric-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ecf0f1;
+}
+
+.parametric-header label {
+    margin-bottom: 0;
+}
+
+.parametric-mode-toggle {
+    display: flex;
+    gap: 15px;
+}
+
+.radio-label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    color: #2c3e50;
+}
+
+.radio-label input[type="radio"] {
+    cursor: pointer;
+}
+
+.parametric-equation-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.equation-label {
+    min-width: 70px;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-weight: 600;
+    color: #3498db;
+    font-size: 1em;
+}
+
+.parametric-input {
+    flex: 1;
+    padding: 10px 12px;
+    border: 2px solid #ecf0f1;
+    border-radius: 6px;
+    font-size: 1em;
+    font-family: 'Consolas', 'Monaco', monospace;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.parametric-input:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+}
+
+.parametric-input::placeholder {
+    color: #bdc3c7;
+    font-style: italic;
+}
+
+.parametric-curve-inputs,
+.parametric-surface-inputs {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.parametric-curve-inputs .input-hint,
+.parametric-surface-inputs .input-hint {
+    margin-top: 10px;
+    margin-bottom: 0;
+}
+
+/* 三维坐标显示面板样式 */
+.coord-display-panel {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 2px solid #3498db;
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.coord-display-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.1em;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #bdc3c7;
+}
+
+.coord-display-header i {
+    color: #e74c3c;
+}
+
+.coord-display-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.coord-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: white;
+    border-radius: 6px;
+    border: 1px solid #ecf0f1;
+}
+
+.coord-label {
+    font-weight: 500;
+    color: #7f8c8d;
+    font-size: 0.9em;
+}
+
+.coord-value {
+    font-family: 'Consolas', 'Monaco', monospace;
+    color: #2c3e50;
+    font-size: 0.95em;
+    background: #f8f9fa;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.coord-status {
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 0.85em;
+}
+
+.coord-status.waiting {
+    background: #f39c12;
+    color: white;
+}
+
+.coord-status.valid {
+    background: #27ae60;
+    color: white;
+}
+
+.coord-status.invalid {
+    background: #e74c3c;
+    color: white;
+}
+
+/* 三维微分参数组样式 */
+#3d-diff-verify-point-group,
+#3d-diff-t-param-group,
+#3d-diff-animation-duration-group,
+#3d-diff-tangent-scale-group {
+    background: linear-gradient(135deg, #fff5f5 0%, #fff 100%);
+    border-left: 4px solid #e74c3c;
+    padding-left: 12px;
+}
+
+#3d-coord-display-panel {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 三维黎曼积分参数样式 */
+#3d-integration-subdivisions-group,
+#3d-integration-duration-group,
+#3d-integration-progression-group,
+#3d-integration-volume-group {
+    background: linear-gradient(135deg, #f0f8ff 0%, #fff 100%);
+    border-left: 4px solid #3498db;
+    padding-left: 12px;
+}
+
+.param-slider {
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    background: linear-gradient(to right, #3498db, #2ecc71);
+    outline: none;
+    -webkit-appearance: none;
+    margin: 10px 0;
+}
+
+.param-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    border: 2px solid #3498db;
+}
+
+.param-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    border: 2px solid #3498db;
+}
+
+.slider-value {
+    text-align: center;
+    font-size: 0.9em;
+    color: #3498db;
+    font-weight: 600;
+    margin-top: 5px;
+}
+
+.volume-display {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 2px solid #3498db;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.volume-label {
+    font-size: 0.9em;
+    color: #7f8c8d;
+    margin-right: 10px;
+}
+
+.volume-value {
+    font-size: 1.3em;
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 0.95em;
+    color: #2c3e50;
+}
+
+.checkbox-label input[type="checkbox"] {
+    display: none;
+}
+
+.checkbox-custom {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #3498db;
+    border-radius: 4px;
+    margin-right: 10px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkbox-custom {
+    background: #3498db;
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkbox-custom::after {
+    content: '✓';
+    position: absolute;
+    color: white;
+    font-size: 14px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* 三维相机设置样式 */
+.camera-settings-group {
+    background: linear-gradient(135deg, #e8f4f8 0%, #fff 100%);
+    border-left: 4px solid #17a2b8;
+    padding-left: 12px;
+}
+
+.camera-input-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.camera-slider {
+    flex: 1;
+}
+
+.camera-number-input {
+    width: 60px;
+    padding: 5px 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 0.9em;
+}
+
+.camera-unit {
+    font-size: 0.9em;
+    color: #6c757d;
+    min-width: 15px;
+}
+
+.camera-preset-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.camera-preset-row .param-select {
+    flex: 1;
+}
+
+.btn-apply-preset, .btn-save-preset {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85em;
+    transition: all 0.3s ease;
+}
+
+.btn-apply-preset {
+    background: #17a2b8;
+    color: white;
+}
+
+.btn-apply-preset:hover {
+    background: #138496;
+}
+
+.btn-save-preset {
+    background: #28a745;
+    color: white;
+}
+
+.btn-save-preset:hover {
+    background: #218838;
+}
+
+.camera-save-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.camera-name-input {
+    flex: 1;
+}
+
+.camera-presets-list {
+    margin-top: 10px;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.camera-preset-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 10px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    margin-bottom: 5px;
+    border: 1px solid #e9ecef;
+}
+
+.camera-preset-item:hover {
+    background: #e9ecef;
+}
+
+.camera-preset-item-name {
+    font-size: 0.9em;
+    color: #495057;
+}
+
+.camera-preset-item-values {
+    font-size: 0.8em;
+    color: #6c757d;
+}
+
+.camera-preset-item-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.btn-load-preset, .btn-delete-preset {
+    padding: 3px 8px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 0.75em;
+}
+
+.btn-load-preset {
+    background: #17a2b8;
+    color: white;
+}
+
+.btn-delete-preset {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-load-preset:hover {
+    background: #138496;
+}
+
+.btn-delete-preset:hover {
+    background: #c82333;
 }
