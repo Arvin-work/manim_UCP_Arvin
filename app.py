@@ -254,7 +254,11 @@ class VisualizationController:
             # 处理积分展示
             if 'integration' in functions:
                 if scene_type == '3D':
-                    task_id = self._start_3d_integration_animation(parameters)
+                    return {
+                        "status": "error",
+                        "message": "三维黎曼积分功能当前不可用，正在优化中，请关注后续版本更新",
+                        "timestamp": datetime.now().isoformat()
+                    }
                 else:
                     task_id = self._start_integration_animation(parameters)
                 return {

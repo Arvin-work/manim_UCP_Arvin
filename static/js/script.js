@@ -50,6 +50,7 @@ class VisualizationApp {
                 
                 const unsupportedInImplicit = ['taylor', 'integration'];
                 const unsupportedInPolar = ['taylor', 'integration', 'differentiation'];
+                const unsupportedIn3D = ['integration'];
                 const funcNames = {
                     'taylor': '泰勒展开',
                     'integration': '积分展示',
@@ -67,6 +68,13 @@ class VisualizationApp {
                     e.target.checked = false;
                     this.addLog(`⚠️ 极坐标模式不支持 "${funcNames[func]}" 功能`, 'warning');
                     this.addLog('极坐标模式仅支持: 单纯画图', 'warning');
+                    return;
+                }
+                
+                if (isSelected && this.currentScene === '3D' && unsupportedIn3D.includes(func)) {
+                    e.target.checked = false;
+                    this.addLog(`⚠️ 三维场景下的 "${funcNames[func]}" 功能当前不可用`, 'warning');
+                    this.addLog('三维黎曼积分功能正在优化中，请关注后续版本更新', 'info');
                     return;
                 }
                 
@@ -1484,6 +1492,44 @@ class VisualizationApp {
             parametricGroup.style.display = 'none';
             this.togglePolarParameters(false);
             this.toggleParametricParameters(false);
+        }
+        
+        // 根据场景和输入类型更新输入框提示文本
+        this.updateInputPlaceholders();
+    }
+    
+    updateInputPlaceholders() {
+        const functionInput = document.getElementById('function-input');
+        const polarRInput = document.getElementById('polar-r-input');
+        const paramXT = document.getElementById('param-x-t');
+        const paramYT = document.getElementById('param-y-t');
+        const paramZT = document.getElementById('param-z-t');
+        
+        if (this.currentScene === '2D') {
+            // 二维场景提示
+            if (this.currentInputType === 'explicit') {
+                functionInput.placeholder = '例如: x**2, sin(x), exp(x)';
+            } else if (this.currentInputType === 'implicit') {
+                functionInput.placeholder = '例如: x**2 + y**2 - 4, x*y - 1';
+            } else if (this.currentInputType === 'polar') {
+                polarRInput.placeholder = '例如: 2 + 2*sin(theta), cos(3*theta)';
+            } else if (this.currentInputType === 'parametric') {
+                paramXT.placeholder = '例如: cos(t)';
+                paramYT.placeholder = '例如: sin(t)';
+            }
+        } else {
+            // 三维场景提示
+            if (this.currentInputType === 'explicit') {
+                functionInput.placeholder = '例如: x**2 + y**2, sin(x)*cos(y)';
+            } else if (this.currentInputType === 'implicit') {
+                functionInput.placeholder = '例如: x**2 + y**2 + z**2 - 4';
+            } else if (this.currentInputType === 'polar') {
+                polarRInput.placeholder = '例如: 2, 1 + 0.3*cos(phi)';
+            } else if (this.currentInputType === 'parametric') {
+                paramXT.placeholder = '例如: cos(t)';
+                paramYT.placeholder = '例如: sin(t)';
+                paramZT.placeholder = '例如: t/(2*pi)';
+            }
         }
     }
     

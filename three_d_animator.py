@@ -738,42 +738,30 @@ class ThreeDAnimator:
             except Exception as e:
                 print(f"清理临时目录失败: {e}")
 
-# 测试代码
-if __name__ == "__main__":
-    animator = ThreeDAnimator()
-    try:
-        # 测试平面 z = x + y
-        #result = animator.create_3d_animation("x + y", "surface", (-3, 3), (-3, 3), (-3, 3), "test_3d_plane.mp4")
-        #print(f"三维平面动画生成成功: {result}")
-        
-        # 测试曲线 y = x^2 (在三维空间中)
-        result2 = animator.create_3d_animation("x**2", "curve", (-2, 2), (-2, 2), (-2, 2), "test_3d_curve.mp4")
-        print(f"三维曲线动画生成成功: {result2}")
-    except Exception as e:
-        print(f"测试失败: {e}")
-
     def create_3d_riemann_integration(self, func_str, 
-                                     x_range=(-3, 3), y_range=(-3, 3),
+                                     x_range=(-10, 10), y_range=(-10, 10),
                                      subdivisions=10,
                                      animation_duration=5,
                                      show_progression=True,
                                      camera_phi=45,
                                      camera_theta=-45,
                                      output_file=None):
-        """创建三维黎曼积分可视化动画
+        """创建三维黎曼积分可视化动画 - 重构版本
         
         基于黎曼积分原理，展示曲面下的体积近似过程：
-        - 使用长方体近似曲面下的体积
-        - z > 0 时使用蓝色长方体
-        - z < 0 时使用黄色长方体
-        - 透明度统一为0.8
-        - 展示细分过程（底面积从大到小）
+        1. 在xoy平面上创建均匀网格，以1×1为最小面积单位
+        2. 分层立方体生成：
+           - 第一层：4×4立方体
+           - 第二层：2×2立方体
+           - 第三层：1×1立方体
+        3. 每个立方体的高度h = f(x_center, y_center)
+        4. 展示积分值收敛过程
         
         Args:
             func_str: 曲面函数表达式 z = f(x, y)
             x_range: x轴范围
             y_range: y轴范围
-            subdivisions: 初始细分数量
+            subdivisions: 初始细分数量（已弃用，保留兼容性）
             animation_duration: 动画时长
             show_progression: 是否展示细分过程
             camera_phi: 相机俯仰角（与z轴夹角，单位：度）
@@ -782,25 +770,57 @@ if __name__ == "__main__":
         """
         print(f"三维黎曼积分参数 - 函数: {func_str}")
         print(f"坐标范围 - X: {x_range}, Y: {y_range}")
-        print(f"细分数量: {subdivisions}, 动画时长: {animation_duration}秒")
+        print(f"动画时长: {animation_duration}秒")
         print(f"相机参数 - φ: {camera_phi}°, θ: {camera_theta}°")
         
         x, y = symbols('x y')
         func = self.parse_function(func_str)
         func_lambda = lambdify((x, y), func, 'numpy')
         
-        def compute_riemann_volume(func, x_range, y_range, n_x, n_y):
-            """计算黎曼和体积"""
-            dx = (x_range[1] - x_range[0]) / n_x
-            dy = (y_range[1] - y_range[0]) / n_y
+        def compute_exact_integral(func, x_range, y_range):
+            """计算精确积分值（使用数值积分）"""
+            from scipy import integrate
             
+            def integrand(y_val, x_val):
+                try:
+                    return float(func_lambda(x_val, y_val))
+                except:
+                    return 0.0
+            
+            try:
+                result, _ = integrate.dblquad(
+                    integrand,
+                    x_range[0], x_range[1],
+                    lambda x: y_range[0],
+                    lambda x: y_range[1]
+                )
+                return result
+            except:
+                return None
+        
+        def compute_riemann_volume(func, x_range, y_range, box_size):
+            """计算黎曼和体积"""
             total_volume = 0
-            for i in range(n_x):
-                for j in range(n_y):
-                    x_center = x_range[0] + (i + 0.5) * dx
-                    y_center = y_range[0] + (j + 0.5) * dy
-                    z_value = func(x_center, y_center)
-                    total_volume += z_value * dx * dy
+            
+            x_start = int(np.ceil(x_range[0] / box_size)) * box_size
+            y_start = int(np.ceil(y_range[0] / box_size)) * box_size
+            
+            x_current = x_start
+            while x_current + box_size/2 < x_range[1]:
+                y_current = y_start
+                while y_current + box_size/2 < y_range[1]:
+                    x_center = x_current + box_size/2
+                    y_center = y_current + box_size/2
+                    
+                    if x_range[0] <= x_center <= x_range[1] and y_range[0] <= y_center <= y_range[1]:
+                        try:
+                            z_value = func(x_center, y_center)
+                            total_volume += z_value * box_size * box_size
+                        except:
+                            pass
+                    
+                    y_current += box_size
+                x_current += box_size
             
             return total_volume
         
@@ -823,7 +843,7 @@ if __name__ == "__main__":
                     lambda u, v: np.array([u, v, func_lambda(u, v)]),
                     u_range=x_range,
                     v_range=y_range,
-                    resolution=(20, 20),
+                    resolution=(30, 30),
                     color=GREEN
                 )
                 surface.set_fill(GREEN, opacity=0.5)
@@ -845,28 +865,40 @@ if __name__ == "__main__":
                 self.play(Create(z0_plane), run_time=1)
                 self.wait(0.3)
                 
-                subdivision_stages = [4, 8, 16] if show_progression else [subdivisions]
+                exact_volume = compute_exact_integral(func_lambda, x_range, y_range)
                 
-                for stage_idx, n_div in enumerate(subdivision_stages):
-                    boxes = self.create_riemann_boxes(func_lambda, x_range, y_range, n_div, axes)
+                box_sizes = [4, 2, 1] if show_progression else [1]
+                
+                previous_boxes = None
+                
+                for stage_idx, box_size in enumerate(box_sizes):
+                    boxes = self.create_riemann_boxes(func_lambda, x_range, y_range, box_size, axes)
                     
                     if not boxes:
                         continue
                     
-                    if stage_idx > 0:
+                    if previous_boxes:
                         self.play(
                             FadeOut(VGroup(*previous_boxes)),
                             run_time=0.5
                         )
                     
-                    self.play_boxes_growth(boxes, axes, run_time=animation_duration/len(subdivision_stages))
+                    self.play_boxes_growth(boxes, axes, run_time=animation_duration/len(box_sizes))
                     
-                    volume = compute_riemann_volume(func_lambda, x_range, y_range, n_div, n_div)
+                    volume = compute_riemann_volume(func_lambda, x_range, y_range, box_size)
                     
-                    volume_text = Text(
-                        f"细分: {n_div}×{n_div}  体积: {volume:.4f}",
-                        font_size=24
-                    ).to_corner(UL)
+                    if exact_volume is not None:
+                        error = abs(volume - exact_volume)
+                        error_percent = (error / abs(exact_volume) * 100) if exact_volume != 0 else 0
+                        volume_text = Text(
+                            f"立方体尺寸: {box_size}×{box_size}\n体积: {volume:.4f}\n精确值: {exact_volume:.4f}\n误差: {error_percent:.2f}%",
+                            font_size=20
+                        ).to_corner(UL)
+                    else:
+                        volume_text = Text(
+                            f"立方体尺寸: {box_size}×{box_size}\n体积: {volume:.4f}",
+                            font_size=20
+                        ).to_corner(UL)
                     
                     if stage_idx > 0:
                         self.play(Transform(volume_display, volume_text))
@@ -884,27 +916,36 @@ if __name__ == "__main__":
                 
                 self.wait(1)
             
-            def create_riemann_boxes(self, func, x_range, y_range, n_div, axes):
-                """创建黎曼长方体组"""
+            def create_riemann_boxes(self, func, x_range, y_range, box_size, axes):
+                """创建黎曼长方体组 - 按照网格对齐"""
                 boxes = []
-                dx = (x_range[1] - x_range[0]) / n_div
-                dy = (y_range[1] - y_range[0]) / n_div
                 
-                for i in range(n_div):
-                    for j in range(n_div):
-                        x_center = x_range[0] + (i + 0.5) * dx
-                        y_center = y_range[0] + (j + 0.5) * dy
+                x_start = int(np.ceil(x_range[0] / box_size)) * box_size
+                y_start = int(np.ceil(y_range[0] / box_size)) * box_size
+                
+                x_current = x_start
+                while x_current + box_size/2 < x_range[1]:
+                    y_current = y_start
+                    while y_current + box_size/2 < y_range[1]:
+                        x_center = x_current + box_size/2
+                        y_center = y_current + box_size/2
+                        
+                        if not (x_range[0] <= x_center <= x_range[1] and y_range[0] <= y_center <= y_range[1]):
+                            y_current += box_size
+                            continue
                         
                         try:
                             z_value = func(x_center, y_center)
                         except:
+                            y_current += box_size
                             continue
                         
                         if abs(z_value) < 1e-10:
+                            y_current += box_size
                             continue
                         
-                        box_width = dx * 0.95
-                        box_depth = dy * 0.95
+                        box_width = box_size * 0.95
+                        box_depth = box_size * 0.95
                         box_height = abs(z_value)
                         
                         if z_value > 0:
@@ -931,6 +972,9 @@ if __name__ == "__main__":
                         box.y_center = y_center
                         
                         boxes.append(box)
+                        
+                        y_current += box_size
+                    x_current += box_size
                 
                 return boxes
             
@@ -1013,3 +1057,18 @@ if __name__ == "__main__":
             raise
         finally:
             config.media_dir = original_media_dir
+
+
+# 测试代码
+if __name__ == "__main__":
+    animator = ThreeDAnimator()
+    try:
+        # 测试平面 z = x + y
+        #result = animator.create_3d_animation("x + y", "surface", (-3, 3), (-3, 3), (-3, 3), "test_3d_plane.mp4")
+        #print(f"三维平面动画生成成功: {result}")
+        
+        # 测试曲线 y = x^2 (在三维空间中)
+        result2 = animator.create_3d_animation("x**2", "curve", (-2, 2), (-2, 2), (-2, 2), "test_3d_curve.mp4")
+        print(f"三维曲线动画生成成功: {result2}")
+    except Exception as e:
+        print(f"测试失败: {e}")
