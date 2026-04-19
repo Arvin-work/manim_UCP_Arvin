@@ -54,29 +54,34 @@ class VisualizationApp {
                 const funcNames = {
                     'taylor': '泰勒展开',
                     'integration': '积分展示',
-                    'differentiation': '微分展示'
+                    'differentiation': '微分展示',
+                    'surface_transform': '曲面变换'
                 };
                 
                 if (isSelected && this.currentInputType === 'implicit' && unsupportedInImplicit.includes(func)) {
                     e.target.checked = false;
                     this.addLog(`⚠️ 隐函数模式不支持 "${funcNames[func]}" 功能`, 'warning');
-                    this.addLog('隐函数模式仅支持: 单纯画图、微分展示', 'warning');
+                    this.addLog('隐函数模式支持: 单纯画图、微分展示、曲面变换', 'info');
                     return;
                 }
                 
                 if (isSelected && this.currentInputType === 'polar' && unsupportedInPolar.includes(func)) {
-                    e.target.checked = false;
-                    this.addLog(`⚠️ 极坐标模式不支持 "${funcNames[func]}" 功能`, 'warning');
-                    this.addLog('极坐标模式仅支持: 单纯画图', 'warning');
-                    return;
+                    // 三维场景下极坐标允许曲面变换
+                    if (this.currentScene === '3D' && func === 'surface_transform') {
+                        // 允许曲面变换
+                    } else {
+                        e.target.checked = false;
+                        this.addLog(`⚠️ 极坐标模式不支持 "${funcNames[func]}" 功能`, 'warning');
+                        if (this.currentScene === '3D') {
+                            this.addLog('极坐标三维模式支持: 单纯画图、曲面变换', 'info');
+                        } else {
+                            this.addLog('极坐标二维模式仅支持: 单纯画图', 'warning');
+                        }
+                        return;
+                    }
                 }
                 
-                if (isSelected && this.currentScene === '3D' && unsupportedIn3D.includes(func)) {
-                    e.target.checked = false;
-                    this.addLog(`⚠️ 三维场景下的 "${funcNames[func]}" 功能当前不可用`, 'warning');
-                    this.addLog('三维黎曼积分功能正在优化中，请关注后续版本更新', 'info');
-                    return;
-                }
+                // 三维场景无特殊限制
                 
                 // 如果是选中状态，先取消其他所有功能的选择
                 if (isSelected) {
@@ -105,18 +110,47 @@ class VisualizationApp {
                         this.toggleTaylorParameters(true);
                         this.toggleDifferentiationParameters(false);
                         this.toggleIntegrationParameters(false);
+                        document.getElementById('plane2-input-group').style.display = 'none';
                     } else if (func === 'differentiation') {
                         this.toggleDifferentiationParameters(true);
                         this.toggleTaylorParameters(false);
                         this.toggleIntegrationParameters(false);
+                        document.getElementById('plane2-input-group').style.display = 'none';
                     } else if (func === 'integration') {
                         this.toggleIntegrationParameters(true);
                         this.toggleTaylorParameters(false);
                         this.toggleDifferentiationParameters(false);
+                        document.getElementById('plane2-input-group').style.display = 'none';
+                    } else if (func === 'surface_transform') {
+                        // 曲面变换：显示平面2输入框
+                        this.toggleTaylorParameters(false);
+                        this.toggleDifferentiationParameters(false);
+                        this.toggleIntegrationParameters(false);
+                        if (this.currentScene === '3D') {
+                            document.getElementById('plane2-input-group').style.display = 'block';
+                            this.addLog('✅ 曲面变换功能已启用', 'success');
+                            const typeName = {
+                                'explicit': '显函数',
+                                'implicit': '隐函数',
+                                'polar': '极坐标(球面)',
+                                'parametric': '参数方程'
+                            };
+                            this.addLog(`📝 双平面均使用 ${typeName[this.currentInputType]} 格式输入`, 'info');
+                            if (this.currentInputType === 'explicit') {
+                                this.addLog('✅ 例：平面1=x**2+y**2, 平面2=x**2-y**2', 'info');
+                            } else if (this.currentInputType === 'implicit') {
+                                this.addLog('✅ 例：平面1=x**2+y**2+z**2-4, 平面2=x**2+2*y**2+z**2-16', 'info');
+                            } else if (this.currentInputType === 'polar') {
+                                this.addLog('✅ 例：平面1=2, 平面2=4 (球面半径变换)', 'info');
+                            } else {
+                                this.addLog('✅ 使用相同u,v范围参数化进行变换', 'info');
+                            }
+                        }
                     } else {
                         this.toggleTaylorParameters(false);
                         this.toggleDifferentiationParameters(false);
                         this.toggleIntegrationParameters(false);
+                        document.getElementById('plane2-input-group').style.display = 'none';
                     }
                 } else {
                     // 如果是取消选中，从选中函数列表中移除
@@ -129,6 +163,10 @@ class VisualizationApp {
                         this.toggleDifferentiationParameters(false);
                     } else if (func === 'integration') {
                         this.toggleIntegrationParameters(false);
+                    } else if (func === 'surface_transform') {
+                        // 取消曲面变换：隐藏平面2输入框
+                        document.getElementById('plane2-input-group').style.display = 'none';
+                        this.addLog('曲面变换功能已取消', 'info');
                     }
                 }
                 
@@ -398,6 +436,9 @@ class VisualizationApp {
                 volumeGroup.style.display = 'block';
                 lowerBoundGroup.style.display = 'none';
                 upperBoundGroup.style.display = 'none';
+                this.addLog('⚠️ 三维黎曼积分功能存在已知视觉冲突', 'warning');
+                this.addLog('  - 高密度阶段立方体可能出现轻微边缘接触', 'warning');
+                this.addLog('  - 建议使用较小坐标范围（如-6到6）以获得最佳效果', 'info');
                 this.addLog('三维黎曼积分功能已启用，请调整细分程度', 'info');
                 this.initIntegrationSlider();
             } else {
@@ -438,6 +479,8 @@ class VisualizationApp {
         const cameraThetaGroup = document.getElementById('camera-theta-group');
         const cameraPresetGroup = document.getElementById('camera-preset-group');
         const cameraSaveGroup = document.getElementById('camera-save-group');
+        const surfaceTransformCheckbox = document.getElementById('surface-transform-checkbox');
+        const taylorCheckbox = document.querySelector('.function-checkbox:has(input[value="taylor"])');
         
         if (show) {
             zRangeGroup.style.display = 'block';
@@ -446,6 +489,8 @@ class VisualizationApp {
             cameraThetaGroup.style.display = 'block';
             cameraPresetGroup.style.display = 'block';
             cameraSaveGroup.style.display = 'block';
+            surfaceTransformCheckbox.style.display = 'flex';
+            taylorCheckbox.style.display = 'none';
             this.addLog('三维场景功能已启用，请选择绘制类型和Z轴范围', 'info');
             this.initCameraControls();
             this.loadCameraPresets();
@@ -456,6 +501,9 @@ class VisualizationApp {
             cameraThetaGroup.style.display = 'none';
             cameraPresetGroup.style.display = 'none';
             cameraSaveGroup.style.display = 'none';
+            surfaceTransformCheckbox.style.display = 'none';
+            taylorCheckbox.style.display = 'flex';
+            document.getElementById('plane2-input-group').style.display = 'none';
         }
     }
     
@@ -699,17 +747,32 @@ class VisualizationApp {
                 this.addLog(`切换到${inputTypeNames[inputType]}输入`, 'success');
                 
                 if (inputType === 'implicit') {
-                    this.addLog('⚠️ 隐函数模式仅支持: 单纯画图、微分展示', 'warning');
+                    this.addLog('✅ 隐函数模式支持: 单纯画图、微分展示、曲面变换', 'info');
+                    this.addLog('📋 【技术档案】当前版本支持的隐函数格式:', 'info');
+                    this.addLog('   标准格式: A·x² + B·y² + C·z² - R² = 0', 'info');
+                    this.addLog('   其中 A,B,C > 0 为各轴平方项系数，R²为常数项', 'info');
+                    this.addLog('   示例1: x**2+y**2+z**2-9 (球面,半径3)', 'info');
+                    this.addLog('   示例2: x**2+4*y**2+4*z**2-16 (x轴长椭球)', 'info');
+                    this.addLog('⚠️ 提示: 仅支持二次型中心对称曲面(球面、椭球)', 'warning');
                     this.checkImplicitFunctionSupport();
+                    this.implicitFirstVisit = true;
                 }
                 
                 if (inputType === 'polar') {
-                    this.addLog('⚠️ 极坐标模式仅支持: 单纯画图', 'warning');
+                    if (this.currentScene === '3D') {
+                        this.addLog('✅ 极坐标三维模式支持: 单纯画图、曲面变换', 'info');
+                    } else {
+                        this.addLog('⚠️ 极坐标二维模式仅支持: 单纯画图', 'warning');
+                    }
                     this.checkPolarFunctionSupport();
                 }
                 
                 if (inputType === 'parametric') {
-                    this.addLog('⚠️ 参数方程模式仅支持: 单纯画图', 'warning');
+                    if (this.currentScene === '3D') {
+                        this.addLog('✅ 参数方程三维模式支持: 单纯画图、曲面变换', 'info');
+                    } else {
+                        this.addLog('⚠️ 参数方程二维模式仅支持: 单纯画图', 'warning');
+                    }
                     this.checkParametricFunctionSupport();
                 }
                 
@@ -778,6 +841,38 @@ class VisualizationApp {
                 }
             }
         }
+    }
+    
+    validateImplicitFormat(expression, planeName) {
+        const expr = expression.replace(/\s+/g, '');
+        let warnings = [];
+        
+        const hasX2 = /x\*\*2/.test(expr);
+        const hasY2 = /y\*\*2/.test(expr);
+        const hasZ2 = /z\*\*2/.test(expr);
+        
+        if (!hasX2 || !hasY2 || !hasZ2) {
+            warnings.push('缺少x²/y²/z²平方项');
+        }
+        
+        const hasOtherVars = /[a-wA-W]/.test(expr.replace(/x|y|z/ig, ''));
+        if (hasOtherVars) {
+            warnings.push('含有x,y,z之外的变量');
+        }
+        
+        const hasCrossTerm = /x\*y|x\*z|y\*z|x\*\*[13-9]|y\*\*[13-9]|z\*\*[13-9]/.test(expr);
+        if (hasCrossTerm) {
+            warnings.push('含有交叉项或非二次幂，可能影响精度');
+        }
+        
+        if (warnings.length > 0) {
+            this.addLog(`⚠️ ${planeName}格式检查: ${warnings.join(', ')}`, 'warning');
+            this.addLog('   建议标准格式: A·x² + B·y² + C·z² - R²', 'info');
+        } else {
+            this.addLog(`✅ ${planeName}格式符合二次型标准`, 'success');
+        }
+        
+        return warnings.length === 0;
     }
     
     checkPolarFunctionSupport() {
@@ -874,7 +969,8 @@ class VisualizationApp {
             'plot': '单纯画图',
             'differentiation': '微分展示',
             'integration': '积分展示',
-            'taylor': '泰勒展开'
+            'taylor': '泰勒展开',
+            'surface_transform': '曲面变换'
         };
         return names[func] || func;
     }
@@ -1094,6 +1190,17 @@ class VisualizationApp {
             const response = await fetch(`/api/task_status/${taskId}`);
             const status = await response.json();
             
+            // 显示新日志
+            if (status.logs && status.logs.length > this.lastLogIndex) {
+                for (let i = this.lastLogIndex; i < status.logs.length; i++) {
+                    const log = status.logs[i];
+                    const logType = log.level === 'error' ? 'error' : 
+                                   log.level === 'success' ? 'success' : 'info';
+                    this.addLog(log.message, logType);
+                }
+                this.lastLogIndex = status.logs.length;
+            }
+            
             if (status.status === 'completed') {
                 this.addLog('动画生成完成！正在打开播放器...', 'success');
                 this.stopTaskChecking();
@@ -1114,9 +1221,10 @@ class VisualizationApp {
 
     startTaskChecking(taskId) {
         this.currentTaskId = taskId;
+        this.lastLogIndex = 0; // 重置日志索引
         this.taskCheckInterval = setInterval(() => {
             this.checkTaskStatus(taskId);
-        }, 2000); // 每2秒检查一次
+        }, 1000); // 每1秒检查一次，更快的实时反馈
     }
 
     stopTaskChecking() {
@@ -1218,6 +1326,21 @@ class VisualizationApp {
                     this.addLog('请填写函数表达式', 'error');
                     return;
                 }
+                
+                // 隐函数格式验证
+                if (this.currentInputType === 'implicit') {
+                    this.validateImplicitFormat(functionExpression, '平面1');
+                    
+                    // 平面2也验证
+                    if (this.currentScene === '3D') {
+                        const plane2Expr = document.getElementById('plane2-input').value;
+                        if (plane2Expr.trim()) {
+                            this.validateImplicitFormat(plane2Expr, '平面2');
+                        }
+                    }
+                    
+                    this.addLog('🔍 调用隐函数计算前验证完成', 'info');
+                }
             }
 
             // 如果是三维场景，验证Z轴范围
@@ -1265,6 +1388,16 @@ class VisualizationApp {
                     animation_style: document.getElementById('animation-style').value
                 }
             };
+            
+            // 三维场景下收集平面2表达式（可选）
+            // 注意：必须在 config 声明之后才能访问 config.parameters
+            if (this.currentScene === '3D') {
+                const plane2Expression = document.getElementById('plane2-input').value;
+                if (plane2Expression.trim()) {
+                    config.parameters.plane2_expression = plane2Expression;
+                    this.addLog(`双平面变换: 平面1 -> 平面2`, 'info');
+                }
+            }
             
             // 极坐标参数
             if (this.currentInputType === 'polar') {
@@ -1464,6 +1597,9 @@ class VisualizationApp {
         const paramTRangeGroup = document.getElementById('param-t-range-group');
         const paramURangeGroup = document.getElementById('param-u-range-group');
         const paramVRangeGroup = document.getElementById('param-v-range-group');
+        const plane2Group = document.getElementById('plane2-input-group');
+        const surfaceTransformCheckbox = document.getElementById('surface-transform-checkbox');
+        const stCheckbox = surfaceTransformCheckbox.querySelector('input');
         
         if (this.currentInputType === 'polar') {
             explicitImplicitGroup.style.display = 'none';
@@ -1478,6 +1614,16 @@ class VisualizationApp {
             } else {
                 polarPhiGroup.style.display = 'none';
             }
+            
+            // 三维场景下，极坐标模式也支持曲面变换
+            if (this.currentScene === '3D') {
+                stCheckbox.disabled = false;
+                if (stCheckbox.checked) {
+                    plane2Group.style.display = 'block';
+                } else {
+                    plane2Group.style.display = 'none';
+                }
+            }
         } else if (this.currentInputType === 'parametric') {
             explicitImplicitGroup.style.display = 'none';
             polarGroup.style.display = 'none';
@@ -1485,6 +1631,16 @@ class VisualizationApp {
             parametricGroup.style.display = 'block';
             this.togglePolarParameters(false);
             this.toggleParametricParameters(true);
+            
+            // 三维场景下，参数方程模式也支持曲面变换
+            if (this.currentScene === '3D') {
+                stCheckbox.disabled = false;
+                if (stCheckbox.checked) {
+                    plane2Group.style.display = 'block';
+                } else {
+                    plane2Group.style.display = 'none';
+                }
+            }
         } else {
             explicitImplicitGroup.style.display = 'block';
             polarGroup.style.display = 'none';
@@ -1492,6 +1648,16 @@ class VisualizationApp {
             parametricGroup.style.display = 'none';
             this.togglePolarParameters(false);
             this.toggleParametricParameters(false);
+            
+            // 显函数/隐函数模式下启用曲面变换选项
+            stCheckbox.disabled = false;
+            
+            // 根据曲面变换是否勾选决定是否显示平面2输入框
+            if (this.currentScene === '3D' && stCheckbox.checked) {
+                plane2Group.style.display = 'block';
+            } else {
+                plane2Group.style.display = 'none';
+            }
         }
         
         // 根据场景和输入类型更新输入框提示文本
@@ -1500,6 +1666,7 @@ class VisualizationApp {
     
     updateInputPlaceholders() {
         const functionInput = document.getElementById('function-input');
+        const plane2Input = document.getElementById('plane2-input');
         const polarRInput = document.getElementById('polar-r-input');
         const paramXT = document.getElementById('param-x-t');
         const paramYT = document.getElementById('param-y-t');
@@ -1521,14 +1688,18 @@ class VisualizationApp {
             // 三维场景提示
             if (this.currentInputType === 'explicit') {
                 functionInput.placeholder = '例如: x**2 + y**2, sin(x)*cos(y)';
+                plane2Input.placeholder = '例如: x**2 - y**2, sin(x+y)';
             } else if (this.currentInputType === 'implicit') {
                 functionInput.placeholder = '例如: x**2 + y**2 + z**2 - 4';
+                plane2Input.placeholder = '例如: x**2 + 2*y**2 + z**2 - 16';
             } else if (this.currentInputType === 'polar') {
                 polarRInput.placeholder = '例如: 2, 1 + 0.3*cos(phi)';
+                plane2Input.placeholder = '例如: 4, 3 + sin(phi)';
             } else if (this.currentInputType === 'parametric') {
                 paramXT.placeholder = '例如: cos(t)';
                 paramYT.placeholder = '例如: sin(t)';
                 paramZT.placeholder = '例如: t/(2*pi)';
+                plane2Input.placeholder = '参数曲面: 使用相同u,v范围的参数化';
             }
         }
     }

@@ -56,7 +56,7 @@ manim_UCP_Arvin/
 | **二维参数方程** | `plot_animator.py` | ✅ 完成 | 支持二维参数曲线 x(t), y(t) 绘图，参数验证和错误提示 |
 | **微分展示动画** | `differentiation_animator.py` | ✅ 完成 | 展示割线逼近切线过程，可视化导数概念 |
 | **积分展示动画** | `integration_animator.py` | ✅ 完成 | 黎曼和逼近过程，支持正负函数值区域 |
-| **三维黎曼积分** | `three_d_animator.py` | ❌ 已禁用 | 功能优化中，暂时不可用，请关注后续版本更新 |
+| **三维黎曼积分** | `three_d_animator.py` | ✅ 完成 | Wave of Boxes 风格，从大box到小box递进效果 |
 | **三维相机设置** | `three_d_animator.py` | ✅ 完成 | 支持自定义相机角度、预设视角、保存/加载预设 |
 | **三维场景绘制** | `three_d_animator.py` | ✅ 基础完成 | 支持曲面、曲线、平面绘制，自动旋转展示 |
 | **Flask Web 服务** | `app.py` | ✅ 完成 | RESTful API 接口，后台任务处理 |

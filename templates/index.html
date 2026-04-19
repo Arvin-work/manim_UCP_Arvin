@@ -99,6 +99,14 @@
                                 <i class="fas fa-expand-alt"></i>
                                 泰勒展开
                             </label>
+                            
+                            <!-- 曲面变换 - 仅三维场景显示 -->
+                            <label class="function-checkbox" id="surface-transform-checkbox" style="display: none;">
+                                <input type="checkbox" name="functions" value="surface_transform">
+                                <span class="checkmark"></span>
+                                <i class="fas fa-exchange-alt"></i>
+                                曲面变换
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -120,11 +128,23 @@
                         <div class="input-group" id="explicit-implicit-input-group">
                             <label for="function-input">
                                 <i class="fas fa-pen-fancy"></i>
-                                函数表达式
+                                函数表达式 - 平面1
                             </label>
                             <input type="text" id="function-input" placeholder="例如: x**2, sin(x), exp(x)" class="function-input">
                             <div class="input-hint">
                                 支持函数: sin, cos, tan, exp, log, sqrt 等 | 使用 x 作为变量
+                            </div>
+                        </div>
+                        
+                        <!-- 平面2输入区域 - 仅三维场景双平面变换 -->
+                        <div class="input-group" id="plane2-input-group" style="display: none;">
+                            <label for="plane2-input">
+                                <i class="fas fa-exchange-alt"></i>
+                                函数表达式 - 平面2
+                            </label>
+                            <input type="text" id="plane2-input" placeholder="例如: x**2 - y**2, sin(x)*cos(y)" class="function-input">
+                            <div class="input-hint">
+                                三维场景下，将实现从平面1到平面2的平滑变换效果
                             </div>
                         </div>
                         

@@ -177,9 +177,19 @@ class VisualizationController:
                     "timestamp": datetime.now().isoformat()
                 }
 
+            # 处理三维曲面变换（支持所有输入类型）
+            if scene_type == '3D' and 'surface_transform' in functions:
+                task_id = self._start_3d_plot(parameters, input_type)
+                return {
+                    "status": "processing",
+                    "message": "曲面变换动画生成中...",
+                    "task_id": task_id,
+                    "timestamp": datetime.now().isoformat()
+                }
+            
             # 处理三维场景绘制
             if scene_type == '3D' and 'plot' in functions:
-                task_id = self._start_3d_plot(parameters)
+                task_id = self._start_3d_plot(parameters, input_type)
                 return {
                     "status": "processing",
                     "message": "三维场景绘制中...",
@@ -254,11 +264,7 @@ class VisualizationController:
             # 处理积分展示
             if 'integration' in functions:
                 if scene_type == '3D':
-                    return {
-                        "status": "error",
-                        "message": "三维黎曼积分功能当前不可用，正在优化中，请关注后续版本更新",
-                        "timestamp": datetime.now().isoformat()
-                    }
+                    task_id = self._start_3d_integration_animation(parameters)
                 else:
                     task_id = self._start_integration_animation(parameters)
                 return {
@@ -902,11 +908,13 @@ class VisualizationController:
             
             def generate_animation():
                 try:
-                    logger.info(f"开始生成三维黎曼积分动画")
+                    self.add_task_log(task_id, "开始生成三维黎曼积分动画", "info")
                     
                     output_dir = os.path.join(tempfile.gettempdir(), "manim_3d_integration")
                     os.makedirs(output_dir, exist_ok=True)
                     output_file = os.path.join(output_dir, f"{task_id}.mp4")
+                    
+                    self.add_task_log(task_id, "初始化 Manim 渲染环境...", "info")
                     
                     video_path = three_d_animator.create_3d_riemann_integration(
                         func_expression,
@@ -920,22 +928,27 @@ class VisualizationController:
                         output_file=output_file
                     )
                     
+                    self.add_task_log(task_id, "渲染完成，生成视频文件", "success")
+                    
                     self.animation_tasks[task_id] = {
                         'status': 'completed',
                         'video_path': video_path,
-                        'created_at': datetime.now().isoformat()
+                        'created_at': datetime.now().isoformat(),
+                        'logs': self.animation_tasks[task_id].get('logs', [])
                     }
                     
-                    logger.info(f"三维黎曼积分动画生成完成: {video_path}")
+                    self.add_task_log(task_id, f"三维黎曼积分动画生成完成: {os.path.basename(video_path)}", "success")
                     three_d_animator.play_animation(video_path)
                     
                 except Exception as e:
+                    self.add_task_log(task_id, f"生成失败: {str(e)}", "error")
                     logger.error(f"生成三维黎曼积分动画失败: {str(e)}")
                     logger.error(traceback.format_exc())
                     self.animation_tasks[task_id] = {
                         'status': 'error',
                         'error': str(e),
-                        'created_at': datetime.now().isoformat()
+                        'created_at': datetime.now().isoformat(),
+                        'logs': self.animation_tasks[task_id].get('logs', [])
                     }
             
             thread = threading.Thread(target=generate_animation)
@@ -944,8 +957,14 @@ class VisualizationController:
             
             self.animation_tasks[task_id] = {
                 'status': 'processing',
-                'created_at': datetime.now().isoformat()
+                'created_at': datetime.now().isoformat(),
+                'logs': []
             }
+            
+            self.add_task_log(task_id, "动画任务已启动", "info")
+            self.add_task_log(task_id, f"函数: {func_expression}", "info")
+            self.add_task_log(task_id, f"坐标范围 X: {x_range}, Y: {y_range}", "info")
+            self.add_task_log(task_id, f"动画时长: {animation_duration}秒", "info")
             
             return task_id
             
@@ -953,7 +972,7 @@ class VisualizationController:
             logger.error(f"启动三维黎曼积分动画任务失败: {str(e)}")
             raise
 
-    def _start_3d_plot(self, parameters):
+    def _start_3d_plot(self, parameters, input_type='explicit'):
         """启动三维场景绘制任务"""
         try:
             # 提取参数
@@ -961,6 +980,10 @@ class VisualizationController:
             
             # 获取绘制类型
             plot_type = parameters.get('plot_type', 'auto')
+            
+            # 使用传入的输入类型（来自顶层参数，不是parameters内部）
+            print(f"双平面变换参数 - 平面1: {func_expression}, 平面2: {parameters.get('plane2_expression', '无')}")
+            print(f"输入类型: {input_type}")
             
             # 解析范围参数
             x_range_str = parameters.get('x_range', '-5,5')
@@ -988,12 +1011,22 @@ class VisualizationController:
             # 在后台线程中生成动画
             def generate_animation():
                 try:
-                    logger.info(f"开始生成三维场景动画: {func_expression}, 绘制类型: {plot_type}")
+                    self.add_task_log(task_id, f"开始生成三维场景动画", "info")
+                    self.add_task_log(task_id, f"绘制类型: {plot_type}", "info")
                     
                     # 创建输出目录
                     output_dir = os.path.join(tempfile.gettempdir(), "manim_3d")
                     os.makedirs(output_dir, exist_ok=True)
                     output_file = os.path.join(output_dir, f"{task_id}.mp4")
+                    
+                    self.add_task_log(task_id, "初始化 Manim 渲染环境...", "info")
+                    
+                    # 获取平面2表达式
+                    plane2_expression = parameters.get('plane2_expression')
+                    if plane2_expression:
+                        self.add_task_log(task_id, f"启用双平面变换模式", "info")
+                        self.add_task_log(task_id, f"平面1: {func_expression}", "info")
+                        self.add_task_log(task_id, f"平面2: {plane2_expression}", "info")
                     
                     # 生成动画
                     video_path = three_d_animator.create_3d_animation(
@@ -1004,27 +1037,34 @@ class VisualizationController:
                         tuple(z_range),
                         camera_phi=camera_phi,
                         camera_theta=camera_theta,
-                        output_file=output_file
+                        output_file=output_file,
+                        plane2_str=plane2_expression,
+                        input_type=input_type
                     )
+                    
+                    self.add_task_log(task_id, "渲染完成，生成视频文件", "success")
                     
                     self.animation_tasks[task_id] = {
                         'status': 'completed',
                         'video_path': video_path,
-                        'created_at': datetime.now().isoformat()
+                        'created_at': datetime.now().isoformat(),
+                        'logs': self.animation_tasks[task_id].get('logs', [])
                     }
                     
-                    logger.info(f"三维场景动画生成完成: {video_path}")
+                    self.add_task_log(task_id, f"三维场景动画生成完成: {os.path.basename(video_path)}", "success")
                     
                     # 自动播放动画
                     three_d_animator.play_animation(video_path)
                     
                 except Exception as e:
+                    self.add_task_log(task_id, f"生成失败: {str(e)}", "error")
                     logger.error(f"生成三维场景动画失败: {str(e)}")
                     logger.error(traceback.format_exc())
                     self.animation_tasks[task_id] = {
                         'status': 'error',
                         'error': str(e),
-                        'created_at': datetime.now().isoformat()
+                        'created_at': datetime.now().isoformat(),
+                        'logs': self.animation_tasks[task_id].get('logs', [])
                     }
             
             # 启动后台任务
@@ -1035,8 +1075,13 @@ class VisualizationController:
             # 记录任务信息
             self.animation_tasks[task_id] = {
                 'status': 'processing',
-                'created_at': datetime.now().isoformat()
+                'created_at': datetime.now().isoformat(),
+                'logs': []
             }
+            
+            self.add_task_log(task_id, "三维场景绘制任务已启动", "info")
+            self.add_task_log(task_id, f"函数: {func_expression}", "info")
+            self.add_task_log(task_id, f"坐标范围 X: {x_range}, Y: {y_range}, Z: {z_range}", "info")
             
             return task_id
             
@@ -1073,11 +1118,13 @@ class VisualizationController:
             
             def generate_plot():
                 try:
-                    logger.info(f"开始生成隐函数图像: {func_expression}")
+                    self.add_task_log(task_id, "开始生成隐函数图像", "info")
                     
                     output_dir = os.path.join(tempfile.gettempdir(), "manim_implicit")
                     os.makedirs(output_dir, exist_ok=True)
                     output_file = os.path.join(output_dir, f"{task_id}.mp4")
+                    
+                    self.add_task_log(task_id, "初始化 Manim 渲染环境...", "info")
                     
                     video_path = implicit_animator.create_implicit_plot(
                         func_expression,
@@ -1090,22 +1137,27 @@ class VisualizationController:
                         output_file
                     )
                     
+                    self.add_task_log(task_id, "渲染完成，生成视频文件", "success")
+                    
                     self.animation_tasks[task_id] = {
                         'status': 'completed',
                         'video_path': video_path,
-                        'created_at': datetime.now().isoformat()
+                        'created_at': datetime.now().isoformat(),
+                        'logs': self.animation_tasks[task_id].get('logs', [])
                     }
                     
-                    logger.info(f"隐函数图像生成完成: {video_path}")
+                    self.add_task_log(task_id, f"隐函数图像生成完成: {os.path.basename(video_path)}", "success")
                     implicit_animator.play_animation(video_path)
                     
                 except Exception as e:
+                    self.add_task_log(task_id, f"生成失败: {str(e)}", "error")
                     logger.error(f"生成隐函数图像失败: {str(e)}")
                     logger.error(traceback.format_exc())
                     self.animation_tasks[task_id] = {
                         'status': 'error',
                         'error': str(e),
-                        'created_at': datetime.now().isoformat()
+                        'created_at': datetime.now().isoformat(),
+                        'logs': self.animation_tasks[task_id].get('logs', [])
                     }
             
             thread = threading.Thread(target=generate_plot)
@@ -1114,8 +1166,14 @@ class VisualizationController:
             
             self.animation_tasks[task_id] = {
                 'status': 'processing',
-                'created_at': datetime.now().isoformat()
+                'created_at': datetime.now().isoformat(),
+                'logs': []
             }
+            
+            self.add_task_log(task_id, "隐函数绘图任务已启动", "info")
+            self.add_task_log(task_id, f"函数: {func_expression}", "info")
+            self.add_task_log(task_id, f"坐标范围 X: {x_range}, Y: {y_range}", "info")
+            self.add_task_log(task_id, f"分辨率: {resolution}, 线条宽度: {stroke_width}", "info")
             
             return task_id
             
@@ -1393,9 +1451,41 @@ class VisualizationController:
             logger.error(f"启动参数方程绘图任务失败: {str(e)}")
             raise
     
+    def add_task_log(self, task_id, message, level='info'):
+        """向指定任务添加日志信息"""
+        if task_id in self.animation_tasks:
+            if 'logs' not in self.animation_tasks[task_id]:
+                self.animation_tasks[task_id]['logs'] = []
+            
+            timestamp = datetime.now().isoformat()
+            self.animation_tasks[task_id]['logs'].append({
+                'message': message,
+                'level': level,
+                'timestamp': timestamp
+            })
+            
+            # 保持日志列表不超过50条
+            if len(self.animation_tasks[task_id]['logs']) > 50:
+                self.animation_tasks[task_id]['logs'] = self.animation_tasks[task_id]['logs'][-50:]
+    
     def get_task_status(self, task_id):
-        """获取任务状态"""
-        return self.animation_tasks.get(task_id, {'status': 'not_found'})
+        """获取任务状态，包含日志信息"""
+        task_info = self.animation_tasks.get(task_id, {'status': 'not_found'})
+        
+        # 返回完整的任务信息，包括日志
+        result = {
+            'status': task_info.get('status', 'not_found'),
+            'logs': task_info.get('logs', [])
+        }
+        
+        if 'video_path' in task_info:
+            result['video_path'] = task_info['video_path']
+        if 'error' in task_info:
+            result['error'] = task_info['error']
+        if 'created_at' in task_info:
+            result['created_at'] = task_info['created_at']
+            
+        return result
     
     def _log_scene_info(self, scene_type, input_type, functions, parameters):
         """记录场景信息"""
@@ -1644,6 +1734,19 @@ if __name__ == '__main__':
     logger.info("=" * 50)
     logger.info("启动Manim简化可视化工具...")
     logger.info("=" * 50)
+    
+    # 过滤 werkzeug 的 task_status 轮询日志
+    class TaskStatusFilter(logging.Filter):
+        def filter(self, record):
+            msg = record.getMessage()
+            # 过滤掉 task_status 轮询请求
+            if 'task_status' in msg:
+                return False
+            return True
+    
+    # 应用过滤器到 werkzeug logger
+    werkzeug_logger = logging.getLogger('werkzeug')
+    werkzeug_logger.addFilter(TaskStatusFilter())
     
     try:
         app.run(debug=True, host='127.0.0.1', port=5000, use_reloader=False)
