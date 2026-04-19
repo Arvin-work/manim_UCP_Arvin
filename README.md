@@ -224,7 +224,7 @@ manim_UCP_Arvin/
 
 1. **克隆项目**
 ```batch
-git clone https://github.com/your-username/manim_UCP_Arvin.git
+git clone https://github.com/Arvin-work/manim_UCP_Arvin/tree/new_project
 cd manim_UCP_Arvin
 ```
 
@@ -251,7 +251,7 @@ cd manim_UCP_Arvin
 
 1. **克隆项目**
 ```bash
-git clone https://github.com/your-username/manim_UCP_Arvin.git
+git clone https://github.com/Arvin-work/manim_UCP_Arvin/tree/new_project
 cd manim_UCP_Arvin
 ```
 
@@ -496,7 +496,7 @@ t范围：0 到 4*pi
 
 2. **克隆你的 Fork**
 ```bash
-git clone https://github.com/your-username/manim_UCP_Arvin.git
+git clone https://github.com/Arvin-work/manim_UCP_Arvin/tree/new_project
 ```
 
 3. **创建分支**
@@ -590,8 +590,6 @@ limitations under the License.
 
 - [Manim Community](https://www.manim.community/) - 优秀的数学动画引擎
 - [3Blue1Brown](https://www.3blue1brown.com/) - Manim 的创建者
-- [Flask](https://flask.palletsprojects.com/) - 轻量级 Web 框架
-- [SymPy](https://www.sympy.org/) - 强大的符号计算库
 - 所有贡献者和用户
 
 ---
