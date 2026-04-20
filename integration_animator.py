@@ -17,8 +17,18 @@ class IntegrationAnimator:
         """解析函数字符串为sympy表达式"""
         try:
             allowed_locals = {
+                # 三角函数
                 'sin': sp.sin, 'cos': sp.cos, 'tan': sp.tan,
-                'exp': sp.exp, 'log': sp.log, 'sqrt': sp.sqrt,
+                'sec': sp.sec, 'csc': sp.csc, 'cot': sp.cot,
+                # 反三角函数
+                'asin': sp.asin, 'acos': sp.acos, 'atan': sp.atan,
+                'arcsin': sp.asin, 'arccos': sp.acos, 'arctan': sp.atan,
+                'asec': sp.asec, 'acsc': sp.acsc, 'acot': sp.acot,
+                # 指数/对数函数
+                'exp': sp.exp, 'log': sp.log,
+                # 幂函数
+                'sqrt': sp.sqrt, 'cbrt': lambda x: x**(sp.Integer(1)/3),
+                # 常量
                 'pi': sp.pi, 'e': sp.E
             }
             

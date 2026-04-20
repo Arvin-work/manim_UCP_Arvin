@@ -6,7 +6,7 @@ import logging
 from manim import *
 import sympy as sp
 import numpy as np
-from sympy import symbols, lambdify
+from sympy import symbols, lambdify, sympify
 
 logger = logging.getLogger(__name__)
 
@@ -24,8 +24,18 @@ class ThreeDAnimator:
         """解析函数字符串为sympy表达式"""
         try:
             allowed_locals = {
+                # 三角函数
                 'sin': sp.sin, 'cos': sp.cos, 'tan': sp.tan,
-                'exp': sp.exp, 'log': sp.log, 'sqrt': sp.sqrt,
+                'sec': sp.sec, 'csc': sp.csc, 'cot': sp.cot,
+                # 反三角函数
+                'asin': sp.asin, 'acos': sp.acos, 'atan': sp.atan,
+                'arcsin': sp.asin, 'arccos': sp.acos, 'arctan': sp.atan,
+                'asec': sp.asec, 'acsc': sp.acsc, 'acot': sp.acot,
+                # 指数/对数函数
+                'exp': sp.exp, 'log': sp.log,
+                # 幂函数
+                'sqrt': sp.sqrt, 'cbrt': lambda x: x**(sp.Integer(1)/3),
+                # 常量
                 'pi': sp.pi, 'e': sp.E
             }
             
@@ -35,7 +45,8 @@ class ThreeDAnimator:
             raise ValueError(f"函数解析错误: {str(e)}")
     
     def create_3d_animation(self, func_str, plot_type="auto", x_range=(-5, 5), y_range=(-5, 5), z_range=(-5, 5),
-                          camera_phi=45, camera_theta=-45, output_file=None, plane2_str=None, input_type='explicit'):
+                          camera_phi=45, camera_theta=-45, output_file=None, plane2_str=None, input_type='explicit',
+                          parametric1_config=None, parametric2_config=None):
         """创建三维场景绘制动画
         
         Args:
@@ -47,7 +58,25 @@ class ThreeDAnimator:
             output_file: 输出文件路径
             plane2_str: 平面2的函数表达式（可选，用于双平面变换）
             input_type: 输入类型 - explicit, implicit, polar, parametric
+            parametric1_config: 参数方程模式下平面1的三组参数配置 {x_expr, y_expr, z_expr}
+            parametric2_config: 参数方程模式下平面2的三组参数配置 {x_expr, y_expr, z_expr}
         """
+        
+        if input_type == 'parametric' and parametric1_config and parametric2_config:
+            print(f"参数方程曲面变换 - 使用三组参数输入")
+            print(f"平面1: x(u,v)={parametric1_config.get('x_expr', '')}, y(u,v)={parametric1_config.get('y_expr', '')}, z(u,v)={parametric1_config.get('z_expr', '')}")
+            print(f"平面2: x₂(u,v)={parametric2_config.get('x_expr', '')}, y₂(u,v)={parametric2_config.get('y_expr', '')}, z₂(u,v)={parametric2_config.get('z_expr', '')}")
+            print(f"坐标范围 - X: {x_range}, Y: {y_range}, Z: {z_range}")
+            print(f"相机参数 - φ: {camera_phi}°, θ: {camera_theta}°")
+            return self.create_surface_transform(
+                func_str, plane2_str or '',
+                x_range, y_range, z_range,
+                camera_phi, camera_theta,
+                output_file,
+                input_type,
+                parametric1_config=parametric1_config,
+                parametric2_config=parametric2_config
+            )
         
         if plane2_str:
             print(f"双平面变换参数 - 平面1: {func_str}, 平面2: {plane2_str}")
@@ -265,7 +294,8 @@ class ThreeDAnimator:
     def create_surface_transform(self, plane1_str, plane2_str,
                                  x_range=(-5, 5), y_range=(-5, 5), z_range=(-5, 5),
                                  camera_phi=45, camera_theta=-45,
-                                 output_file=None, input_type='explicit', polar1_params=None, polar2_params=None):
+                                 output_file=None, input_type='explicit', polar1_params=None, polar2_params=None,
+                                 parametric1_config=None, parametric2_config=None):
         """创建曲面平滑变换动画 - 从平面1变换到平面2
         
         支持多种输入类型：显函数、隐函数、极坐标、参数方程
@@ -281,6 +311,8 @@ class ThreeDAnimator:
             input_type: 输入类型 - explicit, implicit, polar, parametric
             polar1_params: 极坐标模式下平面1的附加参数
             polar2_params: 极坐标模式下平面2的附加参数
+            parametric1_config: 参数方程模式下平面1的三组参数配置 {x_expr, y_expr, z_expr}
+            parametric2_config: 参数方程模式下平面2的三组参数配置 {x_expr, y_expr, z_expr}
         """
         print(f"曲面变换类型: {input_type}")
         print(f"平面1原始表达式: {plane1_str}")
@@ -324,50 +356,87 @@ class ThreeDAnimator:
             print(f"显函数模式 - 平面1: z = {func1}")
             print(f"显函数模式 - 平面2: z = {func2}")
         
-        # 2. 极坐标模式数据预处理 - 使用球面坐标 r(θ, φ)
+        # 2. 极坐标模式数据预处理 - 真正的旋转曲面参数化
         polar_r1_lambda = None
         polar_r2_lambda = None
         if input_type == 'polar':
             try:
-                r1_expr = safe_parse_general(plane1_str, '2')
-                r2_expr = safe_parse_general(plane2_str, '4')
-                polar_r1_lambda = lambdify((u, v), r1_expr, 'numpy')
-                polar_r2_lambda = lambdify((u, v), r2_expr, 'numpy')
-                print(f"极坐标模式 - 平面1半径: r = {r1_expr}")
-                print(f"极坐标模式 - 平面2半径: r = {r2_expr}")
+                theta_sym, phi_sym = symbols('theta phi')
+                r1_expr = safe_parse_general(plane1_str, '2 + 0.5*cos(theta)')
+                r2_expr = safe_parse_general(plane2_str, '3 + sin(theta)')
+                
+                polar_r1_lambda = lambdify((theta_sym, phi_sym), r1_expr, 'numpy')
+                polar_r2_lambda = lambdify((theta_sym, phi_sym), r2_expr, 'numpy')
+                print(f"✅ 极坐标模式 - 平面1: r(θ,φ) = {r1_expr}")
+                print(f"✅ 极坐标模式 - 平面2: r(θ,φ) = {r2_expr}")
+                print("  真正极坐标: 2D极坐标曲线旋转形成3D环面/曲面")
             except Exception as e:
-                print(f"极坐标解析错误 {e}，使用默认值")
-                polar_r1_lambda = lambda u, v: 2
-                polar_r2_lambda = lambda u, v: 4
+                print(f"极坐标解析错误 {e}，使用默认心形线")
+                polar_r1_lambda = lambda theta, phi: 2 + np.cos(theta)
+                polar_r2_lambda = lambda theta, phi: 3 + np.sin(theta)
         
         # 3. 参数方程模式数据预处理
         param1_func = None
         param2_func = None
         if input_type == 'parametric':
             try:
-                r1_expr = safe_parse_general(plane1_str, '2')
-                r2_expr = safe_parse_general(plane2_str, '3')
-                r1_lambda = lambdify((u, v), r1_expr, 'numpy')
-                r2_lambda = lambdify((u, v), r2_expr, 'numpy')
-                
-                def param1_func_impl(u, v):
-                    r = r1_lambda(u, v)
-                    x_p = r * np.sin(v) * np.cos(u)
-                    y_p = r * np.sin(v) * np.sin(u)
-                    z_p = r * np.cos(v)
-                    return x_p, y_p, z_p
-                
-                def param2_func_impl(u, v):
-                    r = r2_lambda(u, v)
-                    x_p = 1.5 * r * np.sin(v) * np.cos(u)
-                    y_p = r * np.sin(v) * np.sin(u)
-                    z_p = 0.8 * r * np.cos(v)
-                    return x_p, y_p, z_p
-                
-                param1_func = param1_func_impl
-                param2_func = param2_func_impl
-                print(f"参数方程模式 - 平面1参数化: 球面 r={r1_expr}")
-                print(f"参数方程模式 - 平面2参数化: 椭球面 r={r2_expr}")
+                if parametric1_config and parametric2_config:
+                    x1_expr = safe_parse_general(parametric1_config.get('x_expr', 'cos(u)*sin(v)'), 'cos(u)*sin(v)')
+                    y1_expr = safe_parse_general(parametric1_config.get('y_expr', 'sin(u)*sin(v)'), 'sin(u)*sin(v)')
+                    z1_expr = safe_parse_general(parametric1_config.get('z_expr', 'cos(v)'), 'cos(v)')
+                    
+                    x2_expr = safe_parse_general(parametric2_config.get('x_expr', '2*cos(u)*sin(v)'), '2*cos(u)*sin(v)')
+                    y2_expr = safe_parse_general(parametric2_config.get('y_expr', '2*sin(u)*sin(v)'), '2*sin(u)*sin(v)')
+                    z2_expr = safe_parse_general(parametric2_config.get('z_expr', '2*cos(v)'), '2*cos(v)')
+                    
+                    x1_lambda = lambdify((u, v), x1_expr, 'numpy')
+                    y1_lambda = lambdify((u, v), y1_expr, 'numpy')
+                    z1_lambda = lambdify((u, v), z1_expr, 'numpy')
+                    
+                    x2_lambda = lambdify((u, v), x2_expr, 'numpy')
+                    y2_lambda = lambdify((u, v), y2_expr, 'numpy')
+                    z2_lambda = lambdify((u, v), z2_expr, 'numpy')
+                    
+                    def param1_func_impl(u, v):
+                        x_p = x1_lambda(u, v)
+                        y_p = y1_lambda(u, v)
+                        z_p = z1_lambda(u, v)
+                        return x_p, y_p, z_p
+                    
+                    def param2_func_impl(u, v):
+                        x_p = x2_lambda(u, v)
+                        y_p = y2_lambda(u, v)
+                        z_p = z2_lambda(u, v)
+                        return x_p, y_p, z_p
+                    
+                    param1_func = param1_func_impl
+                    param2_func = param2_func_impl
+                    print(f"参数方程模式 - 平面1参数化: x(u,v)={x1_expr}, y(u,v)={y1_expr}, z(u,v)={z1_expr}")
+                    print(f"参数方程模式 - 平面2参数化: x₂(u,v)={x2_expr}, y₂(u,v)={y2_expr}, z₂(u,v)={z2_expr}")
+                else:
+                    r1_expr = safe_parse_general(plane1_str, '2')
+                    r2_expr = safe_parse_general(plane2_str, '3')
+                    r1_lambda = lambdify((u, v), r1_expr, 'numpy')
+                    r2_lambda = lambdify((u, v), r2_expr, 'numpy')
+                    
+                    def param1_func_impl(u, v):
+                        r = r1_lambda(u, v)
+                        x_p = r * np.sin(v) * np.cos(u)
+                        y_p = r * np.sin(v) * np.sin(u)
+                        z_p = r * np.cos(v)
+                        return x_p, y_p, z_p
+                    
+                    def param2_func_impl(u, v):
+                        r = r2_lambda(u, v)
+                        x_p = 1.5 * r * np.sin(v) * np.cos(u)
+                        y_p = r * np.sin(v) * np.sin(u)
+                        z_p = 0.8 * r * np.cos(v)
+                        return x_p, y_p, z_p
+                    
+                    param1_func = param1_func_impl
+                    param2_func = param2_func_impl
+                    print(f"参数方程模式 - 平面1参数化: 球面 r={r1_expr}")
+                    print(f"参数方程模式 - 平面2参数化: 椭球面 r={r2_expr}")
             except Exception as e:
                 print(f"参数方程解析错误 {e}，使用默认值")
                 def param1_func_impl(u, v):
@@ -540,40 +609,45 @@ class ThreeDAnimator:
                     )
                 
                 elif input_type == 'polar':
-                    print("极坐标模式: 使用球面坐标参数化 r1(θ,φ) → r2(θ,φ)")
+                    print("✅ 真正极坐标旋转曲面模式")
+                    print("  u = 旋转角 φ (绕z轴旋转)")
+                    print("  v = 极角 θ (xy平面内)")
+                    print("  数学: r(θ) × 旋转矩阵 → 真正的3D极坐标曲面")
                     
                     def polar1_func(u, v):
                         try:
-                            r1_val = float(polar_r1_lambda(u, v))
+                            r1_val = polar_r1_lambda(v, u)
+                            r1_val = float(r1_val) if np.isscalar(r1_val) else float(r1_val.mean())
                         except:
-                            r1_val = 2
-                        x_p = r1_val * np.sin(v) * np.cos(u)
-                        y_p = r1_val * np.sin(v) * np.sin(u)
-                        z_p = r1_val * np.cos(v)
+                            r1_val = 2 + np.cos(v)
+                        x_p = r1_val * np.cos(v) * np.cos(u)
+                        y_p = r1_val * np.sin(v) * np.cos(u)
+                        z_p = r1_val * np.sin(u)
                         return axes.c2p(x_p, y_p, z_p)
                     
                     def polar2_func(u, v):
                         try:
-                            r2_val = float(polar_r2_lambda(u, v))
+                            r2_val = polar_r2_lambda(v, u)
+                            r2_val = float(r2_val) if np.isscalar(r2_val) else float(r2_val.mean())
                         except:
-                            r2_val = 4
-                        x_p = r2_val * np.sin(v) * np.cos(u)
-                        y_p = r2_val * np.sin(v) * np.sin(u)
-                        z_p = r2_val * np.cos(v)
+                            r2_val = 3 + np.sin(v)
+                        x_p = r2_val * np.cos(v) * np.cos(u)
+                        y_p = r2_val * np.sin(v) * np.cos(u)
+                        z_p = r2_val * np.sin(u)
                         return axes.c2p(x_p, y_p, z_p)
                     
                     surface1 = Surface(
                         polar1_func,
-                        u_range=[0, 2 * np.pi],
-                        v_range=[0, np.pi],
-                        resolution=(20, 20),
+                        u_range=[-np.pi, np.pi],
+                        v_range=[0, 2 * np.pi],
+                        resolution=(30, 30),
                         checkerboard_colors=None
                     )
                     surface2 = Surface(
                         polar2_func,
-                        u_range=[0, 2 * np.pi],
-                        v_range=[0, np.pi],
-                        resolution=(20, 20),
+                        u_range=[-np.pi, np.pi],
+                        v_range=[0, 2 * np.pi],
+                        resolution=(30, 30),
                         checkerboard_colors=None
                     )
                 

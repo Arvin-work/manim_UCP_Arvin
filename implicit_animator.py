@@ -28,9 +28,20 @@ class ImplicitFunctionAnimator:
         """
         try:
             allowed_locals = {
+                # 三角函数
                 'sin': sp.sin, 'cos': sp.cos, 'tan': sp.tan,
-                'exp': sp.exp, 'log': sp.log, 'sqrt': sp.sqrt,
+                'sec': sp.sec, 'csc': sp.csc, 'cot': sp.cot,
+                # 反三角函数
+                'asin': sp.asin, 'acos': sp.acos, 'atan': sp.atan,
+                'arcsin': sp.asin, 'arccos': sp.acos, 'arctan': sp.atan,
+                'asec': sp.asec, 'acsc': sp.acsc, 'acot': sp.acot,
+                # 指数/对数函数
+                'exp': sp.exp, 'log': sp.log,
+                # 幂函数
+                'sqrt': sp.sqrt, 'cbrt': lambda x: x**(sp.Integer(1)/3),
+                # 常量
                 'pi': sp.pi, 'e': sp.E,
+                # 变量
                 'x': symbols('x'),
                 'y': symbols('y')
             }
@@ -135,9 +146,13 @@ class ImplicitFunctionAnimator:
         
         class ImplicitPlotScene(Scene):
             def construct(self):
+                plane_width = 14 * 0.9
+                plane_height = 8 * 0.9
                 plane = NumberPlane(
                     x_range=[x_range[0], x_range[1], (x_range[1]-x_range[0])/10],
                     y_range=[y_range[0], y_range[1], (y_range[1]-y_range[0])/10],
+                    x_length=plane_width,
+                    y_length=plane_height,
                 )
                 
                 self.play(Create(plane), run_time=1)
@@ -176,7 +191,7 @@ class ImplicitFunctionAnimator:
             config.frame_rate = 60
             config.pixel_height = 1080
             config.pixel_width = 1920
-            config.disable_caching = False
+            config.disable_caching = True
             
             scene = ImplicitPlotScene()
             scene.render()
@@ -185,10 +200,13 @@ class ImplicitFunctionAnimator:
             for root, dirs, files in os.walk(output_dir):
                 for file in files:
                     if file.endswith(".mp4") and "ImplicitPlotScene" in file:
-                        video_files.append(os.path.join(root, file))
+                        filepath = os.path.join(root, file)
+                        mtime = os.path.getmtime(filepath)
+                        video_files.append((-mtime, filepath))
             
             if video_files:
-                generated_video = video_files[0]
+                video_files.sort()
+                generated_video = video_files[0][1]
                 
                 if output_file:
                     os.makedirs(os.path.dirname(output_file), exist_ok=True)
@@ -236,9 +254,13 @@ class ImplicitFunctionAnimator:
         
         class ImplicitDifferentiationScene(Scene):
             def construct(self):
+                plane_width = 14 * 0.9
+                plane_height = 8 * 0.9
                 plane = NumberPlane(
                     x_range=[x_range[0], x_range[1], (x_range[1]-x_range[0])/20],
                     y_range=[y_range[0], y_range[1], (y_range[1]-y_range[0])/20],
+                    x_length=plane_width,
+                    y_length=plane_height,
                 )
                 
                 self.play(Create(plane), run_time=1.5)
@@ -295,7 +317,7 @@ class ImplicitFunctionAnimator:
             config.frame_rate = 60
             config.pixel_height = 1080
             config.pixel_width = 1920
-            config.disable_caching = False
+            config.disable_caching = True
             
             scene = ImplicitDifferentiationScene()
             scene.render()
@@ -304,10 +326,13 @@ class ImplicitFunctionAnimator:
             for root, dirs, files in os.walk(output_dir):
                 for file in files:
                     if file.endswith(".mp4") and "ImplicitDifferentiationScene" in file:
-                        video_files.append(os.path.join(root, file))
+                        filepath = os.path.join(root, file)
+                        mtime = os.path.getmtime(filepath)
+                        video_files.append((-mtime, filepath))
             
             if video_files:
-                generated_video = video_files[0]
+                video_files.sort()
+                generated_video = video_files[0][1]
                 
                 if output_file:
                     os.makedirs(os.path.dirname(output_file), exist_ok=True)

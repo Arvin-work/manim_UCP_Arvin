@@ -126,25 +126,13 @@
                     <div class="input-section">
                         <!-- 显函数/隐函数输入区域 -->
                         <div class="input-group" id="explicit-implicit-input-group">
-                            <label for="function-input">
+                            <label for="function-input" id="function-input-label">
                                 <i class="fas fa-pen-fancy"></i>
-                                函数表达式 - 平面1
+                                函数表达式
                             </label>
                             <input type="text" id="function-input" placeholder="例如: x**2, sin(x), exp(x)" class="function-input">
                             <div class="input-hint">
                                 支持函数: sin, cos, tan, exp, log, sqrt 等 | 使用 x 作为变量
-                            </div>
-                        </div>
-                        
-                        <!-- 平面2输入区域 - 仅三维场景双平面变换 -->
-                        <div class="input-group" id="plane2-input-group" style="display: none;">
-                            <label for="plane2-input">
-                                <i class="fas fa-exchange-alt"></i>
-                                函数表达式 - 平面2
-                            </label>
-                            <input type="text" id="plane2-input" placeholder="例如: x**2 - y**2, sin(x)*cos(y)" class="function-input">
-                            <div class="input-hint">
-                                三维场景下，将实现从平面1到平面2的平滑变换效果
                             </div>
                         </div>
                         
@@ -169,6 +157,18 @@
                             <input type="text" id="polar-phi-input" placeholder="留空则使用默认值" class="function-input">
                             <div class="input-hint">
                                 三维球坐标模式: r = r(θ, φ) | 使用 theta 和 phi 作为变量
+                            </div>
+                        </div>
+                        
+                        <!-- 平面2输入区域 - 仅三维场景双平面变换 (显函数/隐函数/极坐标模式) -->
+                        <div class="input-group" id="plane2-input-group" style="display: none;">
+                            <label for="plane2-input" id="plane2-input-label">
+                                <i class="fas fa-exchange-alt"></i>
+                                函数表达式 - 平面2
+                            </label>
+                            <input type="text" id="plane2-input" placeholder="例如: x**2 - y**2, sin(x)*cos(y)" class="function-input">
+                            <div class="input-hint" id="plane2-input-hint">
+                                三维场景下，将实现从平面1到平面2的平滑变换效果
                             </div>
                         </div>
                         
@@ -213,19 +213,41 @@
                             <!-- 参数曲面输入 -->
                             <div class="parametric-surface-inputs" id="parametric-surface-inputs" style="display: none;">
                                 <div class="parametric-equation-row">
-                                    <span class="equation-label">x(u,v) =</span>
+                                    <span class="equation-label" id="param-x-label">x(u,v) =</span>
                                     <input type="text" id="param-x-uv" placeholder="例如: cos(u)*sin(v)" class="parametric-input">
                                 </div>
                                 <div class="parametric-equation-row">
-                                    <span class="equation-label">y(u,v) =</span>
+                                    <span class="equation-label" id="param-y-label">y(u,v) =</span>
                                     <input type="text" id="param-y-uv" placeholder="例如: sin(u)*sin(v)" class="parametric-input">
                                 </div>
                                 <div class="parametric-equation-row">
-                                    <span class="equation-label">z(u,v) =</span>
+                                    <span class="equation-label" id="param-z-label">z(u,v) =</span>
                                     <input type="text" id="param-z-uv" placeholder="例如: cos(v)" class="parametric-input">
                                 </div>
-                                <div class="input-hint">
+                                <div class="input-hint" id="param-surface-hint">
                                     使用 u, v 作为参数 | 支持函数: sin, cos, tan, exp, log, sqrt, pi
+                                </div>
+                                
+                                <!-- 平面2参数曲面输入（仅三维场景曲面变换时显示）-->
+                                <div id="plane2-parametric-surface-inputs" style="display: none; margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                                    <div style="margin-bottom: 10px; color: #4CAF50; font-weight: 500;">
+                                        <i class="fas fa-exchange-alt"></i> 曲面变换：平面2参数
+                                    </div>
+                                    <div class="parametric-equation-row">
+                                        <span class="equation-label">x₂(u,v) =</span>
+                                        <input type="text" id="plane2-param-x-uv" placeholder="例如: 2*cos(u)*sin(v)" class="parametric-input">
+                                    </div>
+                                    <div class="parametric-equation-row">
+                                        <span class="equation-label">y₂(u,v) =</span>
+                                        <input type="text" id="plane2-param-y-uv" placeholder="例如: 2*sin(u)*sin(v)" class="parametric-input">
+                                    </div>
+                                    <div class="parametric-equation-row">
+                                        <span class="equation-label">z₂(u,v) =</span>
+                                        <input type="text" id="plane2-param-z-uv" placeholder="例如: 2*cos(v)" class="parametric-input">
+                                    </div>
+                                    <div class="input-hint">
+                                        使用与平面1相同的 u, v 参数范围进行平滑变换
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -170,7 +170,7 @@ class PolarAnimator:
             config.frame_rate = 60
             config.pixel_height = 1080
             config.pixel_width = 1920
-            config.disable_caching = False
+            config.disable_caching = True
             
             scene = PolarPlotScene()
             scene.render()
@@ -178,11 +178,14 @@ class PolarAnimator:
             video_files = []
             for root, dirs, files in os.walk(output_dir):
                 for file in files:
-                    if file.endswith(".mp4") and "PolarPlotScene" in file:
-                        video_files.append(os.path.join(root, file))
+                    if file.endswith(".mp4"):
+                        full_path = os.path.join(root, file)
+                        mtime = os.path.getmtime(full_path)
+                        video_files.append((mtime, full_path))
             
             if video_files:
-                generated_video = video_files[0]
+                video_files.sort(reverse=True)
+                generated_video = video_files[0][1]
                 
                 if output_file:
                     os.makedirs(os.path.dirname(output_file), exist_ok=True)
@@ -306,7 +309,7 @@ class PolarAnimator:
             config.frame_rate = 60
             config.pixel_height = 1080
             config.pixel_width = 1920
-            config.disable_caching = False
+            config.disable_caching = True
             
             scene = SphericalPlotScene()
             scene.render()
@@ -314,11 +317,14 @@ class PolarAnimator:
             video_files = []
             for root, dirs, files in os.walk(output_dir):
                 for file in files:
-                    if file.endswith(".mp4") and "SphericalPlotScene" in file:
-                        video_files.append(os.path.join(root, file))
+                    if file.endswith(".mp4"):
+                        full_path = os.path.join(root, file)
+                        mtime = os.path.getmtime(full_path)
+                        video_files.append((mtime, full_path))
             
             if video_files:
-                generated_video = video_files[0]
+                video_files.sort(reverse=True)
+                generated_video = video_files[0][1]
                 
                 if output_file:
                     os.makedirs(os.path.dirname(output_file), exist_ok=True)

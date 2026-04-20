@@ -975,8 +975,16 @@ class VisualizationController:
     def _start_3d_plot(self, parameters, input_type='explicit'):
         """启动三维场景绘制任务"""
         try:
-            # 提取参数
+            # 提取参数 - 根据输入类型从正确位置获取表达式
             func_expression = parameters.get('function_expression', '')
+            
+            # 极坐标模式特殊处理：平面1表达式在polar.r_expression中
+            if input_type == 'polar':
+                polar_config = parameters.get('polar', {})
+                polar_r_expression = polar_config.get('r_expression', '')
+                if polar_r_expression:
+                    func_expression = polar_r_expression
+                    print(f"极坐标模式: 从polar.r_expression获取平面1表达式: {func_expression}")
             
             # 获取绘制类型
             plot_type = parameters.get('plot_type', 'auto')
@@ -1021,26 +1029,50 @@ class VisualizationController:
                     
                     self.add_task_log(task_id, "初始化 Manim 渲染环境...", "info")
                     
-                    # 获取平面2表达式
+                    # 获取平面2表达式（支持参数方程三组参数）
                     plane2_expression = parameters.get('plane2_expression')
-                    if plane2_expression:
-                        self.add_task_log(task_id, f"启用双平面变换模式", "info")
-                        self.add_task_log(task_id, f"平面1: {func_expression}", "info")
-                        self.add_task_log(task_id, f"平面2: {plane2_expression}", "info")
+                    plane2_parametric = parameters.get('plane2_parametric')
+                    parametric_config = parameters.get('parametric', {})
                     
-                    # 生成动画
-                    video_path = three_d_animator.create_3d_animation(
-                        func_expression,
-                        plot_type,
-                        tuple(x_range),
-                        tuple(y_range),
-                        tuple(z_range),
-                        camera_phi=camera_phi,
-                        camera_theta=camera_theta,
-                        output_file=output_file,
-                        plane2_str=plane2_expression,
-                        input_type=input_type
-                    )
+                    if input_type == 'parametric' and plane2_parametric:
+                        self.add_task_log(task_id, f"启用参数曲面双平面变换模式", "info")
+                        self.add_task_log(task_id, f"平面1: x(u,v)={parametric_config.get('x_expr', '')}, y(u,v)={parametric_config.get('y_expr', '')}, z(u,v)={parametric_config.get('z_expr', '')}", "info")
+                        self.add_task_log(task_id, f"平面2: x₂(u,v)={plane2_parametric.get('x_expr', '')}, y₂(u,v)={plane2_parametric.get('y_expr', '')}, z₂(u,v)={plane2_parametric.get('z_expr', '')}", "info")
+                        
+                        # 将参数方程平面1和平面2的三组参数传递给渲染函数
+                        video_path = three_d_animator.create_3d_animation(
+                            func_expression,
+                            plot_type,
+                            tuple(x_range),
+                            tuple(y_range),
+                            tuple(z_range),
+                            camera_phi=camera_phi,
+                            camera_theta=camera_theta,
+                            output_file=output_file,
+                            plane2_str=plane2_expression,
+                            input_type=input_type,
+                            parametric1_config=parametric_config,
+                            parametric2_config=plane2_parametric
+                        )
+                    else:
+                        if plane2_expression:
+                            self.add_task_log(task_id, f"启用双平面变换模式", "info")
+                            self.add_task_log(task_id, f"平面1: {func_expression}", "info")
+                            self.add_task_log(task_id, f"平面2: {plane2_expression}", "info")
+                        
+                        # 生成动画（非参数方程模式）
+                        video_path = three_d_animator.create_3d_animation(
+                            func_expression,
+                            plot_type,
+                            tuple(x_range),
+                            tuple(y_range),
+                            tuple(z_range),
+                            camera_phi=camera_phi,
+                            camera_theta=camera_theta,
+                            output_file=output_file,
+                            plane2_str=plane2_expression,
+                            input_type=input_type
+                        )
                     
                     self.add_task_log(task_id, "渲染完成，生成视频文件", "success")
                     

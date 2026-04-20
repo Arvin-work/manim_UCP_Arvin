@@ -26,8 +26,18 @@ class FunctionPlotAnimator:
         try:
             # 安全地评估数学表达式
             allowed_locals = {
+                # 三角函数
                 'sin': sp.sin, 'cos': sp.cos, 'tan': sp.tan,
-                'exp': sp.exp, 'log': sp.log, 'sqrt': sp.sqrt,
+                'sec': sp.sec, 'csc': sp.csc, 'cot': sp.cot,
+                # 反三角函数
+                'asin': sp.asin, 'acos': sp.acos, 'atan': sp.atan,
+                'arcsin': sp.asin, 'arccos': sp.acos, 'arctan': sp.atan,
+                'asec': sp.asec, 'acsc': sp.acsc, 'acot': sp.acot,
+                # 指数/对数函数
+                'exp': sp.exp, 'log': sp.log,
+                # 幂函数
+                'sqrt': sp.sqrt, 'cbrt': lambda x: x**(sp.Integer(1)/3),
+                # 常量
                 'pi': sp.pi, 'e': sp.E
             }
             
@@ -52,19 +62,32 @@ class FunctionPlotAnimator:
         # 创建动画场景
         class FunctionPlotScene(Scene):
             def construct(self):
-                # 创建NumberPlane作为背景网格 - 使用默认的蓝白色网格
+                # 创建NumberPlane作为背景网格 - 适配场景大小
+                # Manim默认场景宽度约14单位，高度约8单位，缩放以适配
+                plane_width = 14 * 0.9
+                plane_height = 8 * 0.9
                 plane = NumberPlane(
                     x_range=[x_range[0], x_range[1], (x_range[1]-x_range[0])//10],
                     y_range=[y_range[0], y_range[1], (y_range[1]-y_range[0])//10],
-                    # 使用默认的蓝白色网格样式
+                    x_length=plane_width,
+                    y_length=plane_height,
                 )
                 
-                # 函数图像 - 直接使用NumberPlane的坐标系
-                func_lambda = lambdify(x, func, 'numpy')
+                # 函数图像 - 对y值进行裁剪防止边界外渲染异常
+                raw_func = lambdify(x, func, 'numpy')
+                y_min, y_max = y_range
+                
+                # 使用远大于视图范围的阈值进行裁剪，截断线在视野外不可见
+                def clamped_func(x_val):
+                    result = raw_func(x_val)
+                    # 阈值设为视图范围的5倍，截断线完全在视野外
+                    clamp_min = y_min * 5 if y_min != 0 else -100
+                    clamp_max = y_max * 5 if y_max != 0 else 100
+                    return np.clip(result, clamp_min, clamp_max)
                 
                 # 使用NumberPlane的plot方法创建函数图像
                 func_graph = plane.plot(
-                    func_lambda,
+                    clamped_func,
                     x_range=[x_range[0], x_range[1]],
                     color=graph_colors[color_scheme],
                     stroke_width=stroke_width
@@ -109,36 +132,22 @@ class FunctionPlotAnimator:
             config.pixel_height = 1080
             config.pixel_width = 1920
             
-            # 启用高质量渲染
-            config.disable_caching = False
+            config.disable_caching = True
             
-            # 创建并渲染场景
             scene = FunctionPlotScene()
             scene.render()
             
-            # 使用与泰勒展开相同的方法查找视频文件
             video_files = []
-            
-            # 查找所有可能的视频文件路径
-            possible_paths = [
-                os.path.join(output_dir, "videos", "FunctionPlotScene", "1080p60", "FunctionPlotScene.mp4"),
-                os.path.join(output_dir, "FunctionPlotScene.mp4"),
-            ]
-            
-            # 同时搜索整个目录
             for root, dirs, files in os.walk(output_dir):
                 for file in files:
                     if file.endswith(".mp4") and "FunctionPlotScene" in file:
-                        video_files.append(os.path.join(root, file))
-            
-            # 添加可能的路径
-            for path in possible_paths:
-                if os.path.exists(path) and path not in video_files:
-                    video_files.append(path)
+                        filepath = os.path.join(root, file)
+                        mtime = os.path.getmtime(filepath)
+                        video_files.append((-mtime, filepath))
             
             if video_files:
-                # 使用第一个找到的MP4文件
-                generated_video = video_files[0]
+                video_files.sort()
+                generated_video = video_files[0][1]
                 
                 # 确保输出目录存在
                 if output_file:
@@ -220,9 +229,13 @@ class FunctionPlotAnimator:
         
         class ParametricCurve2DScene(Scene):
             def construct(self):
+                plane_width = 14 * 0.9
+                plane_height = 8 * 0.9
                 plane = NumberPlane(
                     x_range=[-5, 5, 1],
                     y_range=[-5, 5, 1],
+                    x_length=plane_width,
+                    y_length=plane_height,
                 )
                 
                 self.play(Create(plane), run_time=1)
@@ -264,10 +277,13 @@ class FunctionPlotAnimator:
             for root, dirs, files in os.walk(output_dir):
                 for file in files:
                     if file.endswith(".mp4") and "ParametricCurve2DScene" in file:
-                        video_files.append(os.path.join(root, file))
+                        filepath = os.path.join(root, file)
+                        mtime = os.path.getmtime(filepath)
+                        video_files.append((-mtime, filepath))
             
             if video_files:
-                generated_video = video_files[0]
+                video_files.sort()
+                generated_video = video_files[0][1]
                 
                 if output_file:
                     os.makedirs(os.path.dirname(output_file), exist_ok=True)

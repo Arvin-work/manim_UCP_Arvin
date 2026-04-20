@@ -81,17 +81,18 @@ class VisualizationApp {
                     }
                 }
                 
-                // 三维场景无特殊限制
+                if (func === 'surface_transform' && isSelected && this.currentScene === '3D' && this.currentInputType === 'parametric') {
+                    document.querySelector('input[name="parametric-mode"][value="surface"]').checked = true;
+                    this.switchParametricMode('surface');
+                    this.addLog('✅ 曲面变换已自动切换到参数曲面模式', 'success');
+                }
                 
-                // 如果是选中状态，先取消其他所有功能的选择
                 if (isSelected) {
                     document.querySelectorAll('.function-checkbox input').forEach(otherCheckbox => {
                         if (otherCheckbox !== e.target) {
                             otherCheckbox.checked = false;
-                            // 从选中函数列表中移除其他函数
                             this.selectedFunctions = this.selectedFunctions.filter(f => f !== otherCheckbox.value);
                             
-                            // 隐藏其他功能的参数
                             if (otherCheckbox.value === 'taylor') {
                                 this.toggleTaylorParameters(false);
                             } else if (otherCheckbox.value === 'differentiation') {
@@ -102,32 +103,29 @@ class VisualizationApp {
                         }
                     });
                     
-                    // 添加当前函数到选中列表
                     this.selectedFunctions.push(func);
                     
-                    // 特别处理各功能的参数显示
                     if (func === 'taylor') {
                         this.toggleTaylorParameters(true);
                         this.toggleDifferentiationParameters(false);
                         this.toggleIntegrationParameters(false);
-                        document.getElementById('plane2-input-group').style.display = 'none';
+                        this.hidePlane2Inputs();
                     } else if (func === 'differentiation') {
                         this.toggleDifferentiationParameters(true);
                         this.toggleTaylorParameters(false);
                         this.toggleIntegrationParameters(false);
-                        document.getElementById('plane2-input-group').style.display = 'none';
+                        this.hidePlane2Inputs();
                     } else if (func === 'integration') {
                         this.toggleIntegrationParameters(true);
                         this.toggleTaylorParameters(false);
                         this.toggleDifferentiationParameters(false);
-                        document.getElementById('plane2-input-group').style.display = 'none';
+                        this.hidePlane2Inputs();
                     } else if (func === 'surface_transform') {
-                        // 曲面变换：显示平面2输入框
                         this.toggleTaylorParameters(false);
                         this.toggleDifferentiationParameters(false);
                         this.toggleIntegrationParameters(false);
                         if (this.currentScene === '3D') {
-                            document.getElementById('plane2-input-group').style.display = 'block';
+                            this.updatePlane2InputVisibility();
                             this.addLog('✅ 曲面变换功能已启用', 'success');
                             const typeName = {
                                 'explicit': '显函数',
@@ -150,13 +148,14 @@ class VisualizationApp {
                         this.toggleTaylorParameters(false);
                         this.toggleDifferentiationParameters(false);
                         this.toggleIntegrationParameters(false);
-                        document.getElementById('plane2-input-group').style.display = 'none';
+                        const plane2Group = document.getElementById('plane2-input-group');
+                        if (plane2Group) plane2Group.style.display = 'none';
+                        const plane2ParametricGroup = document.getElementById('plane2-parametric-group');
+                        if (plane2ParametricGroup) plane2ParametricGroup.style.display = 'none';
                     }
                 } else {
-                    // 如果是取消选中，从选中函数列表中移除
                     this.selectedFunctions = this.selectedFunctions.filter(f => f !== func);
                     
-                    // 如果取消的是某个功能，隐藏相关参数
                     if (func === 'taylor') {
                         this.toggleTaylorParameters(false);
                     } else if (func === 'differentiation') {
@@ -164,8 +163,20 @@ class VisualizationApp {
                     } else if (func === 'integration') {
                         this.toggleIntegrationParameters(false);
                     } else if (func === 'surface_transform') {
-                        // 取消曲面变换：隐藏平面2输入框
-                        document.getElementById('plane2-input-group').style.display = 'none';
+                        const plane2Group = document.getElementById('plane2-input-group');
+                        if (plane2Group) plane2Group.style.display = 'none';
+                        const plane2ParametricInputs = document.getElementById('plane2-parametric-surface-inputs');
+                        if (plane2ParametricInputs) {
+                            plane2ParametricInputs.style.display = 'none';
+                        }
+                        const paramSurfaceHint = document.getElementById('param-surface-hint');
+                        if (paramSurfaceHint) {
+                            paramSurfaceHint.textContent = '使用 u, v 作为参数 | 支持函数: sin, cos, tan, exp, log, sqrt, pi';
+                        }
+                        const functionInputLabel = document.getElementById('function-input-label');
+                        if (functionInputLabel) {
+                            functionInputLabel.innerHTML = '<i class="fas fa-pen-fancy"></i> 函数表达式';
+                        }
                         this.addLog('曲面变换功能已取消', 'info');
                     }
                 }
@@ -198,20 +209,48 @@ class VisualizationApp {
         const tRangeGroup = document.getElementById('param-t-range-group');
         const uRangeGroup = document.getElementById('param-u-range-group');
         const vRangeGroup = document.getElementById('param-v-range-group');
+        const plane2ParametricInputs = document.getElementById('plane2-parametric-surface-inputs');
+        const surfaceTransformCheckbox = document.getElementById('surface-transform-checkbox');
+        const paramSurfaceHint = document.getElementById('param-surface-hint');
+        const stCheckbox = surfaceTransformCheckbox ? surfaceTransformCheckbox.querySelector('input') : null;
         
         if (mode === 'curve') {
-            curveInputs.style.display = 'block';
-            surfaceInputs.style.display = 'none';
-            tRangeGroup.style.display = 'block';
-            uRangeGroup.style.display = 'none';
-            vRangeGroup.style.display = 'none';
+            if (curveInputs) curveInputs.style.display = 'block';
+            if (surfaceInputs) surfaceInputs.style.display = 'none';
+            if (tRangeGroup) tRangeGroup.style.display = 'block';
+            if (uRangeGroup) uRangeGroup.style.display = 'none';
+            if (vRangeGroup) vRangeGroup.style.display = 'none';
+            if (plane2ParametricInputs) {
+                plane2ParametricInputs.style.display = 'none';
+            }
+            if (paramSurfaceHint) {
+                paramSurfaceHint.textContent = '使用 u, v 作为参数 | 支持函数: sin, cos, tan, exp, log, sqrt, pi';
+            }
             this.addLog('已切换到参数曲线模式', 'info');
         } else {
-            curveInputs.style.display = 'none';
-            surfaceInputs.style.display = 'block';
-            tRangeGroup.style.display = 'none';
-            uRangeGroup.style.display = 'block';
-            vRangeGroup.style.display = 'block';
+            if (curveInputs) curveInputs.style.display = 'none';
+            if (surfaceInputs) surfaceInputs.style.display = 'block';
+            if (tRangeGroup) tRangeGroup.style.display = 'none';
+            if (uRangeGroup) uRangeGroup.style.display = 'block';
+            if (vRangeGroup) vRangeGroup.style.display = 'block';
+            
+            if (stCheckbox && stCheckbox.checked && this.currentScene === '3D') {
+                if (plane2ParametricInputs) {
+                    plane2ParametricInputs.style.display = 'block';
+                }
+                if (paramSurfaceHint) {
+                    paramSurfaceHint.textContent = '【平面1参数】使用 u, v 作为参数 | 支持函数: sin, cos, tan, exp, log, sqrt, pi';
+                }
+                this.addLog('✅ 曲面变换模式已启用，平面2输入区域已显示', 'info');
+            } else {
+                if (plane2ParametricInputs) {
+                    plane2ParametricInputs.style.display = 'none';
+                }
+                if (paramSurfaceHint) {
+                    paramSurfaceHint.textContent = '使用 u, v 作为参数 | 支持函数: sin, cos, tan, exp, log, sqrt, pi';
+                }
+            }
+            
             this.addLog('已切换到参数曲面模式', 'info');
         }
     }
@@ -491,7 +530,12 @@ class VisualizationApp {
             cameraSaveGroup.style.display = 'block';
             surfaceTransformCheckbox.style.display = 'flex';
             taylorCheckbox.style.display = 'none';
+            
+            const stCheckbox = surfaceTransformCheckbox.querySelector('input');
+            stCheckbox.disabled = false;
+            
             this.addLog('三维场景功能已启用，请选择绘制类型和Z轴范围', 'info');
+            
             this.initCameraControls();
             this.loadCameraPresets();
         } else {
@@ -503,7 +547,7 @@ class VisualizationApp {
             cameraSaveGroup.style.display = 'none';
             surfaceTransformCheckbox.style.display = 'none';
             taylorCheckbox.style.display = 'flex';
-            document.getElementById('plane2-input-group').style.display = 'none';
+            this.hidePlane2Inputs();
         }
     }
     
@@ -1392,10 +1436,26 @@ class VisualizationApp {
             // 三维场景下收集平面2表达式（可选）
             // 注意：必须在 config 声明之后才能访问 config.parameters
             if (this.currentScene === '3D') {
-                const plane2Expression = document.getElementById('plane2-input').value;
-                if (plane2Expression.trim()) {
-                    config.parameters.plane2_expression = plane2Expression;
-                    this.addLog(`双平面变换: 平面1 -> 平面2`, 'info');
+                if (this.currentInputType === 'parametric') {
+                    const plane2ParamX = document.getElementById('plane2-param-x-uv').value.trim();
+                    const plane2ParamY = document.getElementById('plane2-param-y-uv').value.trim();
+                    const plane2ParamZ = document.getElementById('plane2-param-z-uv').value.trim();
+                    
+                    if (plane2ParamX || plane2ParamY || plane2ParamZ) {
+                        config.parameters.plane2_parametric = {
+                            x_expr: plane2ParamX || '0',
+                            y_expr: plane2ParamY || '0',
+                            z_expr: plane2ParamZ || '0'
+                        };
+                        this.addLog(`双平面参数曲面变换: 平面1 -> 平面2`, 'info');
+                        this.addLog(`平面2参数: x₂(u,v)=${plane2ParamX || '0'}, y₂(u,v)=${plane2ParamY || '0'}, z₂(u,v)=${plane2ParamZ || '0'}`, 'info');
+                    }
+                } else {
+                    const plane2Expression = document.getElementById('plane2-input').value;
+                    if (plane2Expression.trim()) {
+                        config.parameters.plane2_expression = plane2Expression;
+                        this.addLog(`双平面变换: 平面1 -> 平面2`, 'info');
+                    }
                 }
             }
             
@@ -1597,7 +1657,6 @@ class VisualizationApp {
         const paramTRangeGroup = document.getElementById('param-t-range-group');
         const paramURangeGroup = document.getElementById('param-u-range-group');
         const paramVRangeGroup = document.getElementById('param-v-range-group');
-        const plane2Group = document.getElementById('plane2-input-group');
         const surfaceTransformCheckbox = document.getElementById('surface-transform-checkbox');
         const stCheckbox = surfaceTransformCheckbox.querySelector('input');
         
@@ -1608,20 +1667,21 @@ class VisualizationApp {
             this.togglePolarParameters(true);
             this.toggleParametricParameters(false);
             
-            // 三维模式下显示俯角输入
             if (this.currentScene === '3D') {
                 polarPhiGroup.style.display = 'block';
-            } else {
-                polarPhiGroup.style.display = 'none';
-            }
-            
-            // 三维场景下，极坐标模式也支持曲面变换
-            if (this.currentScene === '3D') {
                 stCheckbox.disabled = false;
                 if (stCheckbox.checked) {
-                    plane2Group.style.display = 'block';
-                } else {
-                    plane2Group.style.display = 'none';
+                    this.updatePlane2InputVisibility();
+                }
+            } else {
+                polarPhiGroup.style.display = 'none';
+                stCheckbox.disabled = true;
+                stCheckbox.checked = false;
+                const plane2Group = document.getElementById('plane2-input-group');
+                if (plane2Group) plane2Group.style.display = 'none';
+                const functionInputLabel = document.getElementById('function-input-label');
+                if (functionInputLabel) {
+                    functionInputLabel.innerHTML = '<i class="fas fa-pen-fancy"></i> 函数表达式';
                 }
             }
         } else if (this.currentInputType === 'parametric') {
@@ -1632,13 +1692,19 @@ class VisualizationApp {
             this.togglePolarParameters(false);
             this.toggleParametricParameters(true);
             
-            // 三维场景下，参数方程模式也支持曲面变换
             if (this.currentScene === '3D') {
                 stCheckbox.disabled = false;
                 if (stCheckbox.checked) {
-                    plane2Group.style.display = 'block';
-                } else {
-                    plane2Group.style.display = 'none';
+                    this.updatePlane2InputVisibility();
+                }
+            } else {
+                stCheckbox.disabled = true;
+                stCheckbox.checked = false;
+                const plane2ParametricInputs = document.getElementById('plane2-parametric-surface-inputs');
+                if (plane2ParametricInputs) plane2ParametricInputs.style.display = 'none';
+                const paramSurfaceHint = document.getElementById('param-surface-hint');
+                if (paramSurfaceHint) {
+                    paramSurfaceHint.textContent = '使用 u, v 作为参数 | 支持函数: sin, cos, tan, exp, log, sqrt, pi';
                 }
             }
         } else {
@@ -1649,14 +1715,22 @@ class VisualizationApp {
             this.togglePolarParameters(false);
             this.toggleParametricParameters(false);
             
-            // 显函数/隐函数模式下启用曲面变换选项
-            stCheckbox.disabled = false;
-            
-            // 根据曲面变换是否勾选决定是否显示平面2输入框
-            if (this.currentScene === '3D' && stCheckbox.checked) {
-                plane2Group.style.display = 'block';
+            if (this.currentScene === '3D') {
+                stCheckbox.disabled = false;
+                if (stCheckbox.checked) {
+                    this.updatePlane2InputVisibility();
+                }
             } else {
-                plane2Group.style.display = 'none';
+                stCheckbox.disabled = true;
+                stCheckbox.checked = false;
+                const plane2Group = document.getElementById('plane2-input-group');
+                if (plane2Group) plane2Group.style.display = 'none';
+                const plane2ParametricInputs = document.getElementById('plane2-parametric-surface-inputs');
+                if (plane2ParametricInputs) plane2ParametricInputs.style.display = 'none';
+                const functionInputLabel = document.getElementById('function-input-label');
+                if (functionInputLabel) {
+                    functionInputLabel.innerHTML = '<i class="fas fa-pen-fancy"></i> 函数表达式';
+                }
             }
         }
         
@@ -1724,6 +1798,84 @@ class VisualizationApp {
             tRangeGroup.style.display = 'none';
             uRangeGroup.style.display = 'none';
             vRangeGroup.style.display = 'none';
+        }
+    }
+    
+    hidePlane2Inputs() {
+        const plane2Group = document.getElementById('plane2-input-group');
+        if (plane2Group) plane2Group.style.display = 'none';
+        const plane2ParametricGroup = document.getElementById('plane2-parametric-group');
+        if (plane2ParametricGroup) plane2ParametricGroup.style.display = 'none';
+        const plane2ParametricInputs = document.getElementById('plane2-parametric-surface-inputs');
+        if (plane2ParametricInputs) plane2ParametricInputs.style.display = 'none';
+    }
+    
+    updatePlane2InputVisibility() {
+        const plane2Group = document.getElementById('plane2-input-group');
+        const plane2ParametricInputs = document.getElementById('plane2-parametric-surface-inputs');
+        const surfaceTransformCheckbox = document.getElementById('surface-transform-checkbox');
+        const stCheckbox = surfaceTransformCheckbox ? surfaceTransformCheckbox.querySelector('input') : null;
+        const surfaceTransformSelected = stCheckbox ? stCheckbox.checked : false;
+        
+        const paramSurfaceHint = document.getElementById('param-surface-hint');
+        const functionInputLabel = document.getElementById('function-input-label');
+        const plane2InputLabel = document.getElementById('plane2-input-label');
+        const plane2InputHint = document.getElementById('plane2-input-hint');
+        
+        if (plane2Group) plane2Group.style.display = 'none';
+        if (plane2ParametricInputs) plane2ParametricInputs.style.display = 'none';
+        
+        if (functionInputLabel) {
+            functionInputLabel.innerHTML = '<i class="fas fa-pen-fancy"></i> 函数表达式';
+        }
+        
+        if (paramSurfaceHint) {
+            paramSurfaceHint.textContent = '使用 u, v 作为参数 | 支持函数: sin, cos, tan, exp, log, sqrt, pi';
+        }
+        
+        if (this.currentScene !== '3D' || !surfaceTransformSelected) {
+            return;
+        }
+        
+        if (this.currentInputType === 'parametric') {
+            const mode = document.querySelector('input[name="parametric-mode"]:checked').value;
+            if (mode === 'surface' && plane2ParametricInputs) {
+                plane2ParametricInputs.style.display = 'block';
+                
+                if (paramSurfaceHint) {
+                    paramSurfaceHint.textContent = '【平面1参数】使用 u, v 作为参数 | 支持函数: sin, cos, tan, exp, log, sqrt, pi';
+                }
+                
+                this.addLog('📝 参数曲面变换：平面1与平面2均使用 x(u,v), y(u,v), z(u,v) 三组参数', 'info');
+                this.addLog('✅ 平面2输入区域已显示在参数方程输入下方', 'info');
+                this.addLog('✅ 两个曲面使用相同的 u, v 参数范围进行变换', 'info');
+            }
+        } else {
+            if (plane2Group) plane2Group.style.display = 'block';
+            
+            if (this.currentInputType === 'polar') {
+                if (plane2InputLabel) {
+                    plane2InputLabel.innerHTML = '<i class="fas fa-exchange-alt"></i> 极坐标方程 r(θ) - 平面2';
+                }
+                if (plane2InputHint) {
+                    plane2InputHint.textContent = '三维极坐标曲面变换：从平面1到平面2的平滑过渡';
+                }
+                if (functionInputLabel) {
+                    functionInputLabel.innerHTML = '<i class="fas fa-circle-notch"></i> 极坐标方程 r(θ) - 平面1';
+                }
+            } else {
+                if (plane2InputLabel) {
+                    plane2InputLabel.innerHTML = '<i class="fas fa-exchange-alt"></i> 函数表达式 - 平面2';
+                }
+                if (plane2InputHint) {
+                    plane2InputHint.textContent = '三维场景下，将实现从平面1到平面2的平滑变换效果';
+                }
+                if (functionInputLabel) {
+                    functionInputLabel.innerHTML = '<i class="fas fa-pen-fancy"></i> 函数表达式 - 平面1';
+                }
+            }
+            
+            this.addLog('✅ 平面2输入区域已显示在平面1下方', 'info');
         }
     }
 

@@ -24,8 +24,18 @@ class TaylorExpansionAnimator:
         try:
             # 安全地评估数学表达式
             allowed_locals = {
+                # 三角函数
                 'sin': sp.sin, 'cos': sp.cos, 'tan': sp.tan,
-                'exp': sp.exp, 'log': sp.log, 'sqrt': sp.sqrt,
+                'sec': sp.sec, 'csc': sp.csc, 'cot': sp.cot,
+                # 反三角函数
+                'asin': sp.asin, 'acos': sp.acos, 'atan': sp.atan,
+                'arcsin': sp.asin, 'arccos': sp.acos, 'arctan': sp.atan,
+                'asec': sp.asec, 'acsc': sp.acsc, 'acot': sp.acot,
+                # 指数/对数函数
+                'exp': sp.exp, 'log': sp.log,
+                # 幂函数
+                'sqrt': sp.sqrt, 'cbrt': lambda x: x**(sp.Integer(1)/3),
+                # 常量
                 'pi': sp.pi, 'e': sp.E
             }
             
@@ -82,28 +92,22 @@ class TaylorExpansionAnimator:
         
         # 创建动画场景
         class TaylorExpansionScene(Scene):
-            def setup(self):
-                # 创建简化的坐标轴 - 去除网格线和数字
-                self.axes = Axes(
+            def construct(self):
+                # 在construct内部创建所有对象，避免作用域问题
+                axes = Axes(
                     x_range=[x_range[0], x_range[1], 1],
                     y_range=[y_range[0], y_range[1], 1],
                     axis_config={
                         "color": anim_config['axes_color'],
                         "stroke_width": 2,
-                        "include_numbers": False,  # 不显示数字
-                        "include_ticks": False,    # 不显示刻度
-                    },
-                    x_axis_config={
-                        "numbers_to_include": [],
-                    },
-                    y_axis_config={
-                        "numbers_to_include": [],
+                        "include_numbers": False,
+                        "include_ticks": False,
                     },
                 )
                 
                 # 原始函数
                 original_lambda = lambdify(x, original_func, 'numpy')
-                self.original_graph = self.axes.plot(
+                original_graph = axes.plot(
                     original_lambda,
                     x_range=[x_range[0], x_range[1]],
                     color=anim_config['graph_color'],
@@ -111,7 +115,7 @@ class TaylorExpansionAnimator:
                 )
                 
                 # 创建零线 (y=0)
-                self.zero_line = self.axes.plot(
+                zero_line = axes.plot(
                     lambda x: 0,
                     x_range=[x_range[0], x_range[1]],
                     color=WHITE,
@@ -120,46 +124,45 @@ class TaylorExpansionAnimator:
                 )
                 
                 # 泰勒多项式列表
-                self.taylor_graphs = []
+                taylor_graphs = []
                 for i, term_info in enumerate(taylor_terms):
                     poly_lambda = lambdify(x, term_info['polynomial'], 'numpy')
-                    graph = self.axes.plot(
+                    graph = axes.plot(
                         poly_lambda,
                         x_range=[x_range[0], x_range[1]],
                         color=anim_config['taylor_colors'][i % len(anim_config['taylor_colors'])],
                         stroke_width=3
                     )
-                    self.taylor_graphs.append(graph)
+                    taylor_graphs.append(graph)
                 
                 # 展开点标记
                 original_value = original_func.subs(x, expansion_point)
-                self.expansion_point = Dot(
-                    self.axes.coords_to_point(expansion_point, float(original_value)),
+                expansion_dot = Dot(
+                    axes.coords_to_point(expansion_point, float(original_value)),
                     color=RED,
                     radius=0.08
                 )
-            
-            def construct(self):
+                
                 # 创建坐标轴
-                self.play(Create(self.axes), run_time=2)
+                self.play(Create(axes), run_time=2)
                 self.wait(0.5)
                 
                 # 显示零线 (y=0)
-                self.play(Create(self.zero_line), run_time=1)
+                self.play(Create(zero_line), run_time=1)
                 self.wait(0.5)
                 
                 # 显示原始函数
-                self.play(Create(self.original_graph), run_time=2)
-                self.add(self.expansion_point)
+                self.play(Create(original_graph), run_time=2)
+                self.add(expansion_dot)
                 self.wait(1)
                 
                 # 从零线开始逐步变换为泰勒多项式
-                current_graph = self.zero_line
+                current_graph = zero_line
                 
                 # 存储所有显示的曲线
-                displayed_graphs = [self.zero_line.copy()]
+                displayed_graphs = [zero_line.copy()]
                 
-                for i, (taylor_graph, term_info) in enumerate(zip(self.taylor_graphs, taylor_terms)):
+                for i, (taylor_graph, term_info) in enumerate(zip(taylor_graphs, taylor_terms)):
                     # 创建变换动画，从当前曲线变换为新的泰勒多项式曲线
                     self.play(
                         Transform(current_graph, taylor_graph),
@@ -170,7 +173,7 @@ class TaylorExpansionAnimator:
                     displayed_graphs.append(current_graph.copy())
                     
                     # 短暂暂停以观察
-                    if i < len(self.taylor_graphs) - 1:
+                    if i < len(taylor_graphs) - 1:
                         self.wait(0.3)
                     
                     # 对于低阶多项式，可以更长时间观察
@@ -181,7 +184,7 @@ class TaylorExpansionAnimator:
                 self.wait(1)
                 
                 # 高亮原始函数
-                self.play(self.original_graph.animate.set_stroke(width=6), run_time=1)
+                self.play(original_graph.animate.set_stroke(width=6), run_time=1)
                 self.wait(1)
                 
                 # 重新显示所有泰勒曲线（包括零线）
@@ -204,7 +207,7 @@ class TaylorExpansionAnimator:
                 
                 self.play(
                     *[FadeOut(graph) for graph in curves_to_fade],
-                    FadeOut(self.zero_line),
+                    FadeOut(zero_line),
                     run_time=2
                 )
                 
@@ -225,28 +228,26 @@ class TaylorExpansionAnimator:
             config.media_dir = temp_dir
             
             # 设置最高质量
-            config.quality = "high_quality"  # 使用高质量
-            config.frame_rate = 60  # 高帧率
-            config.pixel_height = 1080  # 1080p分辨率
+            config.quality = "high_quality"
+            config.frame_rate = 60
+            config.pixel_height = 1080
             config.pixel_width = 1920
+            config.disable_caching = True
             
-            # 启用高质量渲染
-            config.disable_caching = False
-            
-            # 创建并渲染场景
             scene = TaylorExpansionScene()
             scene.render()
             
-            # 查找生成的视频文件
             video_files = []
             for root, dirs, files in os.walk(temp_dir):
                 for file in files:
                     if file.endswith(".mp4") and "TaylorExpansionScene" in file:
-                        video_files.append(os.path.join(root, file))
+                        filepath = os.path.join(root, file)
+                        mtime = os.path.getmtime(filepath)
+                        video_files.append((-mtime, filepath))
             
             if video_files:
-                # 使用第一个找到的MP4文件
-                generated_video = video_files[0]
+                video_files.sort()
+                generated_video = video_files[0][1]
                 
                 # 如果指定了输出文件，则移动文件
                 if output_file:

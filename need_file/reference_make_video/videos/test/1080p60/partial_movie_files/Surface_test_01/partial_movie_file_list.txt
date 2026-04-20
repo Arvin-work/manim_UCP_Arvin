@@ -1,2 +1,0 @@
-# This file is used internally by FFMPEG.
-file 'file:D:/Project/manim_develop/manim_UCP_Arvin/need_file/media/videos/test/1080p60/partial_movie_files/Surface_test_01/1943809243_1959249656_3155067863.mp4'
