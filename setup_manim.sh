@@ -4,7 +4,7 @@
 # 适用于 Linux / macOS
 # ============================================
 
-set -e  # 遇到任何错误立即退出
+set -e
 
 # 颜色定义
 RED='\033[0;31m'
@@ -32,7 +32,6 @@ header() {
 header "第 1/7 步：检测 Conda 环境"
 
 if ! command -v conda &> /dev/null; then
-    # 常见安装路径
     for conda_path in "$HOME/miniconda3/bin/conda" "$HOME/anaconda3/bin/conda" "/opt/conda/bin/conda"; do
         if [ -f "$conda_path" ]; then
             export PATH="$(dirname "$conda_path"):$PATH"
@@ -49,7 +48,6 @@ fi
 
 info "已检测到 Conda: $(conda --version | head -n1)"
 
-# 初始化 conda
 eval "$(conda shell.bash hook)"
 
 # ============================================
@@ -74,12 +72,10 @@ OS="$(uname -s)"
 case "$OS" in
     Linux)
         if command -v apt-get &> /dev/null; then
-            # Debian / Ubuntu
             sudo apt-get update -qq
             sudo apt-get install -y build-essential libcairo2-dev pkg-config ffmpeg
             info "已安装 build-essential, libcairo2-dev, pkg-config, ffmpeg"
         elif command -v yum &> /dev/null; then
-            # RHEL / CentOS
             sudo yum install -y gcc gcc-c++ cairo-devel pkgconfig ffmpeg
             info "已安装 gcc, cairo-devel, pkgconfig, ffmpeg"
         elif command -v dnf &> /dev/null; then
@@ -90,7 +86,6 @@ case "$OS" in
         fi
         ;;
     Darwin)
-        # macOS
         if ! command -v gcc &> /dev/null; then
             warn "未找到 gcc，尝试安装 Xcode Command Line Tools..."
             xcode-select --install 2>/dev/null || true
@@ -110,7 +105,6 @@ case "$OS" in
         ;;
 esac
 
-# 验证 FFmpeg
 if command -v ffmpeg &> /dev/null; then
     FFMPEG_VER=$(ffmpeg -version | head -n1 | awk '{print $3}')
     info "已检测到 FFmpeg: $FFMPEG_VER"
@@ -119,7 +113,7 @@ else
 fi
 
 # ============================================
-# 4. 创建 conda 环境（统一 Python 3.12）
+# 4. 创建 conda 环境（Python 3.12）
 # ============================================
 header "第 4/7 步：创建 Python 环境"
 
@@ -134,33 +128,30 @@ else
     info "Python 3.12 环境创建完成"
 fi
 
-# 激活环境
 source "$(conda info --base)/etc/profile.d/conda.sh"
 conda activate "$ENV_NAME"
 info "已激活环境: $ENV_NAME"
 info "当前 Python 版本: $(python --version | awk '{print $2}')"
 
 # ============================================
-# 5. 安装项目依赖（按 requirements.txt 精确版本）
+# 5. 安装项目依赖
 # ============================================
 header "第 5/7 步：安装项目依赖包"
 
 cd "$SCRIPT_DIR"
 
+step "安装依赖包..."
+pip install --upgrade pip setuptools wheel
+
 if [ -f "requirements.txt" ]; then
-    step "按 requirements.txt 精确安装依赖..."
-    pip install --upgrade pip setuptools wheel
-    
     echo "-----------------------------------------"
     cat requirements.txt
     echo "-----------------------------------------"
-    
     pip install -r requirements.txt
-    info "requirements.txt 依赖安装完成"
+    info "依赖安装完成"
 else
-    warn "未找到 requirements.txt，手动安装依赖..."
-    pip install Flask==2.3.3 Werkzeug==2.3.7 manim==0.17.3 sympy==1.12 numpy==1.24.3
-    info "手动安装依赖完成"
+    pip install Flask Werkzeug manim sympy numpy
+    info "依赖安装完成"
 fi
 
 # ============================================
@@ -173,13 +164,9 @@ ALL_OK=true
 # 验证 manim
 if python -c "import manim" &> /dev/null; then
     MANIM_VER=$(python -c "import manim; print(manim.__version__)")
-    if [ "$MANIM_VER" = "0.17.3" ]; then
-        info "manim: $MANIM_VER ✓"
-    else
-        warn "manim: $MANIM_VER ⚠ (预期: 0.17.3，可能存在兼容性问题)"
-    fi
+    info "manim: $MANIM_VER ✓"
 else
-    error "manim 导入失败！"
+    error "manim 导入失败！尝试升级 pip 后重新安装"
     ALL_OK=false
 fi
 
@@ -204,15 +191,14 @@ for module in "${MODULES[@]}"; do
     if python -c "import $module" &> /dev/null; then
         info "$module ✓"
     else
-        warn "$module ⚠ 导入警告（可忽略，运行时会重试）"
+        warn "$module ⚠ 导入警告（运行时会自动重试）"
     fi
 done
 
-# 验证 app.py
-if python -c "import app; print('app 导入成功')" &> /dev/null; then
+if python -c "import app" &> /dev/null; then
     info "Flask 应用入口: app.py ✓"
 else
-    warn "app.py ⚠ 导入警告（可忽略，运行时会重试）"
+    warn "app.py ⚠ 导入警告（运行时会自动重试）"
 fi
 
 # ============================================
@@ -244,6 +230,7 @@ echo "   ③ 访问地址："
 echo -e "      ${BLUE}http://localhost:5000${NC}"
 echo
 echo "📝 说明："
+echo "   - Python 3.12 自动安装兼容版本 manim 0.18+"
 echo "   - 渲染视频默认输出到 temp_render/ 目录"
 echo "   - 运行日志保存在 visualization.log"
 echo
