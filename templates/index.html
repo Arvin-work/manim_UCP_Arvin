@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manim简化可视化工具</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- 标题栏 -->
+        <header class="header">
+            <div class="header-content">
+                <i class="fas fa-chart-line header-icon"></i>
+                <h1 class="header-title">Manim简化可视化工具</h1>
+                <div class="status-indicator">
+                    <span class="status-dot"></span>
+                    <span class="status-text">运行中</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- 主内容区 -->
+        <main class="main-content">
+            <!-- 场景选择栏 -->
+            <div class="scene-selector">
+                <div class="selector-tabs">
+                    <button class="tab-button active" data-scene="2D">
+                        <i class="fas fa-square"></i>
+                        2维场景
+                    </button>
+                    <button class="tab-button" data-scene="3D">
+                        <i class="fas fa-cube"></i>
+                        3维场景
+                    </button>
+                </div>
+            </div>
+
+            <!-- 配置面板 -->
+            <div class="config-panel">
+                <!-- 左侧输入类型选择 -->
+                <div class="input-sidebar">
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-title">
+                            <i class="fas fa-keyboard"></i>
+                            输入类型
+                        </h3>
+                        <div class="input-tabs">
+                            <button class="input-tab active" data-input-type="explicit">
+                                <i class="fas fa-function"></i>
+                                显函数输入
+                            </button>
+                            <button class="input-tab" data-input-type="implicit">
+                                <i class="fas fa-project-diagram"></i>
+                                隐函数输入
+                            </button>
+                            <button class="input-tab" data-input-type="polar">
+                                <i class="fas fa-circle-notch"></i>
+                                极坐标输入
+                            </button>
+                            <button class="input-tab" data-input-type="parametric" id="parametric-tab">
+                                <i class="fas fa-bezier-curve"></i>
+                                参数方程
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 功能选项 -->
+                    <div class="functions-section">
+                        <h3 class="sidebar-title">
+                            <i class="fas fa-tools"></i>
+                            功能选项
+                        </h3>
+                        <div class="function-options">
+                            <label class="function-checkbox">
+                                <input type="checkbox" name="functions" value="plot">
+                                <span class="checkmark"></span>
+                                <i class="fas fa-draw-polygon"></i>
+                                单纯画图
+                            </label>
+                            <label class="function-checkbox">
+                                <input type="checkbox" name="functions" value="differentiation">
+                                <span class="checkmark"></span>
+                                <i class="fas fa-wave-square"></i>
+                                微分展示
+                            </label>
+                            <label class="function-checkbox">
+                                <input type="checkbox" name="functions" value="integration">
+                                <span class="checkmark"></span>
+                                <i class="fas fa-chart-area"></i>
+                                积分展示
+                            </label>
+
+                            <!-- 泰勒展开部分添加 -->
+                            <label class="function-checkbox">
+                                <input type="checkbox" name="functions" value="taylor">
+                                <span class="checkmark"></span>
+                                <i class="fas fa-expand-alt"></i>
+                                泰勒展开
+                            </label>
+                            
+                            <!-- 曲面变换 - 仅三维场景显示 -->
+                            <label class="function-checkbox" id="surface-transform-checkbox" style="display: none;">
+                                <input type="checkbox" name="functions" value="surface_transform">
+                                <span class="checkmark"></span>
+                                <i class="fas fa-exchange-alt"></i>
+                                曲面变换
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右侧内容区域 -->
+                <div class="content-area">
+                    <div class="content-header">
+                        <h2 id="current-scene-title">2维场景 - 显函数输入</h2>
+                        <div class="content-info">
+                            <span class="info-item">
+                                <i class="fas fa-clock"></i>
+                                最后更新: <span id="last-update">--:--:--</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="input-section">
+                        <!-- 显函数/隐函数输入区域 -->
+                        <div class="input-group" id="explicit-implicit-input-group">
+                            <label for="function-input" id="function-input-label">
+                                <i class="fas fa-pen-fancy"></i>
+                                函数表达式
+                            </label>
+                            <input type="text" id="function-input" placeholder="例如: x**2, sin(x), exp(x)" class="function-input">
+                            <div class="input-hint">
+                                支持函数: sin, cos, tan, exp, log, sqrt 等 | 使用 x 作为变量
+                            </div>
+                        </div>
+                        
+                        <!-- 极坐标输入区域 -->
+                        <div class="input-group" id="polar-input-group" style="display: none;">
+                            <label for="polar-r-input">
+                                <i class="fas fa-circle-notch"></i>
+                                极坐标方程 r(θ)
+                            </label>
+                            <input type="text" id="polar-r-input" placeholder="例如: 2 + 2*sin(theta), cos(3*theta)" class="function-input">
+                            <div class="input-hint">
+                                支持函数: sin, cos, tan, exp, log, sqrt 等 | 使用 theta 作为变量
+                            </div>
+                        </div>
+                        
+                        <!-- 三维极坐标俯角输入 -->
+                        <div class="input-group" id="polar-phi-group" style="display: none;">
+                            <label for="polar-phi-input">
+                                <i class="fas fa-angle-down"></i>
+                                俯角表达式 φ (可选)
+                            </label>
+                            <input type="text" id="polar-phi-input" placeholder="留空则使用默认值" class="function-input">
+                            <div class="input-hint">
+                                三维球坐标模式: r = r(θ, φ) | 使用 theta 和 phi 作为变量
+                            </div>
+                        </div>
+                        
+                        <!-- 平面2输入区域 - 仅三维场景双平面变换 (显函数/隐函数/极坐标模式) -->
+                        <div class="input-group" id="plane2-input-group" style="display: none;">
+                            <label for="plane2-input" id="plane2-input-label">
+                                <i class="fas fa-exchange-alt"></i>
+                                函数表达式 - 平面2
+                            </label>
+                            <input type="text" id="plane2-input" placeholder="例如: x**2 - y**2, sin(x)*cos(y)" class="function-input">
+                            <div class="input-hint" id="plane2-input-hint">
+                                三维场景下，将实现从平面1到平面2的平滑变换效果
+                            </div>
+                        </div>
+                        
+                        <!-- 参数方程输入区域 -->
+                        <div class="input-group" id="parametric-input-group" style="display: none;">
+                            <div class="parametric-header">
+                                <label>
+                                    <i class="fas fa-bezier-curve"></i>
+                                    参数方程输入
+                                </label>
+                                <div class="parametric-mode-toggle">
+                                    <label class="radio-label">
+                                        <input type="radio" name="parametric-mode" value="curve" checked>
+                                        <span>参数曲线</span>
+                                    </label>
+                                    <label class="radio-label" id="parametric-surface-radio" style="display: none;">
+                                        <input type="radio" name="parametric-mode" value="surface">
+                                        <span>参数曲面</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <!-- 参数曲线输入 -->
+                            <div class="parametric-curve-inputs" id="parametric-curve-inputs">
+                                <div class="parametric-equation-row">
+                                    <span class="equation-label">x(t) =</span>
+                                    <input type="text" id="param-x-t" placeholder="例如: cos(t)" class="parametric-input">
+                                </div>
+                                <div class="parametric-equation-row">
+                                    <span class="equation-label">y(t) =</span>
+                                    <input type="text" id="param-y-t" placeholder="例如: sin(t)" class="parametric-input">
+                                </div>
+                                <div class="parametric-equation-row" id="param-z-t-row" style="display: none;">
+                                    <span class="equation-label">z(t) =</span>
+                                    <input type="text" id="param-z-t" placeholder="例如: t/(2*pi)" class="parametric-input">
+                                </div>
+                                <div class="input-hint" id="param-curve-hint">
+                                    使用 t 作为参数 | 支持函数: sin, cos, tan, exp, log, sqrt, pi
+                                </div>
+                            </div>
+                            
+                            <!-- 参数曲面输入 -->
+                            <div class="parametric-surface-inputs" id="parametric-surface-inputs" style="display: none;">
+                                <div class="parametric-equation-row">
+                                    <span class="equation-label" id="param-x-label">x(u,v) =</span>
+                                    <input type="text" id="param-x-uv" placeholder="例如: cos(u)*sin(v)" class="parametric-input">
+                                </div>
+                                <div class="parametric-equation-row">
+                                    <span class="equation-label" id="param-y-label">y(u,v) =</span>
+                                    <input type="text" id="param-y-uv" placeholder="例如: sin(u)*sin(v)" class="parametric-input">
+                                </div>
+                                <div class="parametric-equation-row">
+                                    <span class="equation-label" id="param-z-label">z(u,v) =</span>
+                                    <input type="text" id="param-z-uv" placeholder="例如: cos(v)" class="parametric-input">
+                                </div>
+                                <div class="input-hint" id="param-surface-hint">
+                                    使用 u, v 作为参数 | 支持函数: sin, cos, tan, exp, log, sqrt, pi
+                                </div>
+                                
+                                <!-- 平面2参数曲面输入（仅三维场景曲面变换时显示）-->
+                                <div id="plane2-parametric-surface-inputs" style="display: none; margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                                    <div style="margin-bottom: 10px; color: #4CAF50; font-weight: 500;">
+                                        <i class="fas fa-exchange-alt"></i> 曲面变换：平面2参数
+                                    </div>
+                                    <div class="parametric-equation-row">
+                                        <span class="equation-label">x₂(u,v) =</span>
+                                        <input type="text" id="plane2-param-x-uv" placeholder="例如: 2*cos(u)*sin(v)" class="parametric-input">
+                                    </div>
+                                    <div class="parametric-equation-row">
+                                        <span class="equation-label">y₂(u,v) =</span>
+                                        <input type="text" id="plane2-param-y-uv" placeholder="例如: 2*sin(u)*sin(v)" class="parametric-input">
+                                    </div>
+                                    <div class="parametric-equation-row">
+                                        <span class="equation-label">z₂(u,v) =</span>
+                                        <input type="text" id="plane2-param-z-uv" placeholder="例如: 2*cos(v)" class="parametric-input">
+                                    </div>
+                                    <div class="input-hint">
+                                        使用与平面1相同的 u, v 参数范围进行平滑变换
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 参数方程参数范围 -->
+                        <div class="param-group" id="param-t-range-group" style="display: none;">
+                            <label for="param-t-range">
+                                <i class="fas fa-arrows-alt-h"></i>
+                                参数 t 范围
+                            </label>
+                            <input type="text" id="param-t-range" placeholder="0,6.28" value="0,6.28" class="param-input">
+                        </div>
+                        <div class="param-group" id="param-u-range-group" style="display: none;">
+                            <label for="param-u-range">
+                                <i class="fas fa-arrows-alt-h"></i>
+                                参数 u 范围
+                            </label>
+                            <input type="text" id="param-u-range" placeholder="0,6.28" value="0,6.28" class="param-input">
+                        </div>
+                        <div class="param-group" id="param-v-range-group" style="display: none;">
+                            <label for="param-v-range">
+                                <i class="fas fa-arrows-alt-v"></i>
+                                参数 v 范围
+                            </label>
+                            <input type="text" id="param-v-range" placeholder="0,3.14" value="0,3.14" class="param-input">
+                        </div>
+                        
+                        <div class="parameter-grid">
+                            <div class="param-group">
+                                <label for="x-range">X轴范围</label>
+                                <input type="text" id="x-range" placeholder="-10,10" value="-10,10" class="param-input">
+                            </div>
+                            <div class="param-group">
+                                <label for="y-range">Y轴范围</label>
+                                <input type="text" id="y-range" placeholder="-10,10" value="-10,10" class="param-input">
+                            </div>
+                            <div class="param-group">
+                                <label for="resolution">采样点数</label>
+                                <input type="text" id="resolution" placeholder="100" value="100" class="param-input">
+                            </div>
+                            <div class="param-group">
+                                <label for="color-scheme">曲线颜色</label>
+                                <select id="color-scheme" class="param-select">
+                                    <option value="blue">蓝色</option>
+                                    <option value="red">红色</option>
+                                    <option value="green">绿色</option>
+                                    <option value="yellow" selected>黄色</option>
+                                    <option value="purple">紫色</option>
+                                </select>
+                            </div>
+                            <div class="param-group">
+                                <label for="stroke-width">曲线粗细</label>
+                                <select id="stroke-width" class="param-select">
+                                    <option value="2">细</option>
+                                    <option value="4" selected>中等</option>
+                                    <option value="6">粗</option>
+                                </select>
+                            </div>
+                            <div class="param-group">
+                                <label for="animation-style">动画风格</label>
+                                <select id="animation-style" class="param-select">
+                                    <option value="draw">绘制动画</option>
+                                    <option value="fade_in">渐入显示</option>
+                                    <option value="none" selected>无动画</option>
+                                </select>
+                            </div>
+                            <div class="param-group" id="taylor-point-group" style="display: none;">
+                                <label for="taylor-point">
+                                    <i class="fas fa-bullseye"></i>
+                                    展开点
+                                </label>
+                                <input type="text" id="taylor-point" placeholder="0" class="param-input">
+                            </div>
+                            <div class="param-group" id="max-order-group" style="display: none;">
+                                <label for="max-order">
+                                    <i class="fas fa-sort-numeric-up"></i>
+                                    最高阶数
+                                </label>
+                                <select id="max-order" class="param-select">
+                                    <option value="1">1阶</option>
+                                    <option value="2">2阶</option>
+                                    <option value="3">3阶</option>
+                                    <option value="4">4阶</option>
+                                    <option value="5">5阶</option>
+                                    <option value="6">6阶</option>
+                                    <option value="7">7阶</option>
+                                    <option value="8">8阶</option>
+                                    <option value="9">9阶</option>
+                                    <option value="10" selected>10阶</option>
+                                </select>
+                            </div>
+                            <div class="param-group" id="fit-point-group" style="display: none;">
+                                <label for="fit-point">
+                                    <i class="fas fa-crosshairs"></i>
+                                    拟合点
+                                </label>
+                                <input type="text" id="fit-point" placeholder="0" class="param-input">
+                            </div>
+                            <div class="param-group" id="radius-group" style="display: none;">
+                                <label for="radius">
+                                    <i class="fas fa-arrows-alt-h"></i>
+                                    拟合半径
+                                </label>
+                                <input type="text" id="radius" placeholder="1" class="param-input">
+                            </div>
+                            
+                            <!-- 极坐标参数 -->
+                            <div class="param-group" id="polar-radius-max-group" style="display: none;">
+                                <label for="polar-radius-max">
+                                    <i class="fas fa-expand-arrows-alt"></i>
+                                    半径最大值
+                                </label>
+                                <input type="text" id="polar-radius-max" placeholder="4" value="4" class="param-input">
+                            </div>
+                            <div class="param-group" id="polar-azimuth-step-group" style="display: none;">
+                                <label for="polar-azimuth-step">
+                                    <i class="fas fa-compass"></i>
+                                    角度步长(度)
+                                </label>
+                                <input type="text" id="polar-azimuth-step" placeholder="30" value="30" class="param-input">
+                            </div>
+                            <div class="param-group" id="polar-radius-step-group" style="display: none;">
+                                <label for="polar-radius-step">
+                                    <i class="fas fa-ruler-horizontal"></i>
+                                    半径步长
+                                </label>
+                                <input type="text" id="polar-radius-step" placeholder="1" value="1" class="param-input">
+                            </div>
+                            <div class="param-group" id="polar-theta-range-group" style="display: none;">
+                                <label for="polar-theta-range">
+                                    <i class="fas fa-sync-alt"></i>
+                                    θ范围
+                                </label>
+                                <input type="text" id="polar-theta-range" placeholder="0,6.28" value="0,6.28" class="param-input">
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- 在参数网格中添加积分展示参数 -->
+                    <div class="param-group" id="lower-bound-group" style="display: none;">
+                        <label for="lower-bound">
+                            <i class="fas fa-arrow-left"></i>
+                            积分下限
+                        </label>
+                        <input type="text" id="lower-bound" placeholder="0" class="param-input">
+                    </div>
+                    <div class="param-group" id="upper-bound-group" style="display: none;">
+                        <label for="upper-bound">
+                            <i class="fas fa-arrow-right"></i>
+                            积分上限
+                        </label>
+                        <input type="text" id="upper-bound" placeholder="1" class="param-input">
+                    </div>
+
+                    <!-- 三维黎曼积分参数 -->
+                    <div class="param-group" id="3d-integration-subdivisions-group" style="display: none;">
+                        <label for="3d-integration-subdivisions">
+                            <i class="fas fa-th"></i>
+                            细分程度
+                        </label>
+                        <input type="range" id="3d-integration-subdivisions" min="4" max="32" value="16" class="param-slider">
+                        <div class="slider-value" id="3d-integration-subdivisions-value">16×16</div>
+                    </div>
+                    
+                    <div class="param-group" id="3d-integration-duration-group" style="display: none;">
+                        <label for="3d-integration-duration">
+                            <i class="fas fa-clock"></i>
+                            动画时长(秒)
+                        </label>
+                        <input type="text" id="3d-integration-duration" placeholder="5" value="5" class="param-input">
+                    </div>
+                    
+                    <div class="param-group" id="3d-integration-progression-group" style="display: none;">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="3d-integration-progression" checked>
+                            <span class="checkbox-custom"></span>
+                            显示细分过程
+                        </label>
+                        <div class="input-hint">展示从粗略到精细的积分近似过程</div>
+                    </div>
+                    
+                    <!-- 三维积分体积显示 -->
+                    <div class="param-group" id="3d-integration-volume-group" style="display: none;">
+                        <label>
+                            <i class="fas fa-cube"></i>
+                            积分体积
+                        </label>
+                        <div class="volume-display" id="3d-integration-volume-display">
+                            <span class="volume-label">黎曼和:</span>
+                            <span class="volume-value" id="3d-integration-volume-value">--</span>
+                        </div>
+                    </div>
+
+                    <!-- 三维部分设置 -->
+                    <div class="param-group" id="z-range-group" style="display: none;">
+                        <label for="z-range">
+                            <i class="fas fa-arrows-alt-v"></i>
+                            Z轴范围
+                        </label>
+                        <input type="text" id="z-range" placeholder="-5,5" value="-5,5" class="param-input">
+                    </div>
+                    
+                    <div class="param-group" id="plot-type-group" style="display: none;">
+                        <label for="plot-type">
+                            <i class="fas fa-shapes"></i>
+                            绘制类型
+                        </label>
+                        <select id="plot-type" class="param-select">
+                            <option value="auto">自动检测</option>
+                            <option value="surface">曲面</option>
+                            <option value="curve">曲线</option>
+                            <option value="plane">平面</option>
+                        </select>
+                    </div>
+                    
+                    <!-- 三维相机设置 -->
+                    <div class="param-group camera-settings-group" id="camera-phi-group" style="display: none;">
+                        <label for="camera-phi">
+                            <i class="fas fa-camera"></i>
+                            相机俯仰角 (φ)
+                        </label>
+                        <div class="camera-input-row">
+                            <input type="range" id="camera-phi" min="0" max="90" value="45" class="param-slider camera-slider">
+                            <input type="number" id="camera-phi-value" min="0" max="90" value="45" class="camera-number-input">
+                            <span class="camera-unit">°</span>
+                        </div>
+                        <div class="input-hint">相机与z轴的夹角 (0°=正上方, 90°=水平)</div>
+                    </div>
+                    
+                    <div class="param-group camera-settings-group" id="camera-theta-group" style="display: none;">
+                        <label for="camera-theta">
+                            <i class="fas fa-sync-alt"></i>
+                            相机方位角 (θ)
+                        </label>
+                        <div class="camera-input-row">
+                            <input type="range" id="camera-theta" min="-180" max="180" value="-45" class="param-slider camera-slider">
+                            <input type="number" id="camera-theta-value" min="-180" max="180" value="-45" class="camera-number-input">
+                            <span class="camera-unit">°</span>
+                        </div>
+                        <div class="input-hint">相机绕z轴旋转角度 (正值为顺时针)</div>
+                    </div>
+                    
+                    <div class="param-group camera-settings-group" id="camera-preset-group" style="display: none;">
+                        <label for="camera-preset">
+                            <i class="fas fa-bookmark"></i>
+                            预设视角
+                        </label>
+                        <div class="camera-preset-row">
+                            <select id="camera-preset" class="param-select">
+                                <option value="default">默认视角 (45°, -45°)</option>
+                                <option value="top">俯视 (90°, 0°)</option>
+                                <option value="front">正视 (0°, 0°)</option>
+                                <option value="side">侧视 (0°, 90°)</option>
+                                <option value="isometric">等轴测 (54.7°, 45°)</option>
+                            </select>
+                            <button type="button" id="apply-preset-btn" class="btn-apply-preset">应用</button>
+                        </div>
+                    </div>
+                    
+                    <div class="param-group camera-settings-group" id="camera-save-group" style="display: none;">
+                        <label>
+                            <i class="fas fa-save"></i>
+                            自定义预设
+                        </label>
+                        <div class="camera-save-row">
+                            <input type="text" id="camera-preset-name" placeholder="预设名称" class="param-input camera-name-input">
+                            <button type="button" id="save-camera-preset-btn" class="btn-save-preset">保存</button>
+                        </div>
+                        <div class="camera-presets-list" id="camera-presets-list">
+                        </div>
+                    </div>
+                    
+                    <!-- 三维微分展示参数 -->
+                    <div class="param-group" id="3d-diff-verify-point-group" style="display: none;">
+                        <label for="3d-diff-verify-point">
+                            <i class="fas fa-check-circle"></i>
+                            验证点坐标
+                        </label>
+                        <input type="text" id="3d-diff-verify-point" placeholder="例如: 1,0,0 或输入参数t值" class="param-input">
+                        <div class="input-hint" id="3d-verify-hint">输入三维坐标(x,y,z)验证点是否在曲线上</div>
+                    </div>
+                    
+                    <div class="param-group" id="3d-diff-t-param-group" style="display: none;">
+                        <label for="3d-diff-t-param">
+                            <i class="fas fa-parameter"></i>
+                            参数 t 值
+                        </label>
+                        <input type="text" id="3d-diff-t-param" placeholder="例如: 1.57" class="param-input">
+                        <div class="input-hint">指定参数曲线上的位置</div>
+                    </div>
+                    
+                    <div class="param-group" id="3d-diff-animation-duration-group" style="display: none;">
+                        <label for="3d-diff-animation-duration">
+                            <i class="fas fa-clock"></i>
+                            动画时长(秒)
+                        </label>
+                        <input type="text" id="3d-diff-animation-duration" placeholder="5" value="5" class="param-input">
+                    </div>
+                    
+                    <div class="param-group" id="3d-diff-tangent-scale-group" style="display: none;">
+                        <label for="3d-diff-tangent-scale">
+                            <i class="fas fa-expand"></i>
+                            切线向量长度
+                        </label>
+                        <input type="text" id="3d-diff-tangent-scale" placeholder="1" value="1" class="param-input">
+                    </div>
+                    
+                    <!-- 三维坐标实时显示区域 -->
+                    <div class="coord-display-panel" id="3d-coord-display-panel" style="display: none;">
+                        <div class="coord-display-header">
+                            <i class="fas fa-map-marker-alt"></i>
+                            三维坐标信息
+                        </div>
+                        <div class="coord-display-content">
+                            <div class="coord-row">
+                                <span class="coord-label">验证点:</span>
+                                <span class="coord-value" id="3d-verify-coord">--</span>
+                            </div>
+                            <div class="coord-row">
+                                <span class="coord-label">曲线上点:</span>
+                                <span class="coord-value" id="3d-curve-coord">--</span>
+                            </div>
+                            <div class="coord-row">
+                                <span class="coord-label">验证状态:</span>
+                                <span class="coord-status" id="3d-verify-status">等待输入</span>
+                            </div>
+                            <div class="coord-row">
+                                <span class="coord-label">切线向量:</span>
+                                <span class="coord-value" id="3d-tangent-vector">--</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 操作按钮 -->
+                    <div class="action-buttons">
+                        <button id="start-creation" class="btn btn-primary">
+                            <i class="fas fa-play"></i>
+                            开始创作
+                        </button>
+                        <button id="reset-config" class="btn btn-secondary">
+                            <i class="fas fa-redo"></i>
+                            重置配置
+                        </button>
+                    </div>
+
+                    <!-- 状态显示 -->
+                    <div class="status-panel">
+                        <div class="status-header">
+                            <i class="fas fa-terminal"></i>
+                            系统日志
+                        </div>
+                        <div id="log-output" class="log-output">
+                            <div class="log-entry info">
+                                <span class="log-time">[12:00:00]</span>
+                                <span class="log-message">系统初始化完成，等待用户输入...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
