@@ -1,5 +1,0 @@
-# This file is used internally by FFMPEG.
-file 'file:D:/Project/manim_develop/manim_UCP_Arvin/temp_render/videos/1080p60/partial_movie_files/FunctionPlotScene/3529212410_585700631_223132457.mp4'
-file 'file:D:/Project/manim_develop/manim_UCP_Arvin/temp_render/videos/1080p60/partial_movie_files/FunctionPlotScene/3040924799_3142935987_2019603544.mp4'
-file 'file:D:/Project/manim_develop/manim_UCP_Arvin/temp_render/videos/1080p60/partial_movie_files/FunctionPlotScene/3040924799_3031879236_2556407337.mp4'
-file 'file:D:/Project/manim_develop/manim_UCP_Arvin/temp_render/videos/1080p60/partial_movie_files/FunctionPlotScene/3040924799_310540274_3835802958.mp4'

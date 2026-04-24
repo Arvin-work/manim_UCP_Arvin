@@ -1,5 +1,0 @@
-# This file is used internally by FFMPEG.
-file 'file:D:/Project/manim_develop/manim_UCP_Arvin/temp_render/videos/1080p60/partial_movie_files/ImplicitPlotScene/uncached_00000.mp4'
-file 'file:D:/Project/manim_develop/manim_UCP_Arvin/temp_render/videos/1080p60/partial_movie_files/ImplicitPlotScene/uncached_00001.mp4'
-file 'file:D:/Project/manim_develop/manim_UCP_Arvin/temp_render/videos/1080p60/partial_movie_files/ImplicitPlotScene/uncached_00002.mp4'
-file 'file:D:/Project/manim_develop/manim_UCP_Arvin/temp_render/videos/1080p60/partial_movie_files/ImplicitPlotScene/uncached_00003.mp4'

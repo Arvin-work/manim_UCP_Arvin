@@ -149,23 +149,45 @@ class VisualizationController:
             
             # 参数方程输入模式下的功能支持检查
             if input_type == 'parametric':
-                unsupported_functions = []
-                for func in functions:
-                    if func in ['taylor', 'integration', 'differentiation']:
-                        unsupported_functions.append(func)
-                
-                if unsupported_functions:
-                    func_names = {
-                        'taylor': '泰勒展开',
-                        'integration': '积分展示',
-                        'differentiation': '微分展示'
-                    }
-                    unsupported_names = [func_names.get(f, f) for f in unsupported_functions]
-                    return {
-                        "status": "error",
-                        "message": f"参数方程输入模式下不支持以下功能: {', '.join(unsupported_names)}。参数方程模式仅支持: 单纯画图",
-                        "timestamp": datetime.now().isoformat()
-                    }
+                if scene_type == '3D':
+                    # 三维参数方程支持：画图、微分展示
+                    supported_in_3d_parametric = ['plot', 'differentiation']
+                    unsupported_functions = []
+                    for func in functions:
+                        if func not in supported_in_3d_parametric:
+                            unsupported_functions.append(func)
+                    
+                    if unsupported_functions:
+                        func_names = {
+                            'taylor': '泰勒展开',
+                            'integration': '积分展示',
+                            'differentiation': '微分展示'
+                        }
+                        unsupported_names = [func_names.get(f, f) for f in unsupported_functions]
+                        return {
+                            "status": "error",
+                            "message": f"三维参数方程模式下不支持以下功能: {', '.join(unsupported_names)}。支持功能: 画图、微分展示",
+                            "timestamp": datetime.now().isoformat()
+                        }
+                else:
+                    # 二维参数方程仅支持：画图
+                    unsupported_functions = []
+                    for func in functions:
+                        if func in ['taylor', 'integration', 'differentiation']:
+                            unsupported_functions.append(func)
+                    
+                    if unsupported_functions:
+                        func_names = {
+                            'taylor': '泰勒展开',
+                            'integration': '积分展示',
+                            'differentiation': '微分展示'
+                        }
+                        unsupported_names = [func_names.get(f, f) for f in unsupported_functions]
+                        return {
+                            "status": "error",
+                            "message": f"二维参数方程模式下不支持以下功能: {', '.join(unsupported_names)}。二维参数方程模式仅支持: 单纯画图",
+                            "timestamp": datetime.now().isoformat()
+                        }
 
             # 处理参数方程绘制（仅三维模式）
             if scene_type == '3D' and input_type == 'parametric' and 'plot' in functions:
@@ -242,9 +264,19 @@ class VisualizationController:
                         "timestamp": datetime.now().isoformat()
                     }
             
-            # 处理微分展示 - 区分显函数和隐函数
+            # 处理微分展示 - 区分显函数、隐函数和三维参数
             if 'differentiation' in functions:
-                if input_type == 'implicit':
+                differentiation_config = parameters.get('differentiation', {})
+                if differentiation_config.get('is_3d'):
+                    logger.info("检测到三维微分展示请求")
+                    task_id = self._start_3d_differentiation_animation(parameters)
+                    return {
+                        "status": "processing",
+                        "message": "三维参数微分展示动画生成中...",
+                        "task_id": task_id,
+                        "timestamp": datetime.now().isoformat()
+                    }
+                elif input_type == 'implicit':
                     task_id = self._start_implicit_differentiation_animation(parameters)
                     return {
                         "status": "processing",
@@ -536,6 +568,7 @@ class VisualizationController:
             differentiation_config = parameters.get('differentiation', {})
             
             if differentiation_config.get('is_3d'):
+                logger.info("进入二维微分函数，重定向到三维微分处理...")
                 return self._start_3d_differentiation_animation(parameters)
             
             func_expression = parameters.get('function_expression', '')
@@ -543,8 +576,14 @@ class VisualizationController:
             fit_point = differentiation_config.get('fit_point', 0)
             radius = differentiation_config.get('radius', 1)
             
-            fit_point = float(fit_point)
-            radius = float(radius)
+            try:
+                fit_point = float(fit_point)
+                radius = float(radius)
+            except (ValueError, TypeError) as e:
+                logger.warning(f"二维微分参数转换失败（可能是三维参数）: {e}")
+                if differentiation_config.get('is_3d'):
+                    return self._start_3d_differentiation_animation(parameters)
+                raise
                 
             logger.info(f"微分展示参数 - 函数: {func_expression}, 拟合点: {fit_point}, 半径: {radius}")
 
@@ -625,6 +664,7 @@ class VisualizationController:
     def _start_3d_differentiation_animation(self, parameters):
         """启动三维微分展示动画生成任务"""
         try:
+            logger.info("进入 _start_3d_differentiation_animation 函数")
             differentiation_config = parameters.get('differentiation', {})
             parametric = differentiation_config.get('parametric', {})
             
