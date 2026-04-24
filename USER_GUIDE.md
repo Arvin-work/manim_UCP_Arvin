@@ -8,6 +8,7 @@
 
 ## 📋 目录
 
+- [📍 项目地址](#-项目地址)
 - [📌 快速入门](#-快速入门)
 - [📐 输入类型详解](#-输入类型详解)
   - [显函数输入](#显函数输入)
@@ -22,6 +23,20 @@
   - [曲面变换（3D）](#曲面变换3d)
 - [🔧 常见问题](#-常见问题)
 - [✨ 部分功能提示](#-部分功能提示)
+
+***
+
+## 📍 项目地址
+
+<div align="center">
+
+**GitHub 仓库：**
+
+🔗 **https://github.com/Arvin-work/manim_UCP_Arvin/tree/new_project**
+
+[![GitHub](https://img.shields.io/badge/GitHub-Arvin--work/manim__UCP__Arvin-blue?style=for-the-badge&logo=github)](https://github.com/Arvin-work/manim_UCP_Arvin/tree/new_project)
+
+</div>
 
 ***
 

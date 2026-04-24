@@ -279,6 +279,15 @@ class DifferentiationAnimator:
             os.makedirs(output_dir, exist_ok=True)
             config.media_dir = output_dir
             
+            # 关键：彻底删除整个videos目录，强制Manim重建
+            videos_dir = os.path.join(output_dir, "videos")
+            if os.path.exists(videos_dir):
+                import shutil
+                try:
+                    shutil.rmtree(videos_dir)
+                except:
+                    pass
+            
             config.quality = "high_quality"
             config.frame_rate = 60
             config.pixel_height = 1080

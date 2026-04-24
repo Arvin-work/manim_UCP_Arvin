@@ -1821,7 +1821,7 @@ if __name__ == '__main__':
     werkzeug_logger.addFilter(TaskStatusFilter())
     
     try:
-        app.run(debug=True, host='0.0.0.0', port=5000, use_reloader=False)
+        app.run(debug=True, host='127.0.0.1', port=5000, use_reloader=False)
     except Exception as e:
         logger.error(f"Flask应用启动失败: {e}")
         logger.error(traceback.format_exc())
