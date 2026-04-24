@@ -1,0 +1,620 @@
+2026-04-24 22:33:26,166 - __main__ - INFO - 开始导入模块...
+2026-04-24 22:33:28,429 - __main__ - INFO - ✅ 模块导入成功
+2026-04-24 22:33:28,434 - __main__ - INFO - ✅ 动画生成器初始化成功
+2026-04-24 22:33:28,434 - __main__ - INFO - ✅ VisualizationController 初始化成功
+2026-04-24 22:33:28,434 - __main__ - INFO - ✅ 控制器初始化成功
+2026-04-24 22:33:28,437 - __main__ - INFO - ==================================================
+2026-04-24 22:33:28,439 - __main__ - INFO - 启动Manim简化可视化工具...
+2026-04-24 22:33:28,439 - __main__ - INFO - ==================================================
+2026-04-24 22:33:28,487 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-04-24 22:33:28,487 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-04-24 22:33:30,687 - __main__ - INFO - 访问主页
+2026-04-24 22:33:30,696 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:33:30] "GET / HTTP/1.1" 200 -
+2026-04-24 22:33:31,154 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:33:31] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-24 22:33:31,239 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:33:31] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-24 22:33:31,320 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:33:31] "[33mGET /@vite/client HTTP/1.1[0m" 404 -
+2026-04-24 22:33:34,681 - __main__ - INFO - 切换场景到: 3D
+2026-04-24 22:33:34,682 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:33:34] "POST /api/switch_scene HTTP/1.1" 200 -
+2026-04-24 22:33:45,560 - __main__ - INFO - 切换输入类型到: implicit
+2026-04-24 22:33:45,562 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:33:45] "POST /api/switch_input_type HTTP/1.1" 200 -
+2026-04-24 22:33:47,019 - __main__ - INFO - 切换输入类型到: polar
+2026-04-24 22:33:47,020 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:33:47] "POST /api/switch_input_type HTTP/1.1" 200 -
+2026-04-24 22:34:29,903 - __main__ - INFO - 访问主页
+2026-04-24 22:34:29,904 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:34:29] "GET / HTTP/1.1" 200 -
+2026-04-24 22:34:30,286 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:34:30] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-24 22:34:30,286 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:34:30] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-24 22:34:30,536 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:34:30] "[33mGET /@vite/client HTTP/1.1[0m" 404 -
+2026-04-24 22:34:31,988 - __main__ - INFO - 切换场景到: 3D
+2026-04-24 22:34:31,989 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:34:31] "POST /api/switch_scene HTTP/1.1" 200 -
+2026-04-24 22:34:33,742 - __main__ - INFO - 切换输入类型到: polar
+2026-04-24 22:34:33,742 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:34:33] "POST /api/switch_input_type HTTP/1.1" 200 -
+2026-04-24 22:34:34,116 - __main__ - INFO - 切换输入类型到: parametric
+2026-04-24 22:34:34,116 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:34:34] "POST /api/switch_input_type HTTP/1.1" 200 -
+2026-04-24 22:34:55,941 - __main__ - INFO - 接收到开始创作请求
+2026-04-24 22:34:55,941 - __main__ - INFO - 接收到可视化请求: {'scene_type': '3D', 'input_type': 'parametric', 'functions': ['plot'], 'parameters': {'function_expression': '', 'x_range': '-10,10', 'y_range': '-10,10', 'resolution': '100', 'color_scheme': 'yellow', 'stroke_width': '4', 'animation_style': 'none', 'parametric': {'mode': 'curve', 'x_expr': 'cos(t)+2*cos(2*t)', 'y_expr': 'sin(t)-2*sin(2*t)', 'z_expr': '-sin(3*t)', 't_range': '0,6.28'}, 'z_range': '-5,5', 'plot_type': 'auto', 'camera': {'phi': 45, 'theta': -45}}}
+2026-04-24 22:34:55,941 - __main__ - INFO - 相机参数 - φ: 45°, θ: -45°
+2026-04-24 22:34:55,941 - __main__ - INFO - 开始生成参数方程图像: mode=curve
+2026-04-24 22:34:55,941 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:34:55] "POST /api/start_creation HTTP/1.1" 200 -
+2026-04-24 22:35:12,430 - __main__ - INFO - 参数方程图像生成完成: C:\Users\A3U86\AppData\Local\Temp\manim_parametric\parametric_20260424_223455.mp4
+2026-04-24 22:38:24,289 - __main__ - INFO - 切换输入类型到: polar
+2026-04-24 22:38:24,291 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:38:24] "POST /api/switch_input_type HTTP/1.1" 200 -
+2026-04-24 22:38:37,523 - __main__ - INFO - 访问主页
+2026-04-24 22:38:37,525 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:38:37] "GET / HTTP/1.1" 200 -
+2026-04-24 22:38:40,579 - __main__ - INFO - 访问主页
+2026-04-24 22:38:40,582 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:38:40] "GET / HTTP/1.1" 200 -
+2026-04-24 22:38:40,842 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:38:40] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-24 22:38:40,903 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:38:40] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-24 22:38:40,955 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:38:40] "[33mGET /@vite/client HTTP/1.1[0m" 404 -
+2026-04-24 22:38:44,537 - __main__ - INFO - 访问主页
+2026-04-24 22:38:44,537 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:38:44] "GET / HTTP/1.1" 200 -
+2026-04-24 22:38:44,801 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:38:44] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-24 22:38:44,859 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:38:44] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-24 22:38:44,890 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:38:44] "[33mGET /@vite/client HTTP/1.1[0m" 404 -
+2026-04-24 22:39:06,824 - __main__ - INFO - 访问主页
+2026-04-24 22:39:06,824 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:39:06] "GET / HTTP/1.1" 200 -
+2026-04-24 22:39:07,077 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:39:07] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-24 22:39:07,144 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:39:07] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-24 22:39:07,170 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:39:07] "[33mGET /@vite/client HTTP/1.1[0m" 404 -
+2026-04-24 22:39:18,163 - __main__ - INFO - 访问主页
+2026-04-24 22:39:18,163 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:39:18] "GET / HTTP/1.1" 200 -
+2026-04-24 22:39:18,411 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:39:18] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-24 22:39:18,487 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:39:18] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-24 22:39:18,514 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:39:18] "[33mGET /@vite/client HTTP/1.1[0m" 404 -
+2026-04-24 22:39:24,108 - __main__ - INFO - 访问主页
+2026-04-24 22:39:24,108 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:39:24] "GET / HTTP/1.1" 200 -
+2026-04-24 22:39:24,367 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:39:24] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-24 22:39:24,428 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:39:24] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-24 22:39:24,455 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:39:24] "[33mGET /@vite/client HTTP/1.1[0m" 404 -
+2026-04-24 22:39:25,435 - __main__ - INFO - 切换输入类型到: parametric
+2026-04-24 22:39:25,435 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:39:25] "POST /api/switch_input_type HTTP/1.1" 200 -
+2026-04-24 22:39:37,958 - __main__ - INFO - 接收到开始创作请求
+2026-04-24 22:39:37,958 - __main__ - INFO - 接收到可视化请求: {'scene_type': '2D', 'input_type': 'parametric', 'functions': ['plot'], 'parameters': {'function_expression': '', 'x_range': '-10,10', 'y_range': '-10,10', 'resolution': '100', 'color_scheme': 'yellow', 'stroke_width': '4', 'animation_style': 'none', 'parametric': {'mode': 'curve', 'x_expr': 'sin(t)*(exp(cos(t))-2*cos(4*t)-sin(t/12)**5)', 'y_expr': 'cos(t)*(exp(cos(t))-2*cos(4*t)-sin(t/12)**5)', 't_range': '0, 25.12'}}}
+2026-04-24 22:39:37,958 - __main__ - INFO - 二维参数曲线参数 - x(t)=sin(t)*(exp(cos(t))-2*cos(4*t)-sin(t/12)**5), y(t)=cos(t)*(exp(cos(t))-2*cos(4*t)-sin(t/12)**5)
+2026-04-24 22:39:37,958 - __main__ - INFO - 参数范围 - t: [0.0, 25.12]
+2026-04-24 22:39:37,959 - __main__ - INFO - 开始生成二维参数曲线图像
+2026-04-24 22:39:37,959 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:39:37] "POST /api/start_creation HTTP/1.1" 200 -
+2026-04-24 22:39:43,619 - __main__ - ERROR - 生成二维参数曲线图像失败: 未找到生成的视频文件
+2026-04-24 22:39:43,621 - __main__ - ERROR - Traceback (most recent call last):
+  File "d:\Project\manim_develop\manim_UCP_Arvin\app.py", line 357, in generate_plot
+    video_path = plot_animator.create_2d_parametric_curve(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Project\manim_develop\manim_UCP_Arvin\plot_animator.py", line 296, in create_2d_parametric_curve
+    raise FileNotFoundError("未找到生成的视频文件")
+FileNotFoundError: 未找到生成的视频文件
+
+2026-04-24 22:40:28,824 - __main__ - INFO - 访问主页
+2026-04-24 22:40:28,829 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:40:28] "GET / HTTP/1.1" 200 -
+2026-04-24 22:40:29,074 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:40:29] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-24 22:40:29,155 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:40:29] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-24 22:40:29,197 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:40:29] "[33mGET /@vite/client HTTP/1.1[0m" 404 -
+2026-04-24 22:42:27,718 - __main__ - INFO - 访问主页
+2026-04-24 22:42:27,718 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:42:27] "GET / HTTP/1.1" 200 -
+2026-04-24 22:42:27,974 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:42:27] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-24 22:42:28,049 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:42:28] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-24 22:42:28,078 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:42:28] "[33mGET /@vite/client HTTP/1.1[0m" 404 -
+2026-04-24 22:42:30,014 - __main__ - INFO - 切换输入类型到: parametric
+2026-04-24 22:42:30,014 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:42:30] "POST /api/switch_input_type HTTP/1.1" 200 -
+2026-04-24 22:43:06,746 - __main__ - INFO - 开始导入模块...
+2026-04-24 22:43:07,954 - __main__ - INFO - ✅ 模块导入成功
+2026-04-24 22:43:07,957 - __main__ - INFO - ✅ 动画生成器初始化成功
+2026-04-24 22:43:07,957 - __main__ - INFO - ✅ VisualizationController 初始化成功
+2026-04-24 22:43:07,957 - __main__ - INFO - ✅ 控制器初始化成功
+2026-04-24 22:43:07,960 - __main__ - INFO - ==================================================
+2026-04-24 22:43:07,960 - __main__ - INFO - 启动Manim简化可视化工具...
+2026-04-24 22:43:07,960 - __main__ - INFO - ==================================================
+2026-04-24 22:43:07,983 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-04-24 22:43:07,983 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-04-24 22:43:11,698 - __main__ - INFO - 接收到开始创作请求
+2026-04-24 22:43:11,698 - __main__ - INFO - 接收到可视化请求: {'scene_type': '2D', 'input_type': 'parametric', 'functions': ['plot'], 'parameters': {'function_expression': '', 'x_range': '-10,10', 'y_range': '-10,10', 'resolution': '100', 'color_scheme': 'yellow', 'stroke_width': '4', 'animation_style': 'none', 'parametric': {'mode': 'curve', 'x_expr': 't*cos(t)', 'y_expr': 't*sin(t)', 't_range': ' 0, 12.56 '}}}
+2026-04-24 22:43:11,699 - __main__ - INFO - 二维参数曲线参数 - x(t)=t*cos(t), y(t)=t*sin(t)
+2026-04-24 22:43:11,699 - __main__ - INFO - 参数范围 - t: [0.0, 12.56]
+2026-04-24 22:43:11,699 - __main__ - INFO - 开始生成二维参数曲线图像
+2026-04-24 22:43:11,700 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:43:11] "POST /api/start_creation HTTP/1.1" 200 -
+2026-04-24 22:43:17,056 - __main__ - INFO - 二维参数曲线图像生成完成: C:\Users\A3U86\AppData\Local\Temp\manim_parametric_2d\parametric_2d_20260424_224311.mp4
+2026-04-24 22:59:44,523 - __main__ - INFO - 访问主页
+2026-04-24 22:59:44,539 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:59:44] "GET / HTTP/1.1" 200 -
+2026-04-24 22:59:44,919 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:59:44] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-24 22:59:45,016 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:59:45] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-24 22:59:46,328 - __main__ - INFO - 访问主页
+2026-04-24 22:59:46,330 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:59:46] "GET / HTTP/1.1" 200 -
+2026-04-24 22:59:46,733 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:59:46] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-24 22:59:46,740 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:59:46] "GET /static/js/script.js HTTP/1.1" 200 -
+2026-04-24 22:59:46,985 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:59:46] "[33mGET /@vite/client HTTP/1.1[0m" 404 -
+2026-04-24 22:59:52,872 - __main__ - INFO - 访问主页
+2026-04-24 22:59:52,872 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:59:52] "GET / HTTP/1.1" 200 -
+2026-04-24 22:59:53,267 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:59:53] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-24 22:59:53,267 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:59:53] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-24 22:59:53,526 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 22:59:53] "[33mGET /@vite/client HTTP/1.1[0m" 404 -
+2026-04-24 23:04:09,765 - __main__ - INFO - 访问主页
+2026-04-24 23:04:09,765 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:04:09] "GET / HTTP/1.1" 200 -
+2026-04-24 23:04:10,015 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:04:10] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-24 23:04:10,089 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:04:10] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-24 23:04:10,112 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:04:10] "[33mGET /@vite/client HTTP/1.1[0m" 404 -
+2026-04-24 23:04:14,329 - __main__ - INFO - 切换输入类型到: implicit
+2026-04-24 23:04:14,329 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:04:14] "POST /api/switch_input_type HTTP/1.1" 200 -
+2026-04-24 23:04:14,966 - __main__ - INFO - 切换输入类型到: polar
+2026-04-24 23:04:14,967 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:04:14] "POST /api/switch_input_type HTTP/1.1" 200 -
+2026-04-24 23:04:18,529 - __main__ - INFO - 接收到开始创作请求
+2026-04-24 23:04:18,529 - __main__ - INFO - 接收到可视化请求: {'scene_type': '2D', 'input_type': 'polar', 'functions': ['plot'], 'parameters': {'function_expression': '', 'x_range': '-10,10', 'y_range': '-10,10', 'resolution': '100', 'color_scheme': 'yellow', 'stroke_width': '4', 'animation_style': 'none', 'polar': {'r_expression': 'cos(3*theta) ', 'phi_expression': '', 'radius_max': 4, 'azimuth_step': 30, 'radius_step': 1, 'theta_range': '0,6.28'}}}
+2026-04-24 23:04:18,529 - __main__ - INFO - 开始生成极坐标图像: r = cos(3*theta) 
+2026-04-24 23:04:18,529 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:04:18] "POST /api/start_creation HTTP/1.1" 200 -
+2026-04-24 23:04:21,524 - __main__ - INFO - 极坐标图像生成完成: C:\Users\A3U86\AppData\Local\Temp\manim_polar\polar_20260424_230418.mp4
+2026-04-24 23:05:18,176 - __main__ - INFO - 访问主页
+2026-04-24 23:05:18,181 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:05:18] "GET / HTTP/1.1" 200 -
+2026-04-24 23:05:18,400 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:05:18] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-24 23:05:25,264 - __main__ - INFO - 访问主页
+2026-04-24 23:05:25,265 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:05:25] "GET / HTTP/1.1" 200 -
+2026-04-24 23:05:25,339 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:05:25] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-24 23:05:25,643 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:05:25] "GET /static/js/script.js HTTP/1.1" 200 -
+2026-04-24 23:05:25,981 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:05:25] "[33mGET /@vite/client HTTP/1.1[0m" 404 -
+2026-04-24 23:05:32,561 - __main__ - INFO - 访问主页
+2026-04-24 23:05:32,562 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:05:32] "GET / HTTP/1.1" 200 -
+2026-04-24 23:05:32,953 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:05:32] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-24 23:05:32,955 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:05:32] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-24 23:05:33,199 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:05:33] "[33mGET /@vite/client HTTP/1.1[0m" 404 -
+2026-04-24 23:05:40,545 - __main__ - INFO - 切换输入类型到: polar
+2026-04-24 23:05:40,545 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:05:40] "POST /api/switch_input_type HTTP/1.1" 200 -
+2026-04-24 23:05:45,953 - __main__ - INFO - 接收到开始创作请求
+2026-04-24 23:05:45,953 - __main__ - INFO - 接收到可视化请求: {'scene_type': '2D', 'input_type': 'polar', 'functions': ['plot'], 'parameters': {'function_expression': '', 'x_range': '-10,10', 'y_range': '-10,10', 'resolution': '100', 'color_scheme': 'yellow', 'stroke_width': '4', 'animation_style': 'none', 'polar': {'r_expression': '1 - cos(theta)', 'phi_expression': '', 'radius_max': 4, 'azimuth_step': 30, 'radius_step': 1, 'theta_range': '0,6.28'}}}
+2026-04-24 23:05:45,953 - __main__ - INFO - 开始生成极坐标图像: r = 1 - cos(theta)
+2026-04-24 23:05:45,955 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:05:45] "POST /api/start_creation HTTP/1.1" 200 -
+2026-04-24 23:05:49,080 - __main__ - INFO - 极坐标图像生成完成: C:\Users\A3U86\AppData\Local\Temp\manim_polar\polar_20260424_230545.mp4
+2026-04-24 23:08:00,529 - __main__ - INFO - 访问主页
+2026-04-24 23:08:00,530 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:08:00] "GET / HTTP/1.1" 200 -
+2026-04-24 23:08:00,786 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:08:00] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-24 23:08:00,899 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:08:00] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-24 23:08:00,940 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:08:00] "[33mGET /@vite/client HTTP/1.1[0m" 404 -
+2026-04-24 23:08:05,013 - __main__ - INFO - 切换输入类型到: polar
+2026-04-24 23:08:05,013 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:08:05] "POST /api/switch_input_type HTTP/1.1" 200 -
+2026-04-24 23:08:07,278 - __main__ - INFO - 接收到开始创作请求
+2026-04-24 23:08:07,279 - __main__ - INFO - 接收到可视化请求: {'scene_type': '2D', 'input_type': 'polar', 'functions': ['plot'], 'parameters': {'function_expression': '', 'x_range': '-10,10', 'y_range': '-10,10', 'resolution': '100', 'color_scheme': 'yellow', 'stroke_width': '4', 'animation_style': 'none', 'polar': {'r_expression': 'sqrt(abs(cos(2*theta)))', 'phi_expression': '', 'radius_max': 4, 'azimuth_step': 30, 'radius_step': 1, 'theta_range': '0,6.28'}}}
+2026-04-24 23:08:07,281 - __main__ - INFO - 开始生成极坐标图像: r = sqrt(abs(cos(2*theta)))
+2026-04-24 23:08:07,281 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:08:07] "POST /api/start_creation HTTP/1.1" 200 -
+2026-04-24 23:08:10,277 - __main__ - INFO - 极坐标图像生成完成: C:\Users\A3U86\AppData\Local\Temp\manim_polar\polar_20260424_230807.mp4
+2026-04-24 23:09:38,296 - __main__ - INFO - 访问主页
+2026-04-24 23:09:38,296 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:09:38] "GET / HTTP/1.1" 200 -
+2026-04-24 23:09:38,554 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:09:38] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-24 23:09:38,625 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:09:38] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-24 23:09:38,648 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:09:38] "[33mGET /@vite/client HTTP/1.1[0m" 404 -
+2026-04-24 23:20:30,990 - __main__ - INFO - 访问主页
+2026-04-24 23:20:30,991 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:20:30] "GET / HTTP/1.1" 200 -
+2026-04-24 23:20:31,250 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:20:31] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-24 23:20:31,305 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:20:31] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-24 23:20:31,334 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:20:31] "[33mGET /@vite/client HTTP/1.1[0m" 404 -
+2026-04-24 23:30:37,765 - __main__ - INFO - 访问主页
+2026-04-24 23:30:37,765 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:30:37] "GET / HTTP/1.1" 200 -
+2026-04-24 23:30:38,025 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:30:38] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-24 23:30:38,094 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:30:38] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-24 23:30:38,123 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:30:38] "[33mGET /@vite/client HTTP/1.1[0m" 404 -
+2026-04-24 23:30:40,584 - __main__ - INFO - 访问主页
+2026-04-24 23:30:40,584 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:30:40] "GET / HTTP/1.1" 200 -
+2026-04-24 23:30:40,837 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:30:40] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-24 23:30:40,909 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:30:40] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-24 23:30:40,940 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:30:40] "[33mGET /@vite/client HTTP/1.1[0m" 404 -
+2026-04-24 23:30:41,763 - __main__ - INFO - 切换输入类型到: parametric
+2026-04-24 23:30:41,763 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:30:41] "POST /api/switch_input_type HTTP/1.1" 200 -
+2026-04-24 23:30:55,385 - __main__ - INFO - 接收到开始创作请求
+2026-04-24 23:30:55,385 - __main__ - INFO - 接收到可视化请求: {'scene_type': '2D', 'input_type': 'parametric', 'functions': ['plot'], 'parameters': {'function_expression': '', 'x_range': '-10,10', 'y_range': '-10,10', 'resolution': '100', 'color_scheme': 'yellow', 'stroke_width': '4', 'animation_style': 'none', 'parametric': {'mode': 'curve', 'x_expr': 'cos(t)**3', 'y_expr': 'sin(t)**3', 't_range': '0,6.28'}}}
+2026-04-24 23:30:55,385 - __main__ - INFO - 二维参数曲线参数 - x(t)=cos(t)**3, y(t)=sin(t)**3
+2026-04-24 23:30:55,385 - __main__ - INFO - 参数范围 - t: [0.0, 6.28]
+2026-04-24 23:30:55,385 - __main__ - INFO - 开始生成二维参数曲线图像
+2026-04-24 23:30:55,385 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:30:55] "POST /api/start_creation HTTP/1.1" 200 -
+2026-04-24 23:31:00,503 - __main__ - INFO - 二维参数曲线图像生成完成: C:\Users\A3U86\AppData\Local\Temp\manim_parametric_2d\parametric_2d_20260424_233055.mp4
+2026-04-24 23:32:18,968 - __main__ - INFO - 访问主页
+2026-04-24 23:32:18,968 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:32:18] "GET / HTTP/1.1" 200 -
+2026-04-24 23:32:19,222 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:32:19] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-24 23:32:19,291 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:32:19] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-24 23:32:19,322 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:32:19] "[33mGET /@vite/client HTTP/1.1[0m" 404 -
+2026-04-24 23:32:20,770 - __main__ - INFO - 切换场景到: 3D
+2026-04-24 23:32:20,772 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:32:20] "POST /api/switch_scene HTTP/1.1" 200 -
+2026-04-24 23:32:27,046 - __main__ - INFO - 接收到开始创作请求
+2026-04-24 23:32:27,046 - __main__ - INFO - 接收到可视化请求: {'scene_type': '3D', 'input_type': 'explicit', 'functions': ['plot'], 'parameters': {'function_expression': 'sin(x+y)', 'x_range': '-10,10', 'y_range': '-10,10', 'resolution': '100', 'color_scheme': 'yellow', 'stroke_width': '4', 'animation_style': 'none', 'z_range': '-5,5', 'plot_type': 'auto', 'camera': {'phi': 45, 'theta': -45}}}
+2026-04-24 23:32:27,046 - __main__ - INFO - 相机参数 - φ: 45°, θ: -45°
+2026-04-24 23:32:27,046 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:32:27] "POST /api/start_creation HTTP/1.1" 200 -
+2026-04-24 23:33:04,548 - __main__ - ERROR - 生成三维场景动画失败: 未找到生成的视频文件
+2026-04-24 23:33:04,550 - __main__ - ERROR - Traceback (most recent call last):
+  File "d:\Project\manim_develop\manim_UCP_Arvin\app.py", line 1104, in generate_animation
+    video_path = three_d_animator.create_3d_animation(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Project\manim_develop\manim_UCP_Arvin\three_d_animator.py", line 283, in create_3d_animation
+    raise FileNotFoundError("未找到生成的视频文件")
+FileNotFoundError: 未找到生成的视频文件
+
+2026-04-24 23:35:17,207 - __main__ - INFO - 访问主页
+2026-04-24 23:35:17,208 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:35:17] "GET / HTTP/1.1" 200 -
+2026-04-24 23:35:17,474 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:35:17] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-24 23:35:17,528 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:35:17] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-24 23:35:17,560 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:35:17] "[33mGET /@vite/client HTTP/1.1[0m" 404 -
+2026-04-24 23:35:47,658 - __main__ - INFO - 访问主页
+2026-04-24 23:35:47,658 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:35:47] "GET / HTTP/1.1" 200 -
+2026-04-24 23:35:47,917 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:35:47] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-24 23:35:47,982 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:35:47] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-24 23:35:48,006 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:35:48] "[33mGET /@vite/client HTTP/1.1[0m" 404 -
+2026-04-24 23:35:49,562 - __main__ - INFO - 切换输入类型到: polar
+2026-04-24 23:35:49,562 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:35:49] "POST /api/switch_input_type HTTP/1.1" 200 -
+2026-04-24 23:35:55,710 - __main__ - INFO - 接收到开始创作请求
+2026-04-24 23:35:55,711 - __main__ - INFO - 接收到可视化请求: {'scene_type': '2D', 'input_type': 'polar', 'functions': ['plot'], 'parameters': {'function_expression': '', 'x_range': '-10,10', 'y_range': '-10,10', 'resolution': '100', 'color_scheme': 'yellow', 'stroke_width': '4', 'animation_style': 'none', 'polar': {'r_expression': '2 + 0.5*cos(phi)', 'phi_expression': '', 'radius_max': 4, 'azimuth_step': 30, 'radius_step': 1, 'theta_range': '0,6.28'}}}
+2026-04-24 23:35:55,712 - __main__ - INFO - 开始生成极坐标图像: r = 2 + 0.5*cos(phi)
+2026-04-24 23:35:55,712 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:35:55] "POST /api/start_creation HTTP/1.1" 200 -
+2026-04-24 23:35:55,712 - __main__ - ERROR - 生成极坐标图像失败: 极坐标函数解析错误: name 'phi' is not defined
+2026-04-24 23:35:55,712 - __main__ - ERROR - Traceback (most recent call last):
+  File "d:\Project\manim_develop\manim_UCP_Arvin\polar_animator.py", line 39, in create_polar_function
+    func(0)
+  File "d:\Project\manim_develop\manim_UCP_Arvin\polar_animator.py", line 25, in <lambda>
+    func = lambda theta: eval(
+                         ^^^^^
+  File "<string>", line 1, in <module>
+NameError: name 'phi' is not defined. Did you mean: 'pi'?
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "d:\Project\manim_develop\manim_UCP_Arvin\app.py", line 1384, in generate_plot
+    video_path = polar_animator.create_polar_plot(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Project\manim_develop\manim_UCP_Arvin\polar_animator.py", line 110, in create_polar_plot
+    r_func = self.create_polar_function(func_str)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Project\manim_develop\manim_UCP_Arvin\polar_animator.py", line 42, in create_polar_function
+    raise ValueError(f"极坐标函数解析错误: {str(e)}")
+ValueError: 极坐标函数解析错误: name 'phi' is not defined
+
+2026-04-24 23:36:04,663 - __main__ - INFO - 切换输入类型到: parametric
+2026-04-24 23:36:04,663 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:36:04] "POST /api/switch_input_type HTTP/1.1" 200 -
+2026-04-24 23:36:05,805 - __main__ - INFO - 切换输入类型到: polar
+2026-04-24 23:36:05,805 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:36:05] "POST /api/switch_input_type HTTP/1.1" 200 -
+2026-04-24 23:36:11,226 - __main__ - INFO - 切换场景到: 3D
+2026-04-24 23:36:11,226 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:36:11] "POST /api/switch_scene HTTP/1.1" 200 -
+2026-04-24 23:36:17,423 - __main__ - INFO - 接收到开始创作请求
+2026-04-24 23:36:17,424 - __main__ - INFO - 接收到可视化请求: {'scene_type': '3D', 'input_type': 'polar', 'functions': ['plot'], 'parameters': {'function_expression': '', 'x_range': '-10,10', 'y_range': '-10,10', 'resolution': '100', 'color_scheme': 'yellow', 'stroke_width': '4', 'animation_style': 'none', 'polar': {'r_expression': '2 + 0.5*cos(phi)', 'phi_expression': '', 'radius_max': 4, 'azimuth_step': 30, 'radius_step': 1, 'theta_range': '0,6.28'}, 'z_range': '-5,5', 'plot_type': 'auto', 'camera': {'phi': 45, 'theta': -45}}}
+2026-04-24 23:36:17,424 - __main__ - INFO - 相机参数 - φ: 45°, θ: -45°
+2026-04-24 23:36:17,426 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:36:17] "POST /api/start_creation HTTP/1.1" 200 -
+2026-04-24 23:36:34,052 - __main__ - ERROR - 生成三维场景动画失败: 未找到生成的视频文件
+2026-04-24 23:36:34,052 - __main__ - ERROR - Traceback (most recent call last):
+  File "d:\Project\manim_develop\manim_UCP_Arvin\app.py", line 1104, in generate_animation
+    video_path = three_d_animator.create_3d_animation(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Project\manim_develop\manim_UCP_Arvin\three_d_animator.py", line 283, in create_3d_animation
+    if output_file:
+FileNotFoundError: 未找到生成的视频文件
+
+2026-04-24 23:37:07,157 - __main__ - INFO - 开始导入模块...
+2026-04-24 23:37:09,300 - __main__ - INFO - ✅ 模块导入成功
+2026-04-24 23:37:09,301 - __main__ - INFO - ✅ 动画生成器初始化成功
+2026-04-24 23:37:09,301 - __main__ - INFO - ✅ VisualizationController 初始化成功
+2026-04-24 23:37:09,301 - __main__ - INFO - ✅ 控制器初始化成功
+2026-04-24 23:37:09,304 - __main__ - INFO - ==================================================
+2026-04-24 23:37:09,304 - __main__ - INFO - 启动Manim简化可视化工具...
+2026-04-24 23:37:09,304 - __main__ - INFO - ==================================================
+2026-04-24 23:37:09,330 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-04-24 23:37:09,335 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-04-24 23:37:13,419 - __main__ - INFO - 访问主页
+2026-04-24 23:37:13,427 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:37:13] "GET / HTTP/1.1" 200 -
+2026-04-24 23:37:13,873 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:37:13] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-24 23:37:13,960 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:37:13] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-24 23:37:13,991 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:37:13] "[33mGET /@vite/client HTTP/1.1[0m" 404 -
+2026-04-24 23:37:32,167 - __main__ - INFO - 访问主页
+2026-04-24 23:37:32,167 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:37:32] "GET / HTTP/1.1" 200 -
+2026-04-24 23:37:32,429 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:37:32] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-24 23:37:32,484 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:37:32] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-24 23:37:32,514 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:37:32] "[33mGET /@vite/client HTTP/1.1[0m" 404 -
+2026-04-24 23:37:34,672 - __main__ - INFO - 切换场景到: 3D
+2026-04-24 23:37:34,672 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:37:34] "POST /api/switch_scene HTTP/1.1" 200 -
+2026-04-24 23:37:35,537 - __main__ - INFO - 切换输入类型到: polar
+2026-04-24 23:37:35,537 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:37:35] "POST /api/switch_input_type HTTP/1.1" 200 -
+2026-04-24 23:37:38,594 - __main__ - INFO - 接收到开始创作请求
+2026-04-24 23:37:38,594 - __main__ - INFO - 接收到可视化请求: {'scene_type': '3D', 'input_type': 'polar', 'functions': ['plot'], 'parameters': {'function_expression': '', 'x_range': '-10,10', 'y_range': '-10,10', 'resolution': '100', 'color_scheme': 'yellow', 'stroke_width': '4', 'animation_style': 'none', 'polar': {'r_expression': '2 + cos(theta)', 'phi_expression': '', 'radius_max': 4, 'azimuth_step': 30, 'radius_step': 1, 'theta_range': '0,6.28'}, 'z_range': '-5,5', 'plot_type': 'auto', 'camera': {'phi': 45, 'theta': -45}}}
+2026-04-24 23:37:38,594 - __main__ - INFO - 相机参数 - φ: 45°, θ: -45°
+2026-04-24 23:37:38,594 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:37:38] "POST /api/start_creation HTTP/1.1" 200 -
+2026-04-24 23:41:21,180 - __main__ - INFO - 开始导入模块...
+2026-04-24 23:41:22,438 - __main__ - INFO - ✅ 模块导入成功
+2026-04-24 23:41:22,438 - __main__ - INFO - ✅ 动画生成器初始化成功
+2026-04-24 23:41:22,438 - __main__ - INFO - ✅ VisualizationController 初始化成功
+2026-04-24 23:41:22,442 - __main__ - INFO - ✅ 控制器初始化成功
+2026-04-24 23:41:22,444 - __main__ - INFO - ==================================================
+2026-04-24 23:41:22,445 - __main__ - INFO - 启动Manim简化可视化工具...
+2026-04-24 23:41:22,445 - __main__ - INFO - ==================================================
+2026-04-24 23:41:22,475 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-04-24 23:41:22,475 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-04-24 23:41:25,639 - __main__ - INFO - 访问主页
+2026-04-24 23:41:25,646 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:41:25] "GET / HTTP/1.1" 200 -
+2026-04-24 23:41:26,088 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:41:26] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-24 23:41:26,141 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:41:26] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-24 23:41:26,182 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:41:26] "[33mGET /@vite/client HTTP/1.1[0m" 404 -
+2026-04-24 23:41:32,213 - __main__ - INFO - 访问主页
+2026-04-24 23:41:32,213 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:41:32] "GET / HTTP/1.1" 200 -
+2026-04-24 23:41:32,478 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:41:32] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-24 23:41:32,537 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:41:32] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-24 23:41:32,563 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:41:32] "[33mGET /@vite/client HTTP/1.1[0m" 404 -
+2026-04-24 23:41:34,275 - __main__ - INFO - 切换输入类型到: implicit
+2026-04-24 23:41:34,275 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:41:34] "POST /api/switch_input_type HTTP/1.1" 200 -
+2026-04-24 23:41:36,734 - __main__ - INFO - 接收到开始创作请求
+2026-04-24 23:41:36,734 - __main__ - INFO - 接收到可视化请求: {'scene_type': '2D', 'input_type': 'implicit', 'functions': ['plot'], 'parameters': {'function_expression': 'x**3 + y**3 - 3*x*y ', 'x_range': '-10,10', 'y_range': '-10,10', 'resolution': '100', 'color_scheme': 'yellow', 'stroke_width': '4', 'animation_style': 'none'}}
+2026-04-24 23:41:36,735 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:41:36] "POST /api/start_creation HTTP/1.1" 200 -
+2026-04-24 23:42:37,721 - __main__ - INFO - 访问主页
+2026-04-24 23:42:37,721 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:42:37] "GET / HTTP/1.1" 200 -
+2026-04-24 23:42:37,983 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:42:37] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-24 23:42:38,044 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:42:38] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-24 23:42:38,071 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:42:38] "[33mGET /@vite/client HTTP/1.1[0m" 404 -
+2026-04-24 23:42:38,929 - __main__ - INFO - 切换场景到: 3D
+2026-04-24 23:42:38,929 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:42:38] "POST /api/switch_scene HTTP/1.1" 200 -
+2026-04-24 23:42:55,177 - __main__ - INFO - 访问主页
+2026-04-24 23:42:55,179 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:42:55] "GET / HTTP/1.1" 200 -
+2026-04-24 23:42:55,562 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:42:55] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-24 23:42:55,562 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:42:55] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-24 23:42:55,820 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:42:55] "[33mGET /@vite/client HTTP/1.1[0m" 404 -
+2026-04-24 23:42:57,370 - __main__ - INFO - 切换场景到: 3D
+2026-04-24 23:42:57,371 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:42:57] "POST /api/switch_scene HTTP/1.1" 200 -
+2026-04-24 23:43:00,253 - __main__ - INFO - 切换输入类型到: parametric
+2026-04-24 23:43:00,254 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:43:00] "POST /api/switch_input_type HTTP/1.1" 200 -
+2026-04-24 23:43:02,312 - __main__ - INFO - 切换输入类型到: implicit
+2026-04-24 23:43:02,312 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:43:02] "POST /api/switch_input_type HTTP/1.1" 200 -
+2026-04-24 23:43:03,215 - __main__ - INFO - 切换输入类型到: explicit
+2026-04-24 23:43:03,215 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:43:03] "POST /api/switch_input_type HTTP/1.1" 200 -
+2026-04-24 23:43:03,476 - __main__ - INFO - 切换输入类型到: polar
+2026-04-24 23:43:03,477 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:43:03] "POST /api/switch_input_type HTTP/1.1" 200 -
+2026-04-24 23:43:19,064 - __main__ - INFO - 接收到开始创作请求
+2026-04-24 23:43:19,066 - __main__ - INFO - 接收到可视化请求: {'scene_type': '3D', 'input_type': 'polar', 'functions': ['surface_transform'], 'parameters': {'function_expression': '', 'x_range': '-10,10', 'y_range': '-10,10', 'resolution': '100', 'color_scheme': 'yellow', 'stroke_width': '4', 'animation_style': 'none', 'plane2_expression': '3 + sin(theta)*sin(phi)', 'polar': {'r_expression': '2 + 0.5*cos(phi)', 'phi_expression': '', 'radius_max': 4, 'azimuth_step': 30, 'radius_step': 1, 'theta_range': '0,6.28'}, 'z_range': '-5,5', 'plot_type': 'auto', 'camera': {'phi': 45, 'theta': -45}}}
+2026-04-24 23:43:19,066 - __main__ - INFO - 相机参数 - φ: 45°, θ: -45°
+2026-04-24 23:43:19,069 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:43:19] "POST /api/start_creation HTTP/1.1" 200 -
+2026-04-24 23:54:05,864 - __main__ - INFO - 访问主页
+2026-04-24 23:54:05,865 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:54:05] "GET / HTTP/1.1" 200 -
+2026-04-24 23:54:06,113 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:54:06] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-24 23:54:06,180 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:54:06] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-24 23:54:06,210 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:54:06] "[33mGET /@vite/client HTTP/1.1[0m" 404 -
+2026-04-24 23:54:07,586 - __main__ - INFO - 切换场景到: 3D
+2026-04-24 23:54:07,586 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:54:07] "POST /api/switch_scene HTTP/1.1" 200 -
+2026-04-24 23:54:11,244 - __main__ - INFO - 接收到开始创作请求
+2026-04-24 23:54:11,245 - __main__ - INFO - 接收到可视化请求: {'scene_type': '3D', 'input_type': 'explicit', 'functions': ['plot'], 'parameters': {'function_expression': 'sin(5*x) * exp(-(x**2+y**2))', 'x_range': '-10,10', 'y_range': '-10,10', 'resolution': '100', 'color_scheme': 'yellow', 'stroke_width': '4', 'animation_style': 'none', 'z_range': '-5,5', 'plot_type': 'auto', 'camera': {'phi': 45, 'theta': -45}}}
+2026-04-24 23:54:11,245 - __main__ - INFO - 相机参数 - φ: 45°, θ: -45°
+2026-04-24 23:54:11,245 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:54:11] "POST /api/start_creation HTTP/1.1" 200 -
+2026-04-24 23:55:11,249 - __main__ - INFO - 切换输入类型到: explicit
+2026-04-24 23:55:11,251 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:55:11] "POST /api/switch_input_type HTTP/1.1" 200 -
+2026-04-24 23:55:12,107 - __main__ - INFO - 切换输入类型到: explicit
+2026-04-24 23:55:12,107 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:55:12] "POST /api/switch_input_type HTTP/1.1" 200 -
+2026-04-24 23:55:12,456 - __main__ - INFO - 切换输入类型到: explicit
+2026-04-24 23:55:12,456 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:55:12] "POST /api/switch_input_type HTTP/1.1" 200 -
+2026-04-24 23:55:33,846 - __main__ - INFO - 接收到开始创作请求
+2026-04-24 23:55:33,846 - __main__ - INFO - 接收到可视化请求: {'scene_type': '3D', 'input_type': 'explicit', 'functions': ['plot'], 'parameters': {'function_expression': 'sin(sqrt(x**2+y**2))', 'x_range': '-10,10', 'y_range': '-10,10', 'resolution': '100', 'color_scheme': 'yellow', 'stroke_width': '4', 'animation_style': 'none', 'z_range': '-5,5', 'plot_type': 'auto', 'camera': {'phi': 45, 'theta': -45}}}
+2026-04-24 23:55:33,846 - __main__ - INFO - 相机参数 - φ: 45°, θ: -45°
+2026-04-24 23:55:33,846 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:55:33] "POST /api/start_creation HTTP/1.1" 200 -
+2026-04-24 23:59:08,432 - __main__ - INFO - 开始导入模块...
+2026-04-24 23:59:09,697 - __main__ - INFO - ✅ 模块导入成功
+2026-04-24 23:59:09,699 - __main__ - INFO - ✅ 动画生成器初始化成功
+2026-04-24 23:59:09,699 - __main__ - INFO - ✅ VisualizationController 初始化成功
+2026-04-24 23:59:09,699 - __main__ - INFO - ✅ 控制器初始化成功
+2026-04-24 23:59:09,702 - __main__ - INFO - ==================================================
+2026-04-24 23:59:09,702 - __main__ - INFO - 启动Manim简化可视化工具...
+2026-04-24 23:59:09,702 - __main__ - INFO - ==================================================
+2026-04-24 23:59:09,730 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-04-24 23:59:09,731 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-04-24 23:59:13,294 - __main__ - INFO - 访问主页
+2026-04-24 23:59:13,299 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:59:13] "GET / HTTP/1.1" 200 -
+2026-04-24 23:59:13,631 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:59:13] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-24 23:59:13,706 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:59:13] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-24 23:59:13,731 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:59:13] "[33mGET /@vite/client HTTP/1.1[0m" 404 -
+2026-04-24 23:59:15,164 - __main__ - INFO - 切换场景到: 3D
+2026-04-24 23:59:15,164 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:59:15] "POST /api/switch_scene HTTP/1.1" 200 -
+2026-04-24 23:59:20,126 - __main__ - INFO - 接收到开始创作请求
+2026-04-24 23:59:20,126 - __main__ - INFO - 接收到可视化请求: {'scene_type': '3D', 'input_type': 'explicit', 'functions': ['plot'], 'parameters': {'function_expression': 'sin(sqrt(x**2+y**2))', 'x_range': '-10,10', 'y_range': '-10,10', 'resolution': '100', 'color_scheme': 'yellow', 'stroke_width': '4', 'animation_style': 'none', 'z_range': '-5,5', 'plot_type': 'auto', 'camera': {'phi': 45, 'theta': -45}}}
+2026-04-24 23:59:20,126 - __main__ - INFO - 相机参数 - φ: 45°, θ: -45°
+2026-04-24 23:59:20,126 - werkzeug - INFO - 127.0.0.1 - - [24/Apr/2026 23:59:20] "POST /api/start_creation HTTP/1.1" 200 -
+2026-04-25 00:01:18,365 - __main__ - INFO - 接收到开始创作请求
+2026-04-25 00:01:18,365 - __main__ - INFO - 接收到可视化请求: {'scene_type': '3D', 'input_type': 'explicit', 'functions': ['plot'], 'parameters': {'function_expression': 'sin(5*x) * exp(-(x**2+y**2))', 'x_range': '-10,10', 'y_range': '-10,10', 'resolution': '100', 'color_scheme': 'yellow', 'stroke_width': '4', 'animation_style': 'none', 'z_range': '-5,5', 'plot_type': 'auto', 'camera': {'phi': 45, 'theta': -45}}}
+2026-04-25 00:01:18,365 - __main__ - INFO - 相机参数 - φ: 45°, θ: -45°
+2026-04-25 00:01:18,365 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:01:18] "POST /api/start_creation HTTP/1.1" 200 -
+2026-04-25 00:02:16,867 - __main__ - INFO - 接收到开始创作请求
+2026-04-25 00:02:16,867 - __main__ - INFO - 接收到可视化请求: {'scene_type': '3D', 'input_type': 'explicit', 'functions': ['plot'], 'parameters': {'function_expression': 'sqrt(x**2 + y**2)', 'x_range': '-10,10', 'y_range': '-10,10', 'resolution': '100', 'color_scheme': 'yellow', 'stroke_width': '4', 'animation_style': 'none', 'z_range': '-5,5', 'plot_type': 'auto', 'camera': {'phi': 45, 'theta': -45}}}
+2026-04-25 00:02:16,867 - __main__ - INFO - 相机参数 - φ: 45°, θ: -45°
+2026-04-25 00:02:16,867 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:02:16] "POST /api/start_creation HTTP/1.1" 200 -
+2026-04-25 00:04:14,524 - __main__ - INFO - 切换场景到: 2D
+2026-04-25 00:04:14,524 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:04:14] "POST /api/switch_scene HTTP/1.1" 200 -
+2026-04-25 00:08:32,528 - __main__ - INFO - 切换输入类型到: implicit
+2026-04-25 00:08:32,528 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:08:32] "POST /api/switch_input_type HTTP/1.1" 200 -
+2026-04-25 00:08:34,425 - __main__ - INFO - 接收到开始创作请求
+2026-04-25 00:08:34,425 - __main__ - INFO - 接收到可视化请求: {'scene_type': '2D', 'input_type': 'implicit', 'functions': ['plot'], 'parameters': {'function_expression': 'sin(x) + sin(2*x)/2 + sin(3*x)/3 + sin(4*x)/4', 'x_range': '-10,10', 'y_range': '-10,10', 'resolution': '100', 'color_scheme': 'yellow', 'stroke_width': '4', 'animation_style': 'none'}}
+2026-04-25 00:08:34,426 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:08:34] "POST /api/start_creation HTTP/1.1" 200 -
+2026-04-25 00:08:44,726 - __main__ - INFO - 切换场景到: 2D
+2026-04-25 00:08:44,730 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:08:44] "POST /api/switch_scene HTTP/1.1" 200 -
+2026-04-25 00:08:45,179 - __main__ - INFO - 切换场景到: 2D
+2026-04-25 00:08:45,180 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:08:45] "POST /api/switch_scene HTTP/1.1" 200 -
+2026-04-25 00:08:45,359 - __main__ - INFO - 切换场景到: 2D
+2026-04-25 00:08:45,361 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:08:45] "POST /api/switch_scene HTTP/1.1" 200 -
+2026-04-25 00:08:46,688 - __main__ - INFO - 切换输入类型到: implicit
+2026-04-25 00:08:46,689 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:08:46] "POST /api/switch_input_type HTTP/1.1" 200 -
+2026-04-25 00:08:47,142 - __main__ - INFO - 切换输入类型到: implicit
+2026-04-25 00:08:47,142 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:08:47] "POST /api/switch_input_type HTTP/1.1" 200 -
+2026-04-25 00:08:49,527 - __main__ - INFO - 接收到开始创作请求
+2026-04-25 00:08:49,528 - __main__ - INFO - 接收到可视化请求: {'scene_type': '2D', 'input_type': 'implicit', 'functions': ['plot'], 'parameters': {'function_expression': 'sin(x) + sin(2*x)/2 + sin(3*x)/3 + sin(4*x)/4', 'x_range': '-10,10', 'y_range': '-10,10', 'resolution': '100', 'color_scheme': 'yellow', 'stroke_width': '4', 'animation_style': 'none'}}
+2026-04-25 00:08:49,528 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:08:49] "POST /api/start_creation HTTP/1.1" 200 -
+2026-04-25 00:09:00,257 - __main__ - INFO - 切换输入类型到: explicit
+2026-04-25 00:09:00,257 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:09:00] "POST /api/switch_input_type HTTP/1.1" 200 -
+2026-04-25 00:09:03,129 - __main__ - INFO - 接收到开始创作请求
+2026-04-25 00:09:03,129 - __main__ - INFO - 接收到可视化请求: {'scene_type': '2D', 'input_type': 'explicit', 'functions': ['plot'], 'parameters': {'function_expression': 'sin(x) + sin(2*x)/2 + sin(3*x)/3 + sin(4*x)/4', 'x_range': '-10,10', 'y_range': '-10,10', 'resolution': '100', 'color_scheme': 'yellow', 'stroke_width': '4', 'animation_style': 'none'}}
+2026-04-25 00:09:03,129 - __main__ - INFO - 开始生成函数图像: sin(x) + sin(2*x)/2 + sin(3*x)/3 + sin(4*x)/4
+2026-04-25 00:09:03,129 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:09:03] "POST /api/start_creation HTTP/1.1" 200 -
+2026-04-25 00:09:06,156 - __main__ - ERROR - 生成函数图像失败: 未找到生成的视频文件
+2026-04-25 00:09:06,156 - __main__ - ERROR - Traceback (most recent call last):
+  File "d:\Project\manim_develop\manim_UCP_Arvin\app.py", line 435, in generate_plot
+    video_path = plot_animator.create_function_plot(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Project\manim_develop\manim_UCP_Arvin\plot_animator.py", line 172, in create_function_plot
+    raise FileNotFoundError("未找到生成的视频文件")
+FileNotFoundError: 未找到生成的视频文件
+
+2026-04-25 00:09:07,862 - __main__ - INFO - 切换输入类型到: implicit
+2026-04-25 00:09:07,863 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:09:07] "POST /api/switch_input_type HTTP/1.1" 200 -
+2026-04-25 00:09:08,865 - __main__ - INFO - 接收到开始创作请求
+2026-04-25 00:09:08,865 - __main__ - INFO - 接收到可视化请求: {'scene_type': '2D', 'input_type': 'implicit', 'functions': ['plot'], 'parameters': {'function_expression': 'sin(x) + sin(2*x)/2 + sin(3*x)/3 + sin(4*x)/4', 'x_range': '-10,10', 'y_range': '-10,10', 'resolution': '100', 'color_scheme': 'yellow', 'stroke_width': '4', 'animation_style': 'none'}}
+2026-04-25 00:09:08,865 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:09:08] "POST /api/start_creation HTTP/1.1" 200 -
+2026-04-25 00:12:39,130 - __main__ - INFO - 开始导入模块...
+2026-04-25 00:12:40,391 - __main__ - INFO - ✅ 模块导入成功
+2026-04-25 00:12:40,394 - __main__ - INFO - ✅ 动画生成器初始化成功
+2026-04-25 00:12:40,394 - __main__ - INFO - ✅ VisualizationController 初始化成功
+2026-04-25 00:12:40,396 - __main__ - INFO - ✅ 控制器初始化成功
+2026-04-25 00:12:40,398 - __main__ - INFO - ==================================================
+2026-04-25 00:12:40,398 - __main__ - INFO - 启动Manim简化可视化工具...
+2026-04-25 00:12:40,398 - __main__ - INFO - ==================================================
+2026-04-25 00:12:40,424 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-04-25 00:12:40,424 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-04-25 00:12:43,377 - __main__ - INFO - 访问主页
+2026-04-25 00:12:43,383 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:12:43] "GET / HTTP/1.1" 200 -
+2026-04-25 00:12:43,650 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:12:43] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-25 00:12:43,651 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:12:43] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-25 00:12:43,745 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:12:43] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-04-25 00:12:48,286 - __main__ - INFO - 访问主页
+2026-04-25 00:12:48,286 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:12:48] "GET / HTTP/1.1" 200 -
+2026-04-25 00:12:48,538 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:12:48] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-25 00:12:48,603 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:12:48] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-25 00:12:48,636 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:12:48] "[33mGET /@vite/client HTTP/1.1[0m" 404 -
+2026-04-25 00:12:50,299 - __main__ - INFO - 切换输入类型到: implicit
+2026-04-25 00:12:50,299 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:12:50] "POST /api/switch_input_type HTTP/1.1" 200 -
+2026-04-25 00:12:57,037 - __main__ - INFO - 接收到开始创作请求
+2026-04-25 00:12:57,037 - __main__ - INFO - 接收到可视化请求: {'scene_type': '2D', 'input_type': 'implicit', 'functions': ['plot'], 'parameters': {'function_expression': 'sin(x) + sin(2*x)/2 + sin(3*x)/3 + sin(4*x)/4', 'x_range': '-10,10', 'y_range': '-10,10', 'resolution': '100', 'color_scheme': 'yellow', 'stroke_width': '4', 'animation_style': 'none'}}
+2026-04-25 00:12:57,039 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:12:57] "POST /api/start_creation HTTP/1.1" 200 -
+2026-04-25 00:13:32,276 - __main__ - INFO - 切换输入类型到: explicit
+2026-04-25 00:13:32,276 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:13:32] "POST /api/switch_input_type HTTP/1.1" 200 -
+2026-04-25 00:13:34,008 - __main__ - INFO - 接收到开始创作请求
+2026-04-25 00:13:34,008 - __main__ - INFO - 接收到可视化请求: {'scene_type': '2D', 'input_type': 'explicit', 'functions': ['plot'], 'parameters': {'function_expression': 'sin(x) + sin(2*x)/2 + sin(3*x)/3 + sin(4*x)/4', 'x_range': '-10,10', 'y_range': '-10,10', 'resolution': '100', 'color_scheme': 'yellow', 'stroke_width': '4', 'animation_style': 'none'}}
+2026-04-25 00:13:34,011 - __main__ - INFO - 开始生成函数图像: sin(x) + sin(2*x)/2 + sin(3*x)/3 + sin(4*x)/4
+2026-04-25 00:13:34,011 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:13:34] "POST /api/start_creation HTTP/1.1" 200 -
+2026-04-25 00:13:36,927 - __main__ - ERROR - 生成函数图像失败: 未找到生成的视频文件
+2026-04-25 00:13:36,928 - __main__ - ERROR - Traceback (most recent call last):
+  File "d:\Project\manim_develop\manim_UCP_Arvin\app.py", line 435, in generate_plot
+    video_path = plot_animator.create_function_plot(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Project\manim_develop\manim_UCP_Arvin\plot_animator.py", line 181, in create_function_plot
+    raise FileNotFoundError("未找到生成的视频文件")
+FileNotFoundError: 未找到生成的视频文件
+
+2026-04-25 00:14:01,638 - __main__ - INFO - 访问主页
+2026-04-25 00:14:01,639 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:14:01] "GET / HTTP/1.1" 200 -
+2026-04-25 00:14:01,892 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:14:01] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-25 00:14:01,967 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:14:01] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-25 00:14:01,987 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:14:01] "[33mGET /@vite/client HTTP/1.1[0m" 404 -
+2026-04-25 00:14:21,026 - __main__ - INFO - 接收到开始创作请求
+2026-04-25 00:14:21,027 - __main__ - INFO - 接收到可视化请求: {'scene_type': '2D', 'input_type': 'explicit', 'functions': ['plot'], 'parameters': {'function_expression': 'abs(sin(2*x)) + abs(sin(4*x))/2 + abs(sin(8*x))/4', 'x_range': '-10,10', 'y_range': '-10,10', 'resolution': '100', 'color_scheme': 'yellow', 'stroke_width': '4', 'animation_style': 'none'}}
+2026-04-25 00:14:21,028 - __main__ - INFO - 开始生成函数图像: abs(sin(2*x)) + abs(sin(4*x))/2 + abs(sin(8*x))/4
+2026-04-25 00:14:21,028 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:14:21] "POST /api/start_creation HTTP/1.1" 200 -
+2026-04-25 00:14:23,834 - __main__ - ERROR - 生成函数图像失败: 未找到生成的视频文件
+2026-04-25 00:14:23,834 - __main__ - ERROR - Traceback (most recent call last):
+  File "d:\Project\manim_develop\manim_UCP_Arvin\app.py", line 435, in generate_plot
+    video_path = plot_animator.create_function_plot(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Project\manim_develop\manim_UCP_Arvin\plot_animator.py", line 181, in create_function_plot
+    raise FileNotFoundError("未找到生成的视频文件")
+FileNotFoundError: 未找到生成的视频文件
+
+2026-04-25 00:14:47,850 - __main__ - INFO - 访问主页
+2026-04-25 00:14:47,851 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:14:47] "GET / HTTP/1.1" 200 -
+2026-04-25 00:14:48,116 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:14:48] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-25 00:14:48,171 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:14:48] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-25 00:14:48,206 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:14:48] "[33mGET /@vite/client HTTP/1.1[0m" 404 -
+2026-04-25 00:14:55,896 - __main__ - INFO - 切换输入类型到: implicit
+2026-04-25 00:14:55,897 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:14:55] "POST /api/switch_input_type HTTP/1.1" 200 -
+2026-04-25 00:14:56,159 - __main__ - INFO - 切换输入类型到: explicit
+2026-04-25 00:14:56,159 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:14:56] "POST /api/switch_input_type HTTP/1.1" 200 -
+2026-04-25 00:14:57,104 - __main__ - INFO - 切换输入类型到: implicit
+2026-04-25 00:14:57,104 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:14:57] "POST /api/switch_input_type HTTP/1.1" 200 -
+2026-04-25 00:14:58,295 - __main__ - INFO - 切换场景到: 3D
+2026-04-25 00:14:58,295 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:14:58] "POST /api/switch_scene HTTP/1.1" 200 -
+2026-04-25 00:14:58,551 - __main__ - INFO - 切换场景到: 2D
+2026-04-25 00:14:58,554 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:14:58] "POST /api/switch_scene HTTP/1.1" 200 -
+2026-04-25 00:14:58,994 - __main__ - INFO - 切换输入类型到: explicit
+2026-04-25 00:14:58,994 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:14:58] "POST /api/switch_input_type HTTP/1.1" 200 -
+2026-04-25 00:15:03,331 - __main__ - INFO - 访问主页
+2026-04-25 00:15:03,332 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:15:03] "GET / HTTP/1.1" 200 -
+2026-04-25 00:15:03,573 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:15:03] "GET /static/css/style.css HTTP/1.1" 200 -
+2026-04-25 00:15:03,646 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:15:03] "GET /static/js/script.js HTTP/1.1" 200 -
+2026-04-25 00:15:08,247 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:15:08] "[33mGET /@vite/client HTTP/1.1[0m" 404 -
+2026-04-25 00:15:11,928 - __main__ - INFO - 接收到开始创作请求
+2026-04-25 00:15:11,928 - __main__ - INFO - 接收到可视化请求: {'scene_type': '2D', 'input_type': 'explicit', 'functions': ['plot'], 'parameters': {'function_expression': 'sin(x) * sin(2*x) * sin(3*x) * sin(4*x)', 'x_range': '-10,10', 'y_range': '-10,10', 'resolution': '100', 'color_scheme': 'yellow', 'stroke_width': '4', 'animation_style': 'none'}}
+2026-04-25 00:15:11,930 - __main__ - INFO - 开始生成函数图像: sin(x) * sin(2*x) * sin(3*x) * sin(4*x)
+2026-04-25 00:15:11,930 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:15:11] "POST /api/start_creation HTTP/1.1" 200 -
+2026-04-25 00:15:14,845 - __main__ - ERROR - 生成函数图像失败: 未找到生成的视频文件
+2026-04-25 00:15:14,845 - __main__ - ERROR - Traceback (most recent call last):
+  File "d:\Project\manim_develop\manim_UCP_Arvin\app.py", line 435, in generate_plot
+    video_path = plot_animator.create_function_plot(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Project\manim_develop\manim_UCP_Arvin\plot_animator.py", line 181, in create_function_plot
+    raise FileNotFoundError("未找到生成的视频文件")
+FileNotFoundError: 未找到生成的视频文件
+
+2026-04-25 00:16:02,767 - __main__ - INFO - 访问主页
+2026-04-25 00:16:02,768 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:16:02] "GET / HTTP/1.1" 200 -
+2026-04-25 00:16:03,031 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:16:03] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-25 00:16:03,088 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:16:03] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-25 00:16:03,115 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:16:03] "[33mGET /@vite/client HTTP/1.1[0m" 404 -
+2026-04-25 00:16:10,603 - __main__ - INFO - 接收到开始创作请求
+2026-04-25 00:16:10,604 - __main__ - INFO - 接收到可视化请求: {'scene_type': '2D', 'input_type': 'explicit', 'functions': ['plot'], 'parameters': {'function_expression': 'sin(x)*sin(2*x)*sin(3*x)*sin(4*x)', 'x_range': '-10,10', 'y_range': '-10,10', 'resolution': '100', 'color_scheme': 'yellow', 'stroke_width': '4', 'animation_style': 'none'}}
+2026-04-25 00:16:10,605 - __main__ - INFO - 开始生成函数图像: sin(x)*sin(2*x)*sin(3*x)*sin(4*x)
+2026-04-25 00:16:10,605 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:16:10] "POST /api/start_creation HTTP/1.1" 200 -
+2026-04-25 00:16:13,538 - __main__ - ERROR - 生成函数图像失败: 未找到生成的视频文件
+2026-04-25 00:16:13,538 - __main__ - ERROR - Traceback (most recent call last):
+  File "d:\Project\manim_develop\manim_UCP_Arvin\app.py", line 435, in generate_plot
+    video_path = plot_animator.create_function_plot(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Project\manim_develop\manim_UCP_Arvin\plot_animator.py", line 181, in create_function_plot
+    raise FileNotFoundError("未找到生成的视频文件")
+FileNotFoundError: 未找到生成的视频文件
+
+2026-04-25 00:16:20,568 - __main__ - INFO - 访问主页
+2026-04-25 00:16:20,568 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:16:20] "GET / HTTP/1.1" 200 -
+2026-04-25 00:16:20,828 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:16:20] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-25 00:16:20,892 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:16:20] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-25 00:16:20,917 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:16:20] "[33mGET /@vite/client HTTP/1.1[0m" 404 -
+2026-04-25 00:19:18,466 - __main__ - INFO - 开始导入模块...
+2026-04-25 00:19:19,686 - __main__ - INFO - ✅ 模块导入成功
+2026-04-25 00:19:19,686 - __main__ - INFO - ✅ 动画生成器初始化成功
+2026-04-25 00:19:19,686 - __main__ - INFO - ✅ VisualizationController 初始化成功
+2026-04-25 00:19:19,686 - __main__ - INFO - ✅ 控制器初始化成功
+2026-04-25 00:19:19,693 - __main__ - INFO - ==================================================
+2026-04-25 00:19:19,693 - __main__ - INFO - 启动Manim简化可视化工具...
+2026-04-25 00:19:19,693 - __main__ - INFO - ==================================================
+2026-04-25 00:19:19,714 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-04-25 00:19:19,714 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-04-25 00:19:33,067 - __main__ - INFO - 开始导入模块...
+2026-04-25 00:19:34,394 - __main__ - INFO - ✅ 模块导入成功
+2026-04-25 00:19:34,394 - __main__ - INFO - ✅ 动画生成器初始化成功
+2026-04-25 00:19:34,395 - __main__ - INFO - ✅ VisualizationController 初始化成功
+2026-04-25 00:19:34,395 - __main__ - INFO - ✅ 控制器初始化成功
+2026-04-25 00:19:34,399 - __main__ - INFO - ==================================================
+2026-04-25 00:19:34,399 - __main__ - INFO - 启动Manim简化可视化工具...
+2026-04-25 00:19:34,399 - __main__ - INFO - ==================================================
+2026-04-25 00:19:34,420 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-04-25 00:19:34,420 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-04-25 00:19:37,077 - __main__ - INFO - 访问主页
+2026-04-25 00:19:37,086 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:19:37] "GET / HTTP/1.1" 200 -
+2026-04-25 00:19:37,428 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:19:37] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-25 00:19:37,538 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:19:37] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-25 00:19:37,598 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:19:37] "[33mGET /@vite/client HTTP/1.1[0m" 404 -
+2026-04-25 00:19:44,603 - __main__ - INFO - 切换场景到: 3D
+2026-04-25 00:19:44,603 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:19:44] "POST /api/switch_scene HTTP/1.1" 200 -
+2026-04-25 00:19:54,096 - __main__ - INFO - 切换输入类型到: parametric
+2026-04-25 00:19:54,096 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:19:54] "POST /api/switch_input_type HTTP/1.1" 200 -
+2026-04-25 00:20:13,057 - __main__ - INFO - 接收到开始创作请求
+2026-04-25 00:20:13,057 - __main__ - INFO - 接收到可视化请求: {'scene_type': '3D', 'input_type': 'parametric', 'functions': ['plot'], 'parameters': {'function_expression': '', 'x_range': '-10,10', 'y_range': '-10,10', 'resolution': '100', 'color_scheme': 'yellow', 'stroke_width': '4', 'animation_style': 'none', 'parametric': {'mode': 'curve', 'x_expr': '(2+cos(3*t))*cos(2*t)', 'y_expr': '(2+cos(3*t))*sin(2*t)', 'z_expr': 'sin(3*t)', 't_range': '0,6.28'}, 'z_range': '-5,5', 'plot_type': 'auto', 'camera': {'phi': 45, 'theta': -45}}}
+2026-04-25 00:20:13,057 - __main__ - INFO - 相机参数 - φ: 45°, θ: -45°
+2026-04-25 00:20:13,057 - __main__ - INFO - 开始生成参数方程图像: mode=curve
+2026-04-25 00:20:13,057 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:20:13] "POST /api/start_creation HTTP/1.1" 200 -
+2026-04-25 00:20:26,021 - __main__ - INFO - 参数方程图像生成完成: C:\Users\A3U86\AppData\Local\Temp\manim_parametric\parametric_20260425_002013.mp4
+2026-04-25 00:21:36,520 - __main__ - INFO - 接收到开始创作请求
+2026-04-25 00:21:36,520 - __main__ - INFO - 接收到可视化请求: {'scene_type': '3D', 'input_type': 'parametric', 'functions': ['plot'], 'parameters': {'function_expression': '', 'x_range': '-10,10', 'y_range': '-10,10', 'resolution': '100', 'color_scheme': 'yellow', 'stroke_width': '4', 'animation_style': 'none', 'parametric': {'mode': 'curve', 'x_expr': 'sin(t) * sin(5*t)', 'y_expr': 'cos(t) * sin(5*t)', 'z_expr': 'cos(5*t)', 't_range': '0,6.28'}, 'z_range': '-5,5', 'plot_type': 'auto', 'camera': {'phi': 45, 'theta': -45}}}
+2026-04-25 00:21:36,520 - __main__ - INFO - 相机参数 - φ: 45°, θ: -45°
+2026-04-25 00:21:36,520 - __main__ - INFO - 开始生成参数方程图像: mode=curve
+2026-04-25 00:21:36,520 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:21:36] "POST /api/start_creation HTTP/1.1" 200 -
+2026-04-25 00:21:50,085 - __main__ - INFO - 参数方程图像生成完成: C:\Users\A3U86\AppData\Local\Temp\manim_parametric\parametric_20260425_002136.mp4
+2026-04-25 00:23:08,821 - __main__ - INFO - 接收到开始创作请求
+2026-04-25 00:23:08,822 - __main__ - INFO - 接收到可视化请求: {'scene_type': '3D', 'input_type': 'parametric', 'functions': ['plot'], 'parameters': {'function_expression': '', 'x_range': '-10,10', 'y_range': '-10,10', 'resolution': '100', 'color_scheme': 'yellow', 'stroke_width': '4', 'animation_style': 'none', 'parametric': {'mode': 'curve', 'x_expr': '1+cos(t)', 'y_expr': 'sin(t)', 'z_expr': '2*sin(t/2)', 't_range': '0,6.28'}, 'z_range': '-5,5', 'plot_type': 'auto', 'camera': {'phi': 45, 'theta': -45}}}
+2026-04-25 00:23:08,822 - __main__ - INFO - 相机参数 - φ: 45°, θ: -45°
+2026-04-25 00:23:08,823 - __main__ - INFO - 开始生成参数方程图像: mode=curve
+2026-04-25 00:23:08,824 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2026 00:23:08] "POST /api/start_creation HTTP/1.1" 200 -
+2026-04-25 00:23:21,253 - __main__ - INFO - 参数方程图像生成完成: C:\Users\A3U86\AppData\Local\Temp\manim_parametric\parametric_20260425_002308.mp4

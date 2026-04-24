@@ -172,7 +172,7 @@ class ThreeDAnimator:
                     # 创建曲面 - 使用fill_opacity而不是opacity
                     surface = Surface(
                         lambda u, v: axes.c2p(
-                            u, v, float(func_lambda(u, v))
+                            u, v, func_lambda(u, v)
                         ),
                         u_range=[x_range[0], x_range[1]],
                         v_range=[y_range[0], y_range[1]],
@@ -247,6 +247,15 @@ class ThreeDAnimator:
             os.makedirs(output_dir, exist_ok=True)
             config.media_dir = output_dir
             
+            # 关键：彻底删除整个videos目录，强制Manim重建
+            videos_dir = os.path.join(output_dir, "videos")
+            if os.path.exists(videos_dir):
+                import shutil
+                try:
+                    shutil.rmtree(videos_dir)
+                except:
+                    pass
+            
             # 三维渲染设置
             config.quality = "medium_quality"
             config.frame_rate = 30
@@ -258,15 +267,27 @@ class ThreeDAnimator:
             scene = ThreeDPlot()
             scene.render()
             
-            # 查找生成的视频文件
+            # 查找生成的视频文件 - 三级容错机制
             video_files = []
             for root, dirs, files in os.walk(output_dir):
                 for file in files:
-                    if file.endswith(".mp4") and "ThreeDPlot" in file:
-                        video_files.append(os.path.join(root, file))
+                    if file.endswith(".mp4"):
+                        if "ThreeDPlot" in file:
+                            filepath = os.path.join(root, file)
+                            mtime = os.path.getmtime(filepath)
+                            video_files.append((-mtime, filepath))
+            
+            if not video_files:
+                for root, dirs, files in os.walk(output_dir):
+                    for file in files:
+                        if file.endswith(".mp4"):
+                            filepath = os.path.join(root, file)
+                            mtime = os.path.getmtime(filepath)
+                            video_files.append((-mtime, filepath))
             
             if video_files:
-                generated_video = video_files[0]
+                video_files.sort()
+                generated_video = video_files[0][1]
                 
                 if output_file:
                     os.makedirs(os.path.dirname(output_file), exist_ok=True)
@@ -561,14 +582,14 @@ class ThreeDAnimator:
                     # 显函数模式: z = f(x, y)
                     # 使用预先处理好的闭包变量 func1_lambda, func2_lambda
                     surface1 = Surface(
-                        lambda u, v: axes.c2p(u, v, float(func1_lambda(u, v))),
+                        lambda u, v: axes.c2p(u, v, func1_lambda(u, v)),
                         u_range=[x_range[0], x_range[1]],
                         v_range=[y_range[0], y_range[1]],
                         resolution=(20, 20),
                         checkerboard_colors=None
                     )
                     surface2 = Surface(
-                        lambda u, v: axes.c2p(u, v, float(func2_lambda(u, v))),
+                        lambda u, v: axes.c2p(u, v, func2_lambda(u, v)),
                         u_range=[x_range[0], x_range[1]],
                         v_range=[y_range[0], y_range[1]],
                         resolution=(20, 20),
@@ -716,6 +737,15 @@ class ThreeDAnimator:
             os.makedirs(output_dir, exist_ok=True)
             config.media_dir = output_dir
             
+            # 关键：彻底删除整个videos目录，强制Manim重建
+            videos_dir = os.path.join(output_dir, "videos")
+            if os.path.exists(videos_dir):
+                import shutil
+                try:
+                    shutil.rmtree(videos_dir)
+                except:
+                    pass
+            
             # 三维渲染设置
             config.quality = "medium_quality"
             config.frame_rate = 30
@@ -727,15 +757,27 @@ class ThreeDAnimator:
             scene = SurfaceTransformScene()
             scene.render()
             
-            # 查找生成的视频文件
+            # 查找生成的视频文件 - 三级容错机制
             video_files = []
             for root, dirs, files in os.walk(output_dir):
                 for file in files:
-                    if file.endswith(".mp4") and "SurfaceTransformScene" in file:
-                        video_files.append(os.path.join(root, file))
+                    if file.endswith(".mp4"):
+                        if "SurfaceTransformScene" in file or "SurfaceTransform" in file:
+                            filepath = os.path.join(root, file)
+                            mtime = os.path.getmtime(filepath)
+                            video_files.append((-mtime, filepath))
+            
+            if not video_files:
+                for root, dirs, files in os.walk(output_dir):
+                    for file in files:
+                        if file.endswith(".mp4"):
+                            filepath = os.path.join(root, file)
+                            mtime = os.path.getmtime(filepath)
+                            video_files.append((-mtime, filepath))
             
             if video_files:
-                generated_video = video_files[0]
+                video_files.sort()
+                generated_video = video_files[0][1]
                 
                 if output_file:
                     os.makedirs(os.path.dirname(output_file), exist_ok=True)
@@ -851,6 +893,15 @@ class ThreeDAnimator:
             os.makedirs(output_dir, exist_ok=True)
             config.media_dir = output_dir
             
+            # 关键：彻底删除整个videos目录，强制Manim重建
+            videos_dir = os.path.join(output_dir, "videos")
+            if os.path.exists(videos_dir):
+                import shutil
+                try:
+                    shutil.rmtree(videos_dir)
+                except:
+                    pass
+            
             config.quality = "medium_quality"
             config.frame_rate = 30
             config.pixel_height = 720
@@ -863,11 +914,23 @@ class ThreeDAnimator:
             video_files = []
             for root, dirs, files in os.walk(output_dir):
                 for file in files:
-                    if file.endswith(".mp4") and "ParametricCurveScene" in file:
-                        video_files.append(os.path.join(root, file))
+                    if file.endswith(".mp4"):
+                        if "ParametricCurveScene" in file or "ParametricCurve" in file:
+                            filepath = os.path.join(root, file)
+                            mtime = os.path.getmtime(filepath)
+                            video_files.append((-mtime, filepath))
+            
+            if not video_files:
+                for root, dirs, files in os.walk(output_dir):
+                    for file in files:
+                        if file.endswith(".mp4"):
+                            filepath = os.path.join(root, file)
+                            mtime = os.path.getmtime(filepath)
+                            video_files.append((-mtime, filepath))
             
             if video_files:
-                generated_video = video_files[0]
+                video_files.sort()
+                generated_video = video_files[0][1]
                 
                 if output_file:
                     os.makedirs(os.path.dirname(output_file), exist_ok=True)
@@ -983,6 +1046,15 @@ class ThreeDAnimator:
             os.makedirs(output_dir, exist_ok=True)
             config.media_dir = output_dir
             
+            # 关键：彻底删除整个videos目录，强制Manim重建
+            videos_dir = os.path.join(output_dir, "videos")
+            if os.path.exists(videos_dir):
+                import shutil
+                try:
+                    shutil.rmtree(videos_dir)
+                except:
+                    pass
+            
             config.quality = "medium_quality"
             config.frame_rate = 30
             config.pixel_height = 720
@@ -995,11 +1067,23 @@ class ThreeDAnimator:
             video_files = []
             for root, dirs, files in os.walk(output_dir):
                 for file in files:
-                    if file.endswith(".mp4") and "ParametricSurfaceScene" in file:
-                        video_files.append(os.path.join(root, file))
+                    if file.endswith(".mp4"):
+                        if "ParametricSurfaceScene" in file or "ParametricSurface" in file:
+                            filepath = os.path.join(root, file)
+                            mtime = os.path.getmtime(filepath)
+                            video_files.append((-mtime, filepath))
+            
+            if not video_files:
+                for root, dirs, files in os.walk(output_dir):
+                    for file in files:
+                        if file.endswith(".mp4"):
+                            filepath = os.path.join(root, file)
+                            mtime = os.path.getmtime(filepath)
+                            video_files.append((-mtime, filepath))
             
             if video_files:
-                generated_video = video_files[0]
+                video_files.sort()
+                generated_video = video_files[0][1]
                 
                 if output_file:
                     os.makedirs(os.path.dirname(output_file), exist_ok=True)
@@ -1190,6 +1274,15 @@ class ThreeDAnimator:
             os.makedirs(output_dir, exist_ok=True)
             config.media_dir = output_dir
             
+            # 关键：彻底删除整个videos目录，强制Manim重建
+            videos_dir = os.path.join(output_dir, "videos")
+            if os.path.exists(videos_dir):
+                import shutil
+                try:
+                    shutil.rmtree(videos_dir)
+                except:
+                    pass
+            
             config.quality = "medium_quality"
             config.frame_rate = 30
             config.pixel_height = 720
@@ -1202,11 +1295,23 @@ class ThreeDAnimator:
             video_files = []
             for root, dirs, files in os.walk(output_dir):
                 for file in files:
-                    if file.endswith(".mp4") and "ThreeDDifferentiationScene" in file:
-                        video_files.append(os.path.join(root, file))
+                    if file.endswith(".mp4"):
+                        if "ThreeDDifferentiationScene" in file or "Differentiation" in file:
+                            filepath = os.path.join(root, file)
+                            mtime = os.path.getmtime(filepath)
+                            video_files.append((-mtime, filepath))
+            
+            if not video_files:
+                for root, dirs, files in os.walk(output_dir):
+                    for file in files:
+                        if file.endswith(".mp4"):
+                            filepath = os.path.join(root, file)
+                            mtime = os.path.getmtime(filepath)
+                            video_files.append((-mtime, filepath))
             
             if video_files:
-                generated_video = video_files[0]
+                video_files.sort()
+                generated_video = video_files[0][1]
                 
                 if output_file:
                     os.makedirs(os.path.dirname(output_file), exist_ok=True)
@@ -1543,6 +1648,15 @@ class ThreeDAnimator:
             output_dir = os.path.join(os.getcwd(), "temp_render")
             os.makedirs(output_dir, exist_ok=True)
             config.media_dir = output_dir
+            
+            # 关键：彻底删除整个videos目录，强制Manim重建
+            videos_dir = os.path.join(output_dir, "videos")
+            if os.path.exists(videos_dir):
+                import shutil
+                try:
+                    shutil.rmtree(videos_dir)
+                except:
+                    pass
             
             config.quality = "medium_quality"
             config.frame_rate = 30

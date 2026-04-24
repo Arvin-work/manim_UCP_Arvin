@@ -126,6 +126,15 @@ class FunctionPlotAnimator:
             os.makedirs(output_dir, exist_ok=True)
             config.media_dir = output_dir
             
+            # 关键：彻底删除整个videos目录，强制Manim重建
+            videos_dir = os.path.join(output_dir, "videos")
+            if os.path.exists(videos_dir):
+                import shutil
+                try:
+                    shutil.rmtree(videos_dir)
+                except:
+                    pass
+            
             # 设置视频质量 - 使用与泰勒展开相同的设置
             config.quality = "high_quality"
             config.frame_rate = 60
@@ -264,6 +273,15 @@ class FunctionPlotAnimator:
             os.makedirs(output_dir, exist_ok=True)
             config.media_dir = output_dir
             
+            # 关键：彻底删除整个videos目录，强制Manim重建
+            videos_dir = os.path.join(output_dir, "videos")
+            if os.path.exists(videos_dir):
+                import shutil
+                try:
+                    shutil.rmtree(videos_dir)
+                except:
+                    pass
+            
             config.quality = "high_quality"
             config.frame_rate = 60
             config.pixel_height = 1080
@@ -276,10 +294,19 @@ class FunctionPlotAnimator:
             video_files = []
             for root, dirs, files in os.walk(output_dir):
                 for file in files:
-                    if file.endswith(".mp4") and "ParametricCurve2DScene" in file:
-                        filepath = os.path.join(root, file)
-                        mtime = os.path.getmtime(filepath)
-                        video_files.append((-mtime, filepath))
+                    if file.endswith(".mp4"):
+                        if "ParametricCurve2DScene" in file or "ParametricCurveScene" in file:
+                            filepath = os.path.join(root, file)
+                            mtime = os.path.getmtime(filepath)
+                            video_files.append((-mtime, filepath))
+            
+            if not video_files:
+                for root, dirs, files in os.walk(output_dir):
+                    for file in files:
+                        if file.endswith(".mp4"):
+                            filepath = os.path.join(root, file)
+                            mtime = os.path.getmtime(filepath)
+                            video_files.append((-mtime, filepath))
             
             if video_files:
                 video_files.sort()
